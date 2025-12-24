@@ -1,0 +1,43 @@
+#root {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 2rem;
+  text-align: center;
+  font-family: 'Courier New', Courier, monospace;
+  background-color: #222;
+  color: #eee;
+  min-height: 100vh;
+}
+
+.header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 1px solid #444; padding-bottom: 10px;}
+.stats { font-size: 0.9em; color: #aaa; }
+
+.battle-area { background: #333; padding: 20px; border-radius: 10px; margin-bottom: 20px; }
+.enemy-emoji { font-size: 5rem; display: block; margin-bottom: 10px; animation: bounce 2s infinite; }
+.bars { display: flex; gap: 10px; justify-content: center; margin-top: 10px; }
+.bar { flex: 1; height: 20px; background: #555; position: relative; border-radius: 5px; overflow: hidden; }
+.bar-fill { height: 100%; transition: width 0.3s ease; }
+.hp-fill { background-color: #e74c3c; }
+.wp-fill { background-color: #3498db; }
+.bar-text { position: absolute; width: 100%; text-align: center; font-size: 0.8em; line-height: 20px; text-shadow: 1px 1px 2px black; }
+
+.log { height: 100px; overflow-y: auto; background: #000; color: #0f0; padding: 10px; text-align: left; font-size: 0.85em; margin-bottom: 20px; border: 1px solid #444; }
+
+.spell-slot { min-height: 60px; background: #444; margin-bottom: 20px; display: flex; justify-content: center; align-items: center; gap: 5px; border-bottom: 2px solid #666; }
+.tile { width: 40px; height: 40px; background: #eee; color: #222; font-weight: bold; font-size: 1.2rem; display: flex; justify-content: center; align-items: center; cursor: pointer; border-radius: 4px; user-select: none; box-shadow: 0 4px 0 #999; }
+.tile:active { transform: translateY(4px); box-shadow: 0 0 0; }
+.tile.empty { background: transparent; border: 2px dashed #666; box-shadow: none; color: #666; }
+
+.hand { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; min-height: 100px; }
+
+.controls { margin-top: 20px; display: flex; gap: 10px; justify-content: center; }
+button { padding: 10px 20px; font-family: inherit; font-size: 1rem; cursor: pointer; background: #555; color: white; border: none; border-radius: 5px; }
+button:hover { background: #666; }
+button:disabled { opacity: 0.5; cursor: not-allowed; }
+.cast-btn { background: #8e44ad; }
+.cast-btn:hover { background: #9b59b6; }
+
+@keyframes bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
