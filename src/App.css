@@ -21,7 +21,7 @@
 .wp-fill { background-color: #3498db; }
 .bar-text { position: absolute; width: 100%; text-align: center; font-size: 0.8em; line-height: 20px; text-shadow: 1px 1px 2px black; }
 
-.log { height: 100px; overflow-y: auto; background: #000; color: #0f0; padding: 10px; text-align: left; font-size: 0.85em; margin-bottom: 20px; border: 1px solid #444; }
+.log { height: 100px; overflow-y: auto; background: #000; color: rgb(121, 202, 121); padding: 10px; text-align: left; font-size: 0.85em; margin-bottom: 20px; border: 1px solid #444; }
 
 .spell-slot { min-height: 60px; background: #444; margin-bottom: 20px; display: flex; justify-content: center; align-items: center; gap: 5px; border-bottom: 2px solid #666; }
 .tile { width: 40px; height: 40px; background: #eee; color: #222; font-weight: bold; font-size: 1.2rem; display: flex; justify-content: center; align-items: center; cursor: pointer; border-radius: 4px; user-select: none; box-shadow: 0 4px 0 #999; }
@@ -40,4 +40,16 @@ button:disabled { opacity: 0.5; cursor: not-allowed; }
 @keyframes bounce {
   0%, 100% { transform: translateY(0); }
   50% { transform: translateY(-10px); }
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  20%, 60% { transform: translateX(-6px); }
+  40%, 80% { transform: translateX(6px); }
+}
+
+.shake {
+  animation: shake 0.4s cubic-bezier(.36,.07,.19,.97) both;
+  border-color: #e74c3c !important; /* Flash red */
+  color: #e74c3c;
 }

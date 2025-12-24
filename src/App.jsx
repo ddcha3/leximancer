@@ -1,12 +1,13 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect } from 'react'
 import './App.css'
 import { STARTING_DECK, ENCOUNTERS, SPELLBOOK, WIZARDS } from './gameData'
 
-// --- CONFIGURATION ---
-const HAND_SIZE = 12; // Increased from 7 to 12
-const SHUFFLE_COST = 0; // Made free to encourage cycling
+import StartScreen from './screens/StartScreen'
+import BattleScreen from './screens/BattleScreen'
+import RewardScreen from './screens/RewardScreen'
 
-// Fisher-Yates shuffle
+const HAND_SIZE = 12;
+
 const shuffle = (array) => {
   const newArray = [...array];
   for (let i = newArray.length - 1; i > 0; i--) {
@@ -17,19 +18,43 @@ const shuffle = (array) => {
 };
 
 function App() {
-  // --- STATE ---
-  const [gameState, setGameState] = useState('START');
-  const [playerAvatar, setPlayerAvatar] = useState(WIZARDS[0]);
+  const [gameState, setGameState] = useState('START'); 
+  const [playerAvatar] = useState(WIZARDS[0]);
+  const [dictionary, setDictionary] = useState(new Set());
+  const [isDictLoading, setIsDictLoading] = useState(true);
+
   const [deck, setDeck] = useState([]);
   const [hand, setHand] = useState([]);
   const [spellSlots, setSpellSlots] = useState([]);
   const [currentEnemy, setCurrentEnemy] = useState(null);
   const [enemyIndex, setEnemyIndex] = useState(0);
-  const [logs, setLogs] = useState(["Welcome, Leximancer."]);
+  const [logs, setLogs] = useState([]);
   
-  const logEndRef = useRef(null);
+  // --- NEW STATE ---
+  const [shakeError, setShakeError] = useState(false);
 
-  // --- INITIALIZATION ---
+  useEffect(() => {
+    const loadDictionary = async () => {
+      try {
+        const response = await fetch('https://raw.githubusercontent.com/redbo/scrabble/master/dictionary.txt');
+        const text = await response.text();
+        const words = text.split('\n').map(w => w.trim().toUpperCase());
+        const dictSet = new Set(words);
+        Object.keys(SPELLBOOK).forEach(w => dictSet.add(w));
+        setDictionary(dictSet);
+        setIsDictLoading(false);
+      } catch (err) {
+        console.error("Failed to load dictionary", err);
+        setIsDictLoading(false);
+      }
+    };
+    loadDictionary();
+  }, []);
+
+  const currentWordStr = spellSlots.map(t => t.char).join("");
+  const isValidWord = currentWordStr.length > 0 && 
+                     (dictionary.has(currentWordStr) || SPELLBOOK[currentWordStr]);
+
   const startGame = () => {
     setDeck(shuffle(STARTING_DECK));
     setEnemyIndex(0);
@@ -48,19 +73,14 @@ function App() {
     
     setCurrentEnemy(enemyData);
     setGameState('BATTLE');
-    
-    // Start with a fresh full hand
-    drawHand(HAND_SIZE, shuffle(STARTING_DECK), []); 
+    drawHand(HAND_SIZE, shuffle(STARTING_DECK), []);
     setSpellSlots([]);
     addLog(`A wild ${enemyData.name} appears!`);
   };
 
-  // --- HAND MANAGEMENT ---
-  // Modified to handle reshuffling automatically if deck runs dry
   const drawHand = (count, currentDeck, currentHand) => {
     const newHand = [...currentHand];
     let deckCopy = [...currentDeck];
-    
     for (let i = 0; i < count; i++) {
       if (deckCopy.length === 0) {
         addLog("Deck empty. Reshuffling...");
@@ -68,33 +88,21 @@ function App() {
       }
       newHand.push({ id: Math.random(), char: deckCopy.pop() });
     }
-    
     setDeck(deckCopy);
     setHand(newHand);
   };
 
-  const moveTileToSlot = (tile) => {
-    setHand(hand.filter(t => t.id !== tile.id));
-    setSpellSlots([...spellSlots, tile]);
-  };
+  const handleCast = () => {
+    // --- VALIDATION LOGIC ---
+    if (!isValidWord) {
+      addLog(`"${currentWordStr}" is not a recognized spell.`);
+      setShakeError(true);
+      // Remove shake class after animation plays (400ms)
+      setTimeout(() => setShakeError(false), 400);
+      return;
+    }
 
-  const returnTileToHand = (tile) => {
-    setSpellSlots(spellSlots.filter(t => t.id !== tile.id));
-    setHand([...hand, tile]);
-  };
-
-  const discardAndRedraw = () => {
-    // Discard entire hand and spell slots, draw fresh 12
-    setSpellSlots([]);
-    drawHand(HAND_SIZE, deck, []); // Passing empty array as current hand clears it
-    addLog("Mulligan! You drew a fresh hand.");
-  };
-
-  // --- COMBAT LOGIC ---
-  const castSpell = () => {
-    if (spellSlots.length === 0) return;
-
-    const word = spellSlots.map(t => t.char).join("");
+    const word = currentWordStr;
     const wordData = SPELLBOOK[word]; 
     
     let power = word.length;
@@ -113,7 +121,6 @@ function App() {
 
     if (isMagic) {
       battleLog.push(`It pulsates with [${tags.join(", ")}] energy.`);
-      
       tags.forEach(tag => {
         if (currentEnemy.weaknesses[tag]) {
           const weak = currentEnemy.weaknesses[tag];
@@ -128,150 +135,98 @@ function App() {
         }
       });
     } else {
-      battleLog.push("It's a mundane collection of letters.");
+      battleLog.push("It's a mundane attack.");
     }
 
     const finalDamage = Math.floor(power * multipliers);
     
     const newEnemy = { ...currentEnemy };
-    if (targetStat === 'hp') {
-      newEnemy.hp -= finalDamage;
-      battleLog.push(`Dealt ${finalDamage} Physical DMG!`);
-    } else {
-      newEnemy.wp -= finalDamage;
-      battleLog.push(`Dealt ${finalDamage} Willpower DMG!`);
-    }
+    if (targetStat === 'hp') newEnemy.hp -= finalDamage;
+    else newEnemy.wp -= finalDamage;
 
+    battleLog.push(`Dealt ${finalDamage} ${targetStat.toUpperCase()} DMG!`);
+    
     addLog(...battleLog);
     setCurrentEnemy(newEnemy);
-    
-    // CLEAR PLAYED TILES & REFILL
     setSpellSlots([]);
     
-    // REFILL HAND TO MAX
     const tilesNeeded = HAND_SIZE - hand.length;
-    if (tilesNeeded > 0) {
-      drawHand(tilesNeeded, deck, hand);
-    }
+    if (tilesNeeded > 0) drawHand(tilesNeeded, deck, hand);
     
     if (newEnemy.hp <= 0 || newEnemy.wp <= 0) {
       addLog(`The ${newEnemy.name} is defeated!`);
       setTimeout(() => setGameState('REWARD'), 1000);
     } else {
-      setTimeout(() => {
-        addLog(`${newEnemy.name} attacks!`);
-      }, 1000);
+      setTimeout(() => addLog(`${newEnemy.name} attacks!`), 1000);
     }
   };
 
-  const addLog = (...messages) => {
-    setLogs(prev => [...prev, ...messages]);
+  // ... (Rest of handlers: handleMoveTile, handleReturnTile, etc.) ...
+  const handleMoveTile = (tile) => {
+    setHand(hand.filter(t => t.id !== tile.id));
+    setSpellSlots([...spellSlots, tile]);
   };
+  const handleReturnTile = (tile) => {
+    setSpellSlots(spellSlots.filter(t => t.id !== tile.id));
+    setHand([...hand, tile]);
+  };
+  const handleClear = () => {
+    setSpellSlots([]); 
+    setHand([...hand, ...spellSlots]);
+  };
+  const handleDiscard = () => {
+    setSpellSlots([]);
+    drawHand(HAND_SIZE, deck, []);
+    addLog("Mulligan! You drew a fresh hand.");
+  };
+  const addLog = (...messages) => setLogs(prev => [...prev, ...messages]);
 
-  useEffect(() => {
-    logEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [logs]);
-
-  const renderTile = (tile, onClick) => (
-    <div key={tile.id} className="tile" onClick={() => onClick(tile)}>
-      {tile.char}
-    </div>
-  );
-
-  // --- SCREENS ---
+  // --- RENDER ---
   if (gameState === 'START') {
-    return (
-      <div className="start-screen">
-        <h1>LEXIMANCER</h1>
-        <div style={{fontSize: '4rem', marginBottom: '20px'}}>{playerAvatar}</div>
-        <p>Spell words. Exploit weaknesses. Survive.</p>
-        <button className="cast-btn" onClick={startGame}>Enter Dungeon</button>
-      </div>
-    );
+    return <StartScreen onStart={startGame} avatar={playerAvatar} isLoading={isDictLoading} />;
   }
 
   if (gameState === 'REWARD') {
     return (
-      <div className="reward-screen">
-        <h2>VICTORY!</h2>
-        <p>The {currentEnemy.name} is vanquished.</p>
-        <div className="controls">
-          <button className="cast-btn" onClick={() => {
-            setEnemyIndex(prev => prev + 1);
-            startEncounter(enemyIndex + 1);
-          }}>
-            Next Encounter ➡
-          </button>
-        </div>
-      </div>
+      <RewardScreen 
+        enemy={currentEnemy} 
+        onNext={() => {
+          setEnemyIndex(prev => prev + 1);
+          startEncounter(enemyIndex + 1);
+        }} 
+      />
     );
   }
 
   if (gameState === 'VICTORY') {
     return (
-      <div>
+      <div className="reward-screen">
         <h1>YOU WIN!</h1>
-        <p>The dungeon is cleared.</p>
         <button onClick={() => setGameState('START')}>Play Again</button>
       </div>
     );
   }
 
   return (
-    <div className="app">
-      <div className="header">
-        <div>{playerAvatar} Leximancer</div>
-        <div className="stats">Encounter {enemyIndex + 1}/{ENCOUNTERS.length}</div>
-      </div>
-
-      {currentEnemy && (
-        <div className="battle-area">
-          <div className="enemy-emoji">{currentEnemy.emoji}</div>
-          <h3>{currentEnemy.name}</h3>
-          <div className="bars">
-            <div className="bar">
-              <div className="bar-fill hp-fill" style={{width: `${Math.max(0, (currentEnemy.hp / currentEnemy.maxHp) * 100)}%`}}></div>
-              <span className="bar-text">HP: {currentEnemy.hp}</span>
-            </div>
-            <div className="bar">
-              <div className="bar-fill wp-fill" style={{width: `${Math.max(0, (currentEnemy.wp / currentEnemy.maxWp) * 100)}%`}}></div>
-              <span className="bar-text">WP: {currentEnemy.wp}</span>
-            </div>
-          </div>
-          <p style={{fontSize: '0.8em', color: '#888', marginTop: '10px'}}>{currentEnemy.desc}</p>
-        </div>
-      )}
-
-      <div className="log">
-        {logs.map((l, i) => <div key={i}>{l}</div>)}
-        <div ref={logEndRef} />
-      </div>
-
-      <div className="spell-slot">
-        {spellSlots.length === 0 && <span className="tile empty">?</span>}
-        {spellSlots.map(t => renderTile(t, returnTileToHand))}
-      </div>
-
-      <div className="hand">
-        {hand.map(t => renderTile(t, moveTileToSlot))}
-      </div>
-
-      <div className="controls">
-        <button onClick={() => { setSpellSlots([]); setHand([...hand, ...spellSlots]); }}>Clear</button>
-        
-        {/* UPDATED DISCARD BUTTON */}
-        <button 
-            onClick={discardAndRedraw} 
-            title="Discard all tiles and draw fresh ones"
-            style={{border: '1px solid #e74c3c', color: '#e74c3c'}}
-        >
-            Discard Hand ♻
-        </button>
-
-        <button className="cast-btn" disabled={spellSlots.length === 0} onClick={castSpell}>CAST</button>
-      </div>
-    </div>
-  )
+    <BattleScreen 
+      playerAvatar={playerAvatar}
+      encounterIndex={enemyIndex}
+      totalEncounters={ENCOUNTERS.length}
+      enemy={currentEnemy}
+      logs={logs}
+      hand={hand}
+      spellSlots={spellSlots}
+      isValidWord={!!isValidWord}
+      shakeError={shakeError} // <--- PASSING THE STATE
+      actions={{
+        onMoveTile: handleMoveTile,
+        onReturnTile: handleReturnTile,
+        onCast: handleCast,
+        onClear: handleClear,
+        onDiscard: handleDiscard
+      }}
+    />
+  );
 }
 
 export default App
