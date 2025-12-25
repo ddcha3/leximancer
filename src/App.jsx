@@ -1,5 +1,3 @@
-import natural from 'natural';
-import compromise from 'compromise';
 
 import { useState, useEffect } from 'react'
 import './App.css'
@@ -7,7 +5,7 @@ import './App.css'
 import { ENCOUNTERS } from './data/enemies';
 import { SPELLBOOK } from './data/spells';
 import { TAG_EMOJIS } from './data/tags';
-import { WIZARDS, PLAYER_DEFENSE, STARTING_DECK } from './data/player';
+import { CHARACTERS, PLAYER_DEFENSE, STARTING_DECK } from './data/player';
 
 import { resolveSpell } from './engine/CombatEngine'
 
@@ -36,7 +34,7 @@ const shuffle = (array) => {
 
 function App() {
   const [gameState, setGameState] = useState('START'); 
-  const [playerAvatar] = useState(WIZARDS[0]);
+  const [playerChar, setPlayerChar] = useState(null); 
   const [dictionary, setDictionary] = useState(new Set());
   const [isDictLoading, setIsDictLoading] = useState(true);
 
@@ -77,7 +75,8 @@ function App() {
   const isValidWord = currentWordStr.length > 0 && 
                      (dictionary.has(currentWordStr) || SPELLBOOK[currentWordStr]);
 
-  const startGame = () => {
+  const startGame = (character) => {
+    setPlayerChar(character);
     setDeck(shuffle(STARTING_DECK));
     setEnemyIndex(0);
     setPlayerHp(MAX_PLAYER_HP);
@@ -131,7 +130,7 @@ function App() {
       setAnimState(prev => ({ ...prev, player: '' }));
 
       // 1. CALL THE ENGINE
-      const result = resolveSpell(currentWordStr, { name: "You" }, currentEnemy, true);
+     const result = resolveSpell(currentWordStr, playerChar, { ...PLAYER_DEFENSE }, true);
 
       // 2. SHOW VISUALS
       // Use Engine emoji or fallback to Tag lookup
@@ -143,9 +142,11 @@ function App() {
       setSpellEffect(visualEmoji || "✨");
       setTimeout(() => setSpellEffect(null), 1000);
 
+
+      console.log("Spell Result:", result);
       // 3. LOGGING
       if (result.tags.includes(POS_TAG_MAP.noun)) {
-          addLog(`You conjured a ^${currentWordStr}^!`);
+          addLog(`You conjured ^${currentWordStr}^!`);
       } else {
         addLog(`You cast ^${currentWordStr}^!`);
       }
@@ -314,7 +315,9 @@ function App() {
   const addLog = (...messages) => setLogs(prev => [...prev, ...messages]);
 
   // ... render ...
-  if (gameState === 'START') return <StartScreen onStart={startGame} avatar={playerAvatar} isLoading={isDictLoading} />;
+  if (gameState === 'START') {
+     return <StartScreen onStart={startGame} isLoading={isDictLoading} />;
+  }
   
   if (gameState === 'GAMEOVER') {
     return (
@@ -350,7 +353,7 @@ function App() {
 
   return (
     <BattleScreen 
-      playerAvatar={playerAvatar}
+      playerAvatar={playerChar?.avatar || "🧙‍♂️"} 
       playerHp={playerHp}       
       maxPlayerHp={MAX_PLAYER_HP} 
       inventory={inventory}     

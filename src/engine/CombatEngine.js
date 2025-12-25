@@ -3,81 +3,75 @@ import { PLAYER_DEFENSE, LETTER_SCORES } from "../data/player";
 import { TAG_EMOJIS } from "../data/tags";
 import { ENCOUNTERS } from '../data/enemies';
 import { SPELLBOOK } from '../data/spells';
-
-// Add imports for stemming and NLP
-import natural from 'natural';
+import { stemmer } from 'stemmer';
 import compromise from 'compromise';
 
-// --- STEMMER INITIALIZATION ---
-const stemmer = natural.PorterStemmer; // You can choose other stemmers if needed
-
-// --- DAMAGE HELPER (MODIFIED) ---
-export const calculateWordPower = (word) => {
+// Default scoring strategy (The "Ramp")
+const defaultCalculatePower = (word) => {
   const upper = word.toUpperCase();
-  const len = upper.length;
-  
-  let baseScore = 0;
-  for (let i = 0; i < len; i++) {
-    const char = upper[i];
-    baseScore += LETTER_SCORES[char] || 1; 
+  let score = 0;
+  for (let char of upper) {
+    score += LETTER_SCORES[char] || 1;
   }
-  
-  if (len > 4) baseScore += (len - 4) * 2;
-  return baseScore;
+  // Standard Ramp: Bonus for length > 4
+  if (upper.length > 4) score += (upper.length - 4) * 2;
+  return score;
 };
 
-// --- SPELL RESOLUTION LOGIC ---
 export function resolveSpell(word, caster, target, isPlayerCasting = true) {
   const upperWord = word.toUpperCase();
+  const stemmedWord = stemmer(upperWord);
   
- // 1. STEMMING
-  const stemmedWord = stemmer.stem(upperWord); // (Assumes you are using the 'stemmer' lib or similar)
-
-  // 3. DETERMINE SPELL DATA (CHECK STEMMED WORD FIRST)
-  const spellData = SPELLBOOK[stemmedWord] || SPELLBOOK[upperWord]; // Check stem, then original
-  
-  let basePower = 0;
-  let tags = [...(spellData?.tags || [])];
-  
-   // 2. PART-OF-SPEECH TAGGING (Fixed)
-  const doc = compromise(word); 
+  // 1. NLP TAGGING
+  const doc = compromise(word);
   const json = doc.json();
-  
-  // Safely extract tags from the first word of the first sentence found
   let posTags = [];
   if (json[0] && json[0].terms[0]) {
-      // .tags is an Array like ["Noun", "Singular", "Person"]
       posTags = json[0].terms[0].tags.map(t => t.toLowerCase());
   }
+  const meaningfulPos = posTags.find(t => ['noun', 'verb', 'adjective'].includes(t));
 
-  // Filter out the 'common' tags compromise adds that we don't care about
-  // (We usually just want Noun, Verb, Adjective)
-  const meaningfulPos = posTags.find(t => ['noun', 'verb', 'adjective', 'adverb'].includes(t));
+  // 2. GET BASE DATA
+  const spellData = SPELLBOOK[stemmedWord] || SPELLBOOK[upperWord];
+  let tags = [...(spellData?.tags || [])];
+  if (meaningfulPos) tags.push(meaningfulPos);
   
-  if (meaningfulPos) {
-      tags.push(meaningfulPos);
-  } // Start with tags from spellbook
+  // 3. CALCULATE BASE POWER
+  let basePower = 0;
   
   if (isPlayerCasting) {
-    basePower = calculateWordPower(upperWord);
+    // CHECK FOR DUELIST OVERRIDE
+    if (caster.calculateBasePower) {
+        basePower = caster.calculateBasePower(upperWord);
+    } else {
+        basePower = defaultCalculatePower(upperWord);
+    }
   } else {
-    // Enemy Casting: Use explicit power, or length if not in book
+    // Enemy logic remains simple
     basePower = spellData?.power || upperWord.length;
   }
 
-  // 4. INITIALIZE RESULT OBJECT
-  const result = {
-    damage: 0, targetStat: 'hp', heal: 0, status: null,
-    logs: [], tags: tags, emoji: "✨"
+  // 4. APPLY CHARACTER HOOKS 
+  let stats = {
+      multiplier: 1.0,
+      flatBonus: 0,
+      logs: []
   };
 
-  // Filter out duplicates if any from multiple sources
-  result.tags = [...new Set(result.tags)];
+  // If the Caster has an 'onCast' hook, run it
+  if (caster.onCast) {
+      stats = caster.onCast(stats, tags, upperWord);
+  }
 
-  // --- SPECIAL TAG LOGIC ---
-  // (This part remains largely the same, but now uses result.tags)
+  // 5. SETUP RESULT
+  const result = {
+    damage: 0, targetStat: 'hp', heal: 0, status: null,
+    logs: [...stats.logs], // Add class-specific logs
+    tags: tags, emoji: "✨"
+  };
+
+  // --- STANDARD LOGIC (Simplified for brevity) ---
   let isAttack = true;
-  
   if (tags.includes("flee")) {
     result.status = "flee";
     result.logs.push(`> Attempting to escape...`);
@@ -113,35 +107,27 @@ export function resolveSpell(word, caster, target, isPlayerCasting = true) {
     result.emoji = "🧊";
   }
 
-  // CALCULATE DAMAGE
+  // 6. FINAL DAMAGE CALCULATION
   if (isAttack) {
-    let multipliers = 1.0;
-    
-    // CHECK TAGS AGAINST TARGET'S WEAKNESSES/RESISTANCES
+    let finalMult = stats.multiplier; // Start with Class Multiplier
+
+    // Target Weakness/Resistance
     tags.forEach(tag => {
-      // Apply Player Defense logic here IF ENEMY IS TARGETING PLAYER
-      if (isPlayerCasting && target.weaknesses && target.weaknesses[tag]) {
-          const weak = target.weaknesses[tag]; multipliers *= weak.mult;
-          result.logs.push(`> ${weak.msg} (x${weak.mult})`);
-          if (weak.target) result.targetStat = weak.target;
-      }
-      // Apply Enemy Defense logic here IF PLAYER IS TARGETING ENEMY
-      else if (!isPlayerCasting && target.weaknesses && target.weaknesses[tag]) {
-          const weak = target.weaknesses[tag];
-		  multipliers *= weak.mult;
-          result.logs.push(`> ${weak.msg} (x${weak.mult})`);
-          if (weak.target) result.targetStat = weak.target;
-      }
-      // Handle Resistances (for both player and enemy)
-      else if (target.resistances && target.resistances[tag]) {
-          const res = target.resistances[tag];
-		  multipliers *= res.mult;
-          result.logs.push(`> ${res.msg} (x${res.mult})`);
+      if (target.weaknesses && target.weaknesses[tag]) {
+        const weak = target.weaknesses[tag];
+        finalMult *= weak.mult;
+        result.logs.push(`> ${weak.msg} (x${weak.mult})`);
+        if (weak.target) result.targetStat = weak.target;
+      } else if (target.resistances && target.resistances[tag]) {
+        const res = target.resistances[tag];
+        finalMult *= res.mult;
+        result.logs.push(`> ${res.msg} (x${res.mult})`);
       }
     });
 
-    result.damage = Math.max(0, Math.floor(basePower * multipliers));
+    // Formula: (Base + FlatBonus) * Multiplier
+    result.damage = Math.floor((basePower + stats.flatBonus) * finalMult);
   }
-  
+
   return result;
 }
