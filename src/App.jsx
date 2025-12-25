@@ -1,3 +1,6 @@
+import natural from 'natural';
+import compromise from 'compromise';
+
 import { useState, useEffect } from 'react'
 import './App.css'
 
@@ -11,6 +14,13 @@ import { resolveSpell } from './engine/CombatEngine'
 import StartScreen from './screens/StartScreen'
 import BattleScreen from './screens/BattleScreen'
 import RewardScreen from './screens/RewardScreen'
+
+const POS_TAG_MAP = {
+    noun: 'noun',
+    verb: 'verb',
+    adjective: 'adjective',
+    adverb: 'adverb',
+};
 
 const HAND_SIZE = 16;
 const MAX_PLAYER_HP = 100;
@@ -134,7 +144,17 @@ function App() {
       setTimeout(() => setSpellEffect(null), 1000);
 
       // 3. LOGGING
-      addLog(`You cast ^${currentWordStr}^!`);
+      if (result.tags.includes(POS_TAG_MAP.noun)) {
+          addLog(`You conjured a ^${currentWordStr}^!`);
+      } else {
+        addLog(`You cast ^${currentWordStr}^!`);
+      }
+      if (result.tags.length > 0) {
+          const meaningfulTags = result.tags.filter(t => !['the', 'a', 'an', 'noun', 'verb', 'adjective', 'adverb'].includes(t)); // Filter out common ones for cleaner logs
+          if (meaningfulTags.length > 0) {
+             addLog(`(Tags: ${meaningfulTags.join(', ')})`);
+          }
+      }
       addLog(...result.logs);
 
       // 4. APPLY EFFECTS

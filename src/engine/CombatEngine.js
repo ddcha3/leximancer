@@ -1,85 +1,97 @@
+// --- IMPORTS ---
+import { PLAYER_DEFENSE, LETTER_SCORES } from "../data/player";
+import { TAG_EMOJIS } from "../data/tags";
+import { ENCOUNTERS } from '../data/enemies';
 import { SPELLBOOK } from '../data/spells';
-import { PLAYER_DEFENSE, LETTER_SCORES } from '../data/player';
 
-// --- SCORING HELPER ---
+// Add imports for stemming and NLP
+import natural from 'natural';
+import compromise from 'compromise';
+
+// --- STEMMER INITIALIZATION ---
+const stemmer = natural.PorterStemmer; // You can choose other stemmers if needed
+
+// --- DAMAGE HELPER (MODIFIED) ---
 export const calculateWordPower = (word) => {
   const upper = word.toUpperCase();
   const len = upper.length;
   
-  // 1. BASE SCORE: Sum of letter rarities
   let baseScore = 0;
   for (let i = 0; i < len; i++) {
     const char = upper[i];
-    baseScore += LETTER_SCORES[char] || 1; // Default to 1 if missing
-  }
-
-  // 2. LENGTH RAMP: The original bonus logic
-  // (+2 damage for every letter beyond 4)
-  if (len > 4) {
-    baseScore += (len - 4) * 2;
+    baseScore += LETTER_SCORES[char] || 1; 
   }
   
+  if (len > 4) baseScore += (len - 4) * 2;
   return baseScore;
 };
 
-/**
- * Resolves a spell cast by a Source Entity against a Target Entity.
- * @param {string} word - The word cast
- * @param {object} caster - The entity casting (Player or Enemy)
- * @param {object} target - The entity receiving (Enemy or Player)
- * @param {boolean} isPlayerCasting - Context flag
- */
+// --- SPELL RESOLUTION LOGIC ---
 export function resolveSpell(word, caster, target, isPlayerCasting = true) {
   const upperWord = word.toUpperCase();
-  const wordData = SPELLBOOK[upperWord];
+  
+ // 1. STEMMING
+  const stemmedWord = stemmer.stem(upperWord); // (Assumes you are using the 'stemmer' lib or similar)
 
-  // 1. DETERMINE SPELL DATA
-  // If player, use Ramp scaling. If enemy, use Linear scaling (or Spellbook value).
+  // 3. DETERMINE SPELL DATA (CHECK STEMMED WORD FIRST)
+  const spellData = SPELLBOOK[stemmedWord] || SPELLBOOK[upperWord]; // Check stem, then original
+  
   let basePower = 0;
-  let tags = [];
+  let tags = [...(spellData?.tags || [])];
+  
+   // 2. PART-OF-SPEECH TAGGING (Fixed)
+  const doc = compromise(word); 
+  const json = doc.json();
+  
+  // Safely extract tags from the first word of the first sentence found
+  let posTags = [];
+  if (json[0] && json[0].terms[0]) {
+      // .tags is an Array like ["Noun", "Singular", "Person"]
+      posTags = json[0].terms[0].tags.map(t => t.toLowerCase());
+  }
+
+  // Filter out the 'common' tags compromise adds that we don't care about
+  // (We usually just want Noun, Verb, Adjective)
+  const meaningfulPos = posTags.find(t => ['noun', 'verb', 'adjective', 'adverb'].includes(t));
+  
+  if (meaningfulPos) {
+      tags.push(meaningfulPos);
+  } // Start with tags from spellbook
   
   if (isPlayerCasting) {
     basePower = calculateWordPower(upperWord);
-    if (wordData) tags = wordData.tags || [];
   } else {
-    // Enemy Casting
-    basePower = wordData?.power || upperWord.length;
-    tags = wordData?.tags || [];
+    // Enemy Casting: Use explicit power, or length if not in book
+    basePower = spellData?.power || upperWord.length;
   }
 
-  // 2. INITIALIZE RESULT OBJECT
+  // 4. INITIALIZE RESULT OBJECT
   const result = {
-    damage: 0,
-    targetStat: 'hp', // 'hp' or 'wp'
-    heal: 0,
-    status: null, // 'stun', 'flee', etc.
-    logs: [],
-    tags: tags,
-    emoji: "✨" // Default
+    damage: 0, targetStat: 'hp', heal: 0, status: null,
+    logs: [], tags: tags, emoji: "✨"
   };
 
-  // 3. CHECK TAGS FOR SPECIAL BEHAVIORS
-  let isAttack = true; // Most things are attacks unless specified
+  // Filter out duplicates if any from multiple sources
+  result.tags = [...new Set(result.tags)];
 
   // --- SPECIAL TAG LOGIC ---
+  // (This part remains largely the same, but now uses result.tags)
+  let isAttack = true;
   
-  // FLEE / ESCAPE
   if (tags.includes("flee")) {
     result.status = "flee";
     result.logs.push(`> Attempting to escape...`);
     result.emoji = "🏃";
-    return result; // End early, no damage
+    return result;
   }
 
-  // HEAL
   if (tags.includes("heal")) {
-    result.heal = basePower * 2; // Healing is usually stronger than base damage
-    isAttack = false; // Usually doesn't hurt the enemy
+    result.heal = basePower * 2;
+	isAttack = false;
     result.emoji = "💖";
     result.logs.push(`> Restoration magic!`);
   }
 
-  // FOOD (Context Sensitive)
   if (tags.includes("food")) {
     // Check if target wants food
     if (target.weaknesses && target.weaknesses["food"]) {
@@ -101,29 +113,35 @@ export function resolveSpell(word, caster, target, isPlayerCasting = true) {
     result.emoji = "🧊";
   }
 
-  // 4. CALCULATE DAMAGE (If it's an attack)
+  // CALCULATE DAMAGE
   if (isAttack) {
     let multipliers = 1.0;
     
+    // CHECK TAGS AGAINST TARGET'S WEAKNESSES/RESISTANCES
     tags.forEach(tag => {
-      // Check Weaknesses
-      if (target.weaknesses && target.weaknesses[tag]) {
-        const weak = target.weaknesses[tag];
-        multipliers *= weak.mult;
-        result.logs.push(`> ${weak.msg} (x${weak.mult})`);
-        if (weak.target) result.targetStat = weak.target;
+      // Apply Player Defense logic here IF ENEMY IS TARGETING PLAYER
+      if (isPlayerCasting && target.weaknesses && target.weaknesses[tag]) {
+          const weak = target.weaknesses[tag]; multipliers *= weak.mult;
+          result.logs.push(`> ${weak.msg} (x${weak.mult})`);
+          if (weak.target) result.targetStat = weak.target;
       }
-      // Check Resistances
-      if (target.resistances && target.resistances[tag]) {
-        const res = target.resistances[tag];
-        multipliers *= res.mult;
-        result.logs.push(`> ${res.msg} (x${res.mult})`);
+      // Apply Enemy Defense logic here IF PLAYER IS TARGETING ENEMY
+      else if (!isPlayerCasting && target.weaknesses && target.weaknesses[tag]) {
+          const weak = target.weaknesses[tag];
+		  multipliers *= weak.mult;
+          result.logs.push(`> ${weak.msg} (x${weak.mult})`);
+          if (weak.target) result.targetStat = weak.target;
+      }
+      // Handle Resistances (for both player and enemy)
+      else if (target.resistances && target.resistances[tag]) {
+          const res = target.resistances[tag];
+		  multipliers *= res.mult;
+          result.logs.push(`> ${res.msg} (x${res.mult})`);
       }
     });
 
-    result.damage = Math.floor(basePower * multipliers);
-    if (result.damage < 0) result.damage = 0; // No negative damage
+    result.damage = Math.max(0, Math.floor(basePower * multipliers));
   }
-
+  
   return result;
 }
