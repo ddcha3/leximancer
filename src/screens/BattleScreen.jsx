@@ -26,7 +26,7 @@ export default function BattleScreen({
   const playerHpPct = Math.max(0, (playerHp / maxPlayerHp) * 100);
 
   const feedbackColor = isValidWord ? '#4e6d46' : (spellSlots.length > 0 ? '#b85c50' : '#8b735b');
-  const feedbackText = spellSlots.length > 0 ? (isValidWord ? "VALID SPELL" : "INVALID GIBBERISH") : "PREPARE SPELL";
+  const feedbackText = spellSlots.length > 2 ? (isValidWord ? "VALID SPELL" : "") : "PREPARE SPELL";
 
   const enemySize = `${4 + (enemy.level || 1) * 0.8}rem`;
 

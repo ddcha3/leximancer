@@ -30,7 +30,7 @@ export default function StartScreen({ onStart, isLoading }) {
         📖 How to Play
       </button>
 
-      <p style={{marginBottom: '20px'}}>Choose your archetype:</p>
+      <p style={{marginBottom: '20px'}}>Choose your character:</p>
       
       <div className="char-select-container">
         {CHARACTERS.map(char => (
@@ -66,15 +66,15 @@ export default function StartScreen({ onStart, isLoading }) {
           
           <h4>⚔️ Combat</h4>
           <ul>
-            <li><strong>Spellcasting:</strong> Click tiles to form words. Longer words generally deal more damage.</li>
+            <li><strong>Spellcasting:</strong> Click tiles to form words. Words must be at least 3 letters long. Longer words generally deal more damage.</li>
             <li><strong>Elements:</strong> Words like <em>FIRE</em>, <em>ICE</em>, or <em>BLADE</em> have tags. Use them to exploit enemy weaknesses.</li>
             <li><strong>Utility:</strong> Words like <em>HEAL</em> or <em>FOOD</em> can restore your health. Words like <em>STUN</em> can freeze enemies.</li>
           </ul>
 
           <h4>🃏 Hand Management</h4>
           <ul>
-            <li><strong>🔀 Shuffle:</strong> Mix your current tiles for a fresh perspective (Free).</li>
-            <li><strong>♻ Redraw:</strong> Discard your hand for 16 new tiles, but <strong>skip your turn</strong>.</li>
+            <li><strong>🔀 Shuffle:</strong> Rearrange the order of your tiles (Free).</li>
+            <li><strong>♻ Mulligan:</strong> Discard your hand for 16 new tiles, but <strong>skip your turn</strong>.</li>
           </ul>
 
           <h4>👹 Enemies</h4>

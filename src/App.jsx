@@ -72,7 +72,7 @@ function App() {
   }, []);
 
   const currentWordStr = spellSlots.map(t => t.char).join("");
-  const isValidWord = currentWordStr.length > 0 && 
+  const isValidWord = currentWordStr.length > 2 && 
                      (dictionary.has(currentWordStr) || SPELLBOOK[currentWordStr]);
 
   const startGame = (character) => {
