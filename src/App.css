@@ -264,13 +264,13 @@ h1 {
 
 /* --- TILES (Wooden Blocks / Ivory) --- */
 .tile {
-  width: 45px;
-  height: 45px;
+  width: 35px;
+  height: 35px;
   background: #fdf5e6; /* Ivory */
   color: #2c241b;
   font-family: var(--font-header);
   font-weight: bold;
-  font-size: 1.4rem;
+  font-size: 1.1rem;
   display: flex;
   justify-content: center;
   align-items: center;

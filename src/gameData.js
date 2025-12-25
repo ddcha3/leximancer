@@ -29,6 +29,7 @@ export const ENCOUNTERS = [
     wp: 3,
     desc: "A dirty rat.",
     vocabulary: ["BITE", "SCRATCH", "RUN", "SQUEAK", "FLEE"],
+    weaknesses: {},
     resistances: {}
   },
   {
