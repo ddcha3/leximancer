@@ -128,24 +128,22 @@ export default function BattleScreen({
 
       <div className="controls">
         {/* SHUFFLE BUTTON */}
-        <button onClick={onShuffle} title="Shuffle runes in hand">Shuffle 🔀</button>
-        
-        <button onClick={onClear}>Clear</button>
-        
+        <button onClick={onShuffle} title="Shuffle tile order in hand">🔀</button>
+        <button onClick={onClear} title="Clear staged tiles">✖</button>
         <button 
           onClick={onDiscard} 
           style={{ borderColor: '#b85c50', color: '#b85c50' }}
           title="Discard hand and skip turn"	
         >
-          Redraw ♻
+          ♻
         </button>
-        
         <button 
           className="cast-btn" 
           disabled={spellSlots.length === 0} 
           onClick={onCast}
+          title="Cast Spell"
         >
-          CAST SPELL
+          🪄
         </button>
       </div>
     </div>

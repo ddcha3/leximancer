@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react'
 import './App.css'
-import { STARTING_DECK, ENCOUNTERS, SPELLBOOK, WIZARDS, TAG_EMOJIS } from './gameData'
-
+import { STARTING_DECK, ENCOUNTERS, SPELLBOOK, WIZARDS, TAG_EMOJIS, PLAYER_DEFENSE } from './gameData'
 import StartScreen from './screens/StartScreen'
 import BattleScreen from './screens/BattleScreen'
 import RewardScreen from './screens/RewardScreen'
@@ -85,7 +84,7 @@ function App() {
     drawHand(HAND_SIZE, shuffle(STARTING_DECK), []);
     setSpellSlots([]);
     setAnimState({ player: '', enemy: '' }); // Reset anims
-    addLog(`A wild #${enemyData.name}# appears!`);  };
+    addLog(`A #${enemyData.name}# appears!`);  };
 
   const drawHand = (count, currentDeck, currentHand) => {
     const newHand = [...currentHand];
@@ -203,20 +202,62 @@ function App() {
     setTimeout(() => {
         setAnimState(prev => ({ ...prev, enemy: '' }));
         
-        // 2. Player Damage Animation
+        // 2. CHOOSE SPELL
+        // Pick random word from vocabulary, or default to "HIT" if empty
+        const vocab = enemyEntity.vocabulary || ["HIT"];
+        const word = vocab[Math.floor(Math.random() * vocab.length)];
+        
+        // 3. LOOKUP DATA
+        const wordData = SPELLBOOK[word] || { power: word.length, tags: [] };
+        const power = wordData.power;
+        const tags = wordData.tags || [];
+
+        // 4. VISUALS (Emoji)
+        let effectEmoji = "💥";
+        if (tags.length > 0) {
+            const found = tags.find(t => TAG_EMOJIS[t]);
+            if (found) effectEmoji = TAG_EMOJIS[found];
+        }
+        setSpellEffect(effectEmoji);
+        setTimeout(() => setSpellEffect(null), 1000);
+
+        // 5. CALCULATE DAMAGE (Symmetric Logic)
+        let multipliers = 1.0;
+        let attackLog = [`#${enemyEntity.name}# uses ^${word}^!`];
+        
+        // Check Player Weaknesses/Resistances
+        tags.forEach(tag => {
+            if (PLAYER_DEFENSE.weaknesses[tag]) {
+                const weak = PLAYER_DEFENSE.weaknesses[tag];
+                multipliers *= weak.mult;
+                attackLog.push(`> ${weak.msg} (x${weak.mult})`);
+            }
+            if (PLAYER_DEFENSE.resistances[tag]) {
+                const res = PLAYER_DEFENSE.resistances[tag];
+                multipliers *= res.mult;
+                attackLog.push(`> ${res.msg} (x${res.mult})`);
+            }
+        });
+
+        const finalDamage = Math.max(1, Math.floor(power * multipliers));
+
+        // 6. APPLY DAMAGE
         setAnimState(prev => ({ ...prev, player: 'anim-damage' }));
         setTimeout(() => setAnimState(prev => ({ ...prev, player: '' })), 400);
 
-        const dmg = Math.floor(Math.random() * 6) + 5; 
         setPlayerHp(prev => {
-            const newHp = Math.max(0, prev - dmg);
+            const newHp = Math.max(0, prev - finalDamage);
             if (newHp === 0) setGameState('GAMEOVER');
             return newHp;
         });
-        addLog(`#${enemyEntity.name}# attacks you for *${dmg}* damage!`);
         
+        attackLog.push(`You take *${finalDamage}* damage!`);
+        addLog(...attackLog);
+        
+        // 7. REFILL HAND
         const tilesNeeded = HAND_SIZE - hand.length;
         if (tilesNeeded > 0) drawHand(tilesNeeded, deck, hand);
+        
     }, 500);
   };
 
