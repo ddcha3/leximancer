@@ -19,7 +19,7 @@ export default function BattleScreen({
   animState, // { player: '', enemy: '' }
   spellEffect // Emoji char or null
 }) {
-  const { onMoveTile, onReturnTile, onCast, onClear, onDiscard } = actions;
+  const { onMoveTile, onReturnTile, onCast, onClear, onDiscard, onShuffle } = actions;
 
   const enemyHpPct = Math.max(0, (enemy.hp / enemy.maxHp) * 100);
   const enemyWpPct = Math.max(0, (enemy.wp / enemy.maxWp) * 100);
@@ -29,6 +29,8 @@ export default function BattleScreen({
   const feedbackText = spellSlots.length > 0 ? (isValidWord ? "VALID SPELL" : "INVALID GIBBERISH") : "PREPARE SPELL";
 
   const enemySize = `${4 + (enemy.level || 1) * 0.8}rem`;
+
+  const maxArtifacts = 5;
 
   return (
     <div className="app">
@@ -84,7 +86,7 @@ export default function BattleScreen({
                  {inventory.map((item, i) => (
                    <div key={i} className="artifact" title="Artifact">{item}</div>
                  ))}
-                 {[...Array(Math.max(0, 3 - inventory.length))].map((_, i) => (
+                 {[...Array(Math.max(0, maxArtifacts - inventory.length))].map((_, i) => (
                     <div key={`empty-${i}`} className="artifact" style={{opacity: 0.3}}></div>
                  ))}
                </div>
@@ -125,13 +127,19 @@ export default function BattleScreen({
       </div>
 
       <div className="controls">
+        {/* SHUFFLE BUTTON */}
+        <button onClick={onShuffle} title="Shuffle runes in hand">Shuffle 🔀</button>
+        
         <button onClick={onClear}>Clear</button>
+        
         <button 
           onClick={onDiscard} 
           style={{ borderColor: '#b85c50', color: '#b85c50' }}
+          title="Discard hand and skip turn"	
         >
           Redraw ♻
         </button>
+        
         <button 
           className="cast-btn" 
           disabled={spellSlots.length === 0} 

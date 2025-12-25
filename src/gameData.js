@@ -15,7 +15,7 @@ export const ENCOUNTERS = [
     id: "goblin",
     name: "Sniveling Goblin",
     emoji: "👺",
-    level: 1, // New
+    level: 1,
     hp: 20,
     wp: 10,
     desc: "A small, greedy creature. Loves gold, fears bigger things.",
@@ -29,7 +29,7 @@ export const ENCOUNTERS = [
     id: "treant",
     name: "Old Treant",
     emoji: "🌳",
-    level: 3, // New
+    level: 3,
     hp: 50,
     wp: 100,
     desc: "Made of wood. Hates fire. Doesn't care about money.",
@@ -46,7 +46,7 @@ export const ENCOUNTERS = [
     id: "golem",
     name: "Iron Golem",
     emoji: "🤖",
-    level: 5, // New
+    level: 5,
     hp: 80,
     wp: 40,
     desc: "A magical construct. Immune to blades.",
@@ -97,8 +97,6 @@ export const SPELLBOOK = {
   "WIND": { tags: ["air"], power: 4 },
   "ROCK": { tags: ["earth"], power: 4 },
 };
-
-// ... existing exports ...
 
 export const TAG_EMOJIS = {
   fire: "🔥",

@@ -6,8 +6,8 @@ import StartScreen from './screens/StartScreen'
 import BattleScreen from './screens/BattleScreen'
 import RewardScreen from './screens/RewardScreen'
 
-const HAND_SIZE = 20;
-const MAX_PLAYER_HP = 50;
+const HAND_SIZE = 18;
+const MAX_PLAYER_HP = 100;
 
 const shuffle = (array) => {
   const newArray = [...array];
@@ -85,8 +85,7 @@ function App() {
     drawHand(HAND_SIZE, shuffle(STARTING_DECK), []);
     setSpellSlots([]);
     setAnimState({ player: '', enemy: '' }); // Reset anims
-    addLog(`A wild ${enemyData.name} appears!`);
-  };
+    addLog(`A wild #${enemyData.name}# appears!`);  };
 
   const drawHand = (count, currentDeck, currentHand) => {
     const newHand = [...currentHand];
@@ -151,7 +150,7 @@ function App() {
       // --- CALCULATIONS ---
       let multipliers = 1.0;
       let targetStat = 'hp';
-      let battleLog = [`You cast "${word}"!`];
+      let battleLog = [`You cast ^${word}^!`];
 
       if (isMagic) {
         tags.forEach(tag => {
@@ -175,7 +174,7 @@ function App() {
       if (targetStat === 'hp') newEnemy.hp -= finalDamage;
       else newEnemy.wp -= finalDamage;
 
-      battleLog.push(`Dealt ${finalDamage} ${targetStat.toUpperCase()} damage!`);
+      battleLog.push(`Dealt *${finalDamage}* ${targetStat.toUpperCase()} damage!`);
       addLog(...battleLog);
       setCurrentEnemy(newEnemy);
       setSpellSlots([]);
@@ -183,7 +182,7 @@ function App() {
       // --- CHECK WIN ---
       if (newEnemy.hp <= 0 || newEnemy.wp <= 0) {
         setTimeout(() => {
-           addLog(`The ${newEnemy.name} is vanquished!`);
+           addLog(`The #${newEnemy.name}# is vanquished!`);
            setTimeout(() => setGameState('REWARD'), 1000);
         }, 500); // Small delay after hit
         return;
@@ -214,14 +213,13 @@ function App() {
             if (newHp === 0) setGameState('GAMEOVER');
             return newHp;
         });
-        addLog(`${enemyEntity.name} attacks you for ${dmg} damage!`);
+        addLog(`#${enemyEntity.name}# attacks you for *${dmg}* damage!`);
         
         const tilesNeeded = HAND_SIZE - hand.length;
         if (tilesNeeded > 0) drawHand(tilesNeeded, deck, hand);
     }, 500);
   };
 
-  // ... (Rest of handlers: handleMoveTile, handleReturnTile, etc.)
   const handleMoveTile = (tile) => {
     setHand(hand.filter(t => t.id !== tile.id));
     setSpellSlots([...spellSlots, tile]);
@@ -238,6 +236,10 @@ function App() {
     setSpellSlots([]);
     drawHand(HAND_SIZE, deck, []);
     addLog("Mulligan! Hand discarded.");
+    handleEnemyAttack(currentEnemy);
+  };
+  const handleShuffle = () => {
+    setHand(prev => shuffle([...prev]));
   };
   const addLog = (...messages) => setLogs(prev => [...prev, ...messages]);
 
@@ -289,14 +291,15 @@ function App() {
       spellSlots={spellSlots}
       isValidWord={!!isValidWord}
       shakeError={shakeError} 
-      animState={animState}    // Pass prop
-      spellEffect={spellEffect} // Pass prop
+      animState={animState}
+      spellEffect={spellEffect}
       actions={{
         onMoveTile: handleMoveTile,
         onReturnTile: handleReturnTile,
         onCast: handleCast,
         onClear: handleClear,
-        onDiscard: handleDiscard
+        onDiscard: handleDiscard,
+        onShuffle: handleShuffle 
       }}
     />
   );

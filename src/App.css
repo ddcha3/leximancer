@@ -244,6 +244,23 @@ h1 {
 
 .log div { margin-bottom: 4px; border-bottom: 1px dashed rgba(62, 39, 35, 0.1); }
 
+.log-damage {
+  font-weight: bold;
+  color: var(--ink-primary); /* Keeps it dark, just bold */
+}
+
+.log-enemy {
+  color: var(--accent-red);
+  font-weight: bold;
+}
+
+.log-spell {
+  color: #9b59b6; /* Amethyst Purple */
+  font-weight: bold;
+  font-family: var(--font-header); /* Use the fancy font for spells */
+  letter-spacing: 1px;
+}
+
 /* --- TILES (Wooden Blocks / Ivory) --- */
 .tile {
   width: 45px;
@@ -265,6 +282,7 @@ h1 {
     3px 3px 5px rgba(0,0,0,0.2);
   user-select: none;
   transition: transform 0.1s;
+  animation: tile-pop 0.2s ease-out;
 }
 
 .tile:active {
@@ -378,6 +396,13 @@ button:active {
   50% { transform: translate(-50%, -50%) scale(1.5); opacity: 1; }
   100% { transform: translate(-50%, -50%) scale(2); opacity: 0; }
 }
+
+@keyframes tile-pop {
+  0% { transform: scale(0.9); }
+  50% { transform: scale(1.05); }
+  100% { transform: scale(1); }
+}
+
 
 .anim-action {
   animation: action-sway 0.5s ease-in-out !important;
