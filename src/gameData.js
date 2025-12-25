@@ -15,8 +15,9 @@ export const ENCOUNTERS = [
     id: "goblin",
     name: "Sniveling Goblin",
     emoji: "👺",
+    level: 1, // New
     hp: 20,
-    wp: 10, // Cowardly
+    wp: 10,
     desc: "A small, greedy creature. Loves gold, fears bigger things.",
     weaknesses: {
       "bribe": { mult: 2.0, target: "wp", msg: "It grabs the coin!" },
@@ -28,15 +29,16 @@ export const ENCOUNTERS = [
     id: "treant",
     name: "Old Treant",
     emoji: "🌳",
+    level: 3, // New
     hp: 50,
-    wp: 100, // Stubborn
+    wp: 100,
     desc: "Made of wood. Hates fire. Doesn't care about money.",
     weaknesses: {
       "fire": { mult: 2.5, target: "hp", msg: "It catches fire!" },
       "blade": { mult: 1.2, target: "hp", msg: "Timber!" }
     },
     resistances: {
-      "water": { mult: -0.5, target: "hp", msg: "It heals from the water." }, // Heals!
+      "water": { mult: -0.5, target: "hp", msg: "It heals from the water." },
       "bribe": { mult: 0.0, target: "wp", msg: "It has no need for wealth." }
     }
   },
@@ -44,6 +46,7 @@ export const ENCOUNTERS = [
     id: "golem",
     name: "Iron Golem",
     emoji: "🤖",
+    level: 5, // New
     hp: 80,
     wp: 40,
     desc: "A magical construct. Immune to blades.",

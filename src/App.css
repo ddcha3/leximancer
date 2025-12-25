@@ -1,55 +1,343 @@
+:root {
+  /* --- PALETTE --- */
+  --bg-parchment: #f4e4bc;
+  --bg-dark: #2c241b;
+  --ink-primary: #3e2723;
+  --ink-secondary: #5d4037;
+  --accent-gold: #b08d55;
+  --accent-red: #8a3324;
+  --accent-green: #4e6d46;
+  
+  /* --- TYPOGRAPHY --- */
+  --font-header: 'Cinzel', serif;
+  --font-body: 'Cormorant Garamond', serif;
+}
+
+body {
+  margin: 0;
+  background-color: #4B3A26; /* The table/desk underneath */
+  color: var(--ink-primary);
+  font-family: var(--font-body);
+  display: flex;
+  justify-content: center;
+  min-height: 100vh;
+  /* subtle wood grain desk effect */
+  /* background-image: repeating-linear-gradient(45deg, #1a1510 0, #1a1510 10px, #1f1913 10px, #1f1913 20px); */
+}
+
 #root {
+  width: 100%;
   max-width: 600px;
-  margin: 0 auto;
+  min-height: 100vh;
+  margin: 0;
   padding: 2rem;
   text-align: center;
-  font-family: 'Courier New', Courier, monospace;
-  background-color: #222;
-  color: #eee;
-  min-height: 100vh;
+  position: relative;
+  
+  /* THE BOOK PAGE LOOK */
+  background-color: var(--bg-parchment);
+  box-shadow: 
+    inset 0 0 80px rgba(62, 39, 35, 0.15), /* Inner vignette */
+    inset 0 0 20px rgba(62, 39, 35, 0.3),  /* Page edges */
+    5px 5px 15px rgba(0,0,0,0.5);          /* Drop shadow */
+  border-radius: 4px;
 }
 
-.header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 1px solid #444; padding-bottom: 10px;}
-.stats { font-size: 0.9em; color: #aaa; }
-
-.battle-area { background: #333; padding: 20px; border-radius: 10px; margin-bottom: 20px; }
-.enemy-emoji { font-size: 5rem; display: block; margin-bottom: 10px; animation: bounce 2s infinite; }
-.bars { display: flex; gap: 10px; justify-content: center; margin-top: 10px; }
-.bar { flex: 1; height: 20px; background: #555; position: relative; border-radius: 5px; overflow: hidden; }
-.bar-fill { height: 100%; transition: width 0.3s ease; }
-.hp-fill { background-color: #e74c3c; }
-.wp-fill { background-color: #3498db; }
-.bar-text { position: absolute; width: 100%; text-align: center; font-size: 0.8em; line-height: 20px; text-shadow: 1px 1px 2px black; }
-
-.log { height: 100px; overflow-y: auto; background: #000; color: rgb(121, 202, 121); padding: 10px; text-align: left; font-size: 0.85em; margin-bottom: 20px; border: 1px solid #444; }
-
-.spell-slot { min-height: 60px; background: #444; margin-bottom: 20px; display: flex; justify-content: center; align-items: center; gap: 5px; border-bottom: 2px solid #666; }
-.tile { width: 40px; height: 40px; background: #eee; color: #222; font-weight: bold; font-size: 1.2rem; display: flex; justify-content: center; align-items: center; cursor: pointer; border-radius: 4px; user-select: none; box-shadow: 0 4px 0 #999; }
-.tile:active { transform: translateY(4px); box-shadow: 0 0 0; }
-.tile.empty { background: transparent; border: 2px dashed #666; box-shadow: none; color: #666; }
-
-.hand { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; min-height: 100px; }
-
-.controls { margin-top: 20px; display: flex; gap: 10px; justify-content: center; }
-button { padding: 10px 20px; font-family: inherit; font-size: 1rem; cursor: pointer; background: #555; color: white; border: none; border-radius: 5px; }
-button:hover { background: #666; }
-button:disabled { opacity: 0.5; cursor: not-allowed; }
-.cast-btn { background: #8e44ad; }
-.cast-btn:hover { background: #9b59b6; }
-
-@keyframes bounce {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-10px); }
+/* Paper Texture overlay using noise */
+#root::before {
+  content: "";
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.1'/%3E%3C/svg%3E");
+  pointer-events: none;
+  opacity: 0.6;
 }
 
+/* --- HEADERS --- */
+h1, h2, h3 {
+  font-family: var(--font-header);
+  color: var(--ink-primary);
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  margin-top: 0;
+}
+
+h1 {
+  border-bottom: 2px solid var(--accent-gold);
+  padding-bottom: 10px;
+  margin-bottom: 30px;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid var(--ink-secondary);
+  padding-bottom: 10px;
+  margin-bottom: 20px;
+  font-family: var(--font-header);
+  font-weight: bold;
+  font-size: 0.9rem;
+}
+
+/* --- THE ARENA (Scene) --- */
+.arena {
+  position: relative;
+  height: 280px; /* Fixed height for the "stage" */
+  margin-bottom: 20px;
+  border-bottom: 2px solid var(--ink-secondary);
+  background: rgba(93, 75, 53, 0.03);
+  border-radius: 8px 8px 0 0;
+}
+
+/* Top Right: Enemy */
+.enemy-position {
+  position: absolute;
+  top: 10px;
+  right: 0;
+  width: 50%; /* Right half of the arena */
+  
+  /* Flex Column to stack Title -> Emoji -> Bars */
+  display: flex;
+  flex-direction: column;
+  align-items: center; 
+  justify-content: flex-start;
+  z-index: 1;
+}
+
+.enemy-position h3 {
+  margin: 0 0 5px 0; /* Remove top margin so it sits at the top */
+  font-size: 1.1rem;
+  width: 100%;
+  text-align: center;
+}
+
+.enemy-emoji {
+  line-height: 1.1; 
+  filter: sepia(0.5) contrast(0.9) drop-shadow(-4px 4px 2px rgba(93, 75, 53, 0.2));
+  animation: bounce 3s infinite ease-in-out;
+  display: block;
+  margin-bottom: 10px;
+  transition: font-size 0.3s ease;
+}
+
+/* Specific container for enemy bars to ensure they have width */
+.enemy-bars {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  width: 80%; /* Don't touch edges */
+  margin: 0 auto;
+}
+
+/* Bottom Left: Player */
+.player-position {
+  position: absolute;
+  bottom: 10px;
+  left: 10px;
+  width: 60%;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  z-index: 2;
+}
+
+.player-row {
+  display: flex;
+  align-items: flex-end;
+  gap: 10px;
+}
+
+.player-avatar {
+  font-size: 4.5rem;
+  filter: sepia(0.3) drop-shadow(2px 2px 0 rgba(93, 75, 53, 0.3));
+  line-height: 1;
+}
+
+/* Inventory Row */
+.inventory {
+  display: flex;
+  gap: 4px;
+  margin-top: 5px;
+  background: rgba(0,0,0,0.05);
+  padding: 4px;
+  border-radius: 4px;
+}
+.artifact {
+  font-size: 1.2rem;
+  background: #fff;
+  border: 1px solid var(--ink-secondary);
+  border-radius: 3px;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 1px 1px 0 rgba(0,0,0,0.2);
+}
+
+/* --- BARS (Hand-drawn look) --- */
+.bars { display: flex; gap: 10px; justify-content: center; margin-top: 15px; }
+.bar { 
+  flex: 1; 
+  height: 18px; 
+  background: rgba(93, 75, 53, 0.1); 
+  border: 1px solid var(--ink-primary); 
+  border-radius: 4px; 
+  position: relative;
+  min-width: 0; /* Flexbox safety fix */
+}
+
+.bar-fill { height: 100%; transition: width 0.5s ease-out; }
+.hp-fill { background-color: var(--accent-red); }
+.wp-fill { background-color: #5c6bc0; /* Faded blue ink */ }
+
+.bar-text {
+  position: absolute;
+  width: 100%;
+  text-align: center;
+  font-size: 0.75rem;
+  line-height: 18px;
+  color: #fff;
+  font-weight: bold;
+  text-shadow: 1px 1px 0 #000;
+  font-family: sans-serif; /* Keep legible */
+}
+
+/* --- LOG (Ink on paper) --- */
+.log {
+  height: 120px;
+  overflow-y: auto;
+  background: rgba(255, 255, 255, 0.3);
+  border: 1px solid var(--ink-secondary);
+  padding: 10px;
+  text-align: left;
+  font-size: 1.1rem;
+  font-family: var(--font-body);
+  margin-bottom: 20px;
+  color: var(--ink-primary);
+  box-shadow: inset 1px 1px 4px rgba(0,0,0,0.1);
+}
+
+.log div { margin-bottom: 4px; border-bottom: 1px dashed rgba(62, 39, 35, 0.1); }
+
+/* --- TILES (Wooden Blocks / Ivory) --- */
+.tile {
+  width: 45px;
+  height: 45px;
+  background: #fdf5e6; /* Ivory */
+  color: #2c241b;
+  font-family: var(--font-header);
+  font-weight: bold;
+  font-size: 1.4rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  border: 1px solid #bcaaa4;
+  border-radius: 4px;
+  box-shadow: 
+    1px 1px 0 #8d6e63,
+    2px 2px 0 #8d6e63,
+    3px 3px 5px rgba(0,0,0,0.2);
+  user-select: none;
+  transition: transform 0.1s;
+}
+
+.tile:active {
+  transform: translateY(2px);
+  box-shadow: 1px 1px 0 #8d6e63;
+}
+
+.tile.empty {
+  background: transparent;
+  border: 2px dashed var(--ink-secondary);
+  box-shadow: none;
+  color: var(--ink-secondary);
+  opacity: 0.5;
+}
+
+.spell-slot {
+  min-height: 70px;
+  background: rgba(0, 0, 0, 0.03);
+  border-bottom: 2px solid var(--ink-primary);
+  margin-bottom: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 6px;
+  border-radius: 4px;
+}
+
+.hand {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: center;
+  min-height: 100px;
+  padding: 10px;
+  background: rgba(0,0,0,0.02);
+  border-radius: 8px;
+}
+
+/* --- BUTTONS (Wax Seals / Old Labels) --- */
+.controls { margin-top: 30px; display: flex; gap: 15px; justify-content: center; }
+
+button {
+  padding: 10px 24px;
+  font-family: var(--font-header);
+  font-weight: bold;
+  font-size: 1rem;
+  cursor: pointer;
+  background: var(--ink-primary);
+  color: var(--bg-parchment);
+  border: 2px solid var(--bg-dark);
+  border-radius: 2px;
+  box-shadow: 3px 3px 0 rgba(0,0,0,0.3);
+  transition: all 0.2s;
+}
+
+button:hover {
+  background: var(--ink-secondary);
+  transform: translateY(-1px);
+}
+
+button:active {
+  transform: translateY(2px);
+  box-shadow: 1px 1px 0 rgba(0,0,0,0.3);
+}
+
+.cast-btn {
+  background: var(--accent-red); /* Red Wax Seal look */
+  border-color: #5c1e14;
+  color: #fff;
+}
+
+.enemy-emoji, .header div:first-child {
+  filter: sepia(0.6) contrast(1.1) drop-shadow(2px 4px 0 rgba(0,0,0,0.2));
+}
+
+.cast-btn:hover { background: #a53b2b; }
+.cast-btn:disabled { background: #9e9e9e; border-color: #757575; opacity: 0.7; cursor: not-allowed; }
+
+/* --- ANIMATIONS --- */
 @keyframes shake {
   0%, 100% { transform: translateX(0); }
   20%, 60% { transform: translateX(-6px); }
   40%, 80% { transform: translateX(6px); }
 }
 
+/* RESTORED BOUNCE */
+@keyframes bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
 .shake {
   animation: shake 0.4s cubic-bezier(.36,.07,.19,.97) both;
-  border-color: #e74c3c !important; /* Flash red */
-  color: #e74c3c;
+  color: var(--accent-red);
 }
+/* --- SCROLLBAR --- */
+::-webkit-scrollbar { width: 8px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--accent-gold); border-radius: 4px; }
