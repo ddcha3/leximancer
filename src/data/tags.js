@@ -20,6 +20,8 @@ export const TAG_EMOJIS = {
   electric: "⚡",
   dark: "🌑",
   holy: "✨",
+  mind: "🧠",
+  taunt: "💬",
 
   // ABSTRACT / UTILITY
   bribe: "💰", // Covers: greed, gold, wealth

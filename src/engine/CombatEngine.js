@@ -29,12 +29,20 @@ export function resolveSpell(word, caster, target, isPlayerCasting = true) {
   if (json[0] && json[0].terms[0]) {
       posTags = json[0].terms[0].tags.map(t => t.toLowerCase());
   }
-  const meaningfulPos = posTags.find(t => ['noun', 'verb', 'adjective'].includes(t));
+  const meaningfulPos = posTags.find(t => ['noun', 'verb', 'adjective', 'adverb'].includes(t));
 
   // 2. GET BASE DATA
   const spellData = SPELLBOOK[stemmedWord] || SPELLBOOK[upperWord];
   let tags = [...(spellData?.tags || [])];
   if (meaningfulPos) tags.push(meaningfulPos);
+
+  // Determine target stat (hp vs wp): explicit spell setting wins, otherwise POS rules
+  let inferredTarget = 'hp';
+  if (spellData?.target) {
+    inferredTarget = spellData.target;
+  } else if (meaningfulPos) {
+    inferredTarget = (['adjective', 'adverb'].includes(meaningfulPos) ? 'wp' : 'hp');
+  }
   
   // 3. CALCULATE BASE POWER
   let basePower = 0;
@@ -65,7 +73,7 @@ export function resolveSpell(word, caster, target, isPlayerCasting = true) {
 
   // 5. SETUP RESULT
   const result = {
-    damage: 0, targetStat: 'hp', heal: 0, status: null,
+    damage: 0, targetStat: inferredTarget, heal: 0, status: null,
     logs: [...stats.logs], // Add class-specific logs
     tags: tags, emoji: "✨"
   };
@@ -169,6 +177,18 @@ export function resolveSpell(word, caster, target, isPlayerCasting = true) {
     result.statusEffect = { tag: 'shield', ticks: duration, block: blockAmount, applyTo: 'caster' };
     result.logs.push(`> A protective barrier forms, blocking ${blockAmount} damage from the next attack.`);
     result.emoji = result.emoji || '🛡️';
+  }
+
+  // Prefer a tag-based emoji (e.g., fire -> 🔥) if available and no explicit emoji set
+  const tagWithEmoji = tags.find(t => TAG_EMOJIS[t]);
+  if (tagWithEmoji && result.emoji === '✨') {
+    result.emoji = TAG_EMOJIS[tagWithEmoji];
+  }
+
+  // Default visual feedback by target stat (HP/WP) for both player and enemy if still using the generic emoji
+  if (result.emoji === '✨') {
+    if (result.targetStat === 'hp') result.emoji = '💥';
+    else if (result.targetStat === 'wp') result.emoji = '🌀';
   }
 
   return result;
