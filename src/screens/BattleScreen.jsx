@@ -85,15 +85,6 @@ export default function BattleScreen({
             </div>
           )}
           
-          {/* Apply animation class here */}
-          <div 
-            className={`enemy-emoji ${animState.enemy}`} 
-            style={{ fontSize: enemySize }}
-          >
-            <span className="emoji-primary">{primaryEmoji}</span>
-            {secondaryEmoji && <span className="emoji-secondary" aria-hidden>{secondaryEmoji}</span>}
-          </div>
-          
           <div className="enemy-bars">
             <div className="bar">
               <div className="bar-text">❤️ {enemy.hp}</div>
@@ -103,6 +94,14 @@ export default function BattleScreen({
               <div className="bar-text">🧠 {enemy.wp}</div>
               <div className="bar-fill wp-fill" style={{ width: `${enemyWpPct}%` }}></div>
             </div>
+          </div>
+
+          <div 
+            className={`enemy-emoji ${animState.enemy}`} 
+            style={{ fontSize: enemySize }}
+          >
+            <span className="emoji-primary">{primaryEmoji}</span>
+            {secondaryEmoji && <span className="emoji-secondary" aria-hidden>{secondaryEmoji}</span>}
           </div>
 
           {enemy.statusEffects && enemy.statusEffects.length > 0 && (
