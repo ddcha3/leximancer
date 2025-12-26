@@ -358,7 +358,7 @@ h1 {
 }
 
 .player-avatar {
-  font-size: 4.5rem;
+  font-size: 4rem;
   filter: sepia(0.3) drop-shadow(3px 3px 0 rgba(93, 75, 53, 0.4));
   line-height: 1;
   animation: player-idle 5s infinite ease-in-out;
@@ -396,10 +396,10 @@ h1 {
   z-index: 4;
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 1px;
   background: rgba(0,0,0,0.03);
   border-radius: 8px;
-  padding: 6px 8px;
+  padding: 2px 2px;
   margin-bottom: 0;
 }
 .enemy-weaknesses .weakness-crystal {
@@ -408,7 +408,7 @@ h1 {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-width: 32px;
+  min-width: 20px;
   box-shadow: 1px 1px 0 rgba(0,0,0,0.05);
 }
 .enemy-weaknesses .weakness-list {

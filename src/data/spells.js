@@ -182,7 +182,7 @@ register(
 
 // LOUD / SONIC (WP damage)
 register(
-  ["YELL", "SHOUT", "ROAR", "SCREECH", "SCREAM", "BOOM", "BELLOW", "CRASH", "CLAMOR", "RESONATE", "DIN"],
+  ["YELL", "SHOUT", "ROAR", "SCREECH", "SCREAM", "BOOM", "BELLOW", "CRASH", "CLAMOR", "RESONATE", "DIN", "BANG", "BLARE", "BLAST", "BLUSTER", "THUNDER"],
   ["loud"],
   { target: 'wp' }
 );
