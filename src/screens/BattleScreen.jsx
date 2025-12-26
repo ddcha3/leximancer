@@ -28,9 +28,9 @@ export default function BattleScreen({
   const playerHpPct = Math.max(0, (playerHp / maxPlayerHp) * 100);
 
   const feedbackColor = isValidWord ? '#4e6d46' : (spellSlots.length > 0 ? '#b85c50' : '#8b735b');
-  const feedbackText = spellSlots.length > 2 ? (isValidWord ? "VALID SPELL" : "") : "PREPARE SPELL";
+  // const feedbackText = spellSlots.length > 2 ? (isValidWord ? "VALID SPELL" : "") : "PREPARE SPELL";
 
-  const enemySize = `${4 + (enemy.level || 1) * 0.8}rem`;
+  const enemySize = `${3 + (enemy.level || 1) * 0.7}rem`;
 
   // split combined emoji string into primary + secondary pieces
   const emojis = Array.from(enemy.emoji || '');
@@ -152,7 +152,7 @@ export default function BattleScreen({
       <CombatLog logs={logs} />
       
       {/* ... Rest of Controls ... */}
-      <div style={{ 
+      {/* <div style={{ 
         height: '20px', 
         color: feedbackColor, 
         fontWeight: 'bold', 
@@ -161,7 +161,7 @@ export default function BattleScreen({
         letterSpacing: '1px'
       }}>
         {feedbackText}
-      </div>
+      </div> */}
 
       <div 
         className={`spell-slot ${shakeError ? 'shake' : ''}`} 
