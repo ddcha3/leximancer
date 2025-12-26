@@ -323,13 +323,13 @@ h1 {
 .enemy-status-effects {
   display: flex;
   gap: 8px;
-  margin-top: 8px;
+  margin-top: 2x;
   justify-content: center;
 }
 .player-status-effects {
   display: flex;
   gap: 8px;
-  margin-bottom: 6px;
+  margin-bottom: 2px;
   justify-content: flex-start;
   padding-left: 6px;
 }
@@ -337,15 +337,15 @@ h1 {
   display: inline-flex;
   gap: 6px;
   align-items: center;
-  padding: 6px;
-  background: rgba(0,0,0,0.06);
-  border: 1px solid rgba(0,0,0,0.08);
-  border-radius: 12px;
-  font-size: 1.1rem; /* show emoji larger */
+  padding: 1px;
+  /* background: rgba(0,0,0,0.06); */
+  /* border: 1px solid rgba(0,0,0,0.08); */
+  border-radius: 0px;
+  font-size: 0.8rem; /* show emoji larger */
   color: var(--ink-primary);
-  box-shadow: inset 0 -2px 0 rgba(0,0,0,0.03);
-  width: 34px;
-  height: 34px;
+  /* box-shadow: inset 0 -2px 0 rgba(0,0,0,0.03); */
+  /* width: 34px;
+  height: 34px; */
   justify-content: center;
 }
 .dot-emoji { font-size: 1.4rem; }
@@ -361,6 +361,7 @@ h1 {
   font-size: 4.5rem;
   filter: sepia(0.3) drop-shadow(3px 3px 0 rgba(93, 75, 53, 0.4));
   line-height: 1;
+  animation: player-idle 5s infinite ease-in-out;
 }
 
 /* Inventory Row */
@@ -385,28 +386,41 @@ h1 {
   box-shadow: 1px 1px 0 rgba(0,0,0,0.2);
 }
 
-/* Permanent artifacts reuse the existing .inventory and .artifact styles */
-/* If you want a distinct visual in future, we can add a modifier class. */
-
-/* Enemy weaknesses reveal */
+/* Enemy weaknesses reveal (single bar, bottom-right of arena) */
 .enemy-weaknesses {
+  position: absolute;
+  bottom: 8px;
+  right: 8px;
+  left: auto;
+  transform: none;
+  z-index: 4;
   display: flex;
-  gap: 6px;
   align-items: center;
-  justify-content: flex-start;
-  padding-left: 6px;
-  margin-bottom: 4px;
+  gap: 10px;
+  background: rgba(0,0,0,0.03);
+  border-radius: 8px;
+  padding: 6px 8px;
+  margin-bottom: 0;
 }
-.weakness-pill {
-  font-size: 1rem;
-  background: rgba(255,255,255,0.85);
+.enemy-weaknesses .weakness-crystal {
+  border: 1px solid rgba(0,0,0,0.12);
   border-radius: 6px;
-  padding: 4px;
-  border: 1px solid rgba(0,0,0,0.06);
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-width: 30px;
+  min-width: 32px;
+  box-shadow: 1px 1px 0 rgba(0,0,0,0.05);
+}
+.enemy-weaknesses .weakness-list {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+.enemy-weaknesses .weakness-emoji {
+  font-size: 1rem;
+  padding: 2px 6px;
+  opacity: 0.95;
+  color: var(--ink-primary);
 }
 
 /* --- BARS (Hand-drawn look) --- */
@@ -592,6 +606,11 @@ button:active {
 @keyframes bounce {
   0%, 100% { transform: translateY(0); }
   50% { transform: translateY(-10px); }
+}
+
+@keyframes player-idle {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-5px); }
 }
 
 /* 1. Action (Casting/Attacking) - Slow side to side */

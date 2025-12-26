@@ -43,26 +43,10 @@ export const CHARACTERS = [
     }
   },
   {
-    id: 'duelist',
-    name: 'Duelist',
-    avatar: '🧙🏻‍♀️',
-    desc: 'Short words (≤4) deal +2 damage. No bonus for long words.',
-    // HOOK: Override the base power calculation completely
-    calculateBasePower: (word) => {
-      const upper = word.toUpperCase();
-      let score = 0;
-      // 1. Standard Letter Scoring
-      for (let char of upper) {
-        score += LETTER_SCORES[char] || 1;
-      }
-      
-      // 2. Duelist Special: No Ramp, but bonus for short words
-      if (upper.length <= 4) {
-        score += 2;
-      }
-      
-      return score;
-    }
+    id: 'seer',
+    name: 'Seer',
+    avatar: '🧕',
+    desc: 'Knows enemy weaknesses. +3 damage when exploiting them.',
   }
 ];
 

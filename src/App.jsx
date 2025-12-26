@@ -84,10 +84,16 @@ function App() {
     setPlayerChar(character);
     setDeck(shuffle(STARTING_DECK));
     setEnemyIndex(0);
-    setPlayerHp(effectiveMaxHp);
     setLogs(["The Leximancer enters the archives..."]);
+
+    const starter = character && character.id === 'seer' ? ARTIFACTS.find(a => a.id === 'crystal_ball') : null;
+    setInventory(starter ? [starter] : []);
+
+    // Set player HP to reflect starting artifacts (tomato gives max HP bonus)
+    // const startMax = MAX_PLAYER_HP + (starter && starter.maxHpBonus ? starter.maxHpBonus : 0);
+    // setPlayerHp(startMax);
+
     startEncounter(0);
-    setInventory([ARTIFACTS.find(a => a.id === 'tomato')])
   };
 
   const startEncounter = (index) => {
@@ -273,13 +279,19 @@ function App() {
               if (result.targetStat === 'hp') nextEnemyState.hp -= damageToApply;
               else nextEnemyState.wp -= damageToApply;
               addLog(`Dealt *${damageToApply}* ${result.targetStat.toUpperCase()} damage!`);
+
+              // LIFESTEAL: heal caster for the amount of damage actually dealt
+              if (result.tags.includes('lifesteal') && damageToApply > 0) {
+                setPlayerHp(prev => Math.min(effectiveMaxHp, prev + damageToApply));
+                addLog(`You siphon *${damageToApply}* HP!`);
+              }
           } else {
               addLog(`No damage dealt (blocked).`);
           }
       }
 
       // D. STUN (Enemy)
-      if (result.status === 'stun') {
+      if (result.status === 'stun' || result.status == 'freeze' || result.status == 'silence') {
           nextEnemyState.statusEffects = nextEnemyState.statusEffects || [];
           nextEnemyState.statusEffects.push({ tag: 'stun', ticks: 1 });
           nextEnemyState.isStunned = true;
@@ -454,6 +466,12 @@ function App() {
                     return newHp;
                 });
                 addLog(`You take *${damageToApply}* damage!`);
+
+                // LIFESTEAL: enemy heals for damage dealt
+                if (result.tags.includes('lifesteal') && damageToApply > 0) {
+                  setCurrentEnemy(prev => ({ ...prev, hp: Math.min(prev.maxHp, prev.hp + damageToApply) }));
+                  addLog(`#${enemyEntity.name}# siphons *${damageToApply}* HP!`);
+                }
             } else {
                 addLog('The attack was fully blocked!');
             }

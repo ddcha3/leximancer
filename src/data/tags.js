@@ -16,7 +16,7 @@ export const TAG_EMOJIS = {
   bleed: "🩸",
   
   // ELEMENTAL / STATUS
-  poison: "☠️",
+  poison: "☣️",
   electric: "⚡",
   dark: "🌑",
   holy: "✨",
@@ -27,9 +27,9 @@ export const TAG_EMOJIS = {
   bribe: "💰", // Covers: greed, gold, wealth
   fear: "😱",  // Covers: terror, undead, scare
   heal: "💖",  // Covers: health, cure
-  food: "🍎",  // Covers: eat, fruit, meat
+  food: "😋",  // Covers: eat, fruit, meat
   motion: "🏃", // Covers: run, flee, speed
-  stun: "🧊",  // Covers: stop, freeze, trap
+  stun: "😵‍💫",  // Covers: stop, trap
   silence: "🔇",
   sleep: "💤",
   shield: "🛡️",
@@ -38,8 +38,17 @@ export const TAG_EMOJIS = {
   // DISGUST
   disgust: "🤢",
 
+  // LIFESTEAL (Heal for damage dealt)
+  lifesteal: "💞",
+
   // SWEARING / PROFANITY
   profanity: "🤬",
+
+  // LOUD / SONIC
+  loud: "📢",
+
+  // CUTE / CHARM
+  cute: "🥹",
 
   // CLEAN
   clean: "🧼"

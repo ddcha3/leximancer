@@ -74,16 +74,6 @@ export default function BattleScreen({
             </span> 
             {enemy.name}
           </h3>
-
-          {revealWeaknesses && enemy && enemy.weaknesses && (
-            <div className="enemy-weaknesses">
-              {Object.keys(enemy.weaknesses).map((w, i) => (
-                <div key={i} className="weakness-pill" title={`${w}: ${enemy.weaknesses[w].msg || ''}`}>
-                  {TAG_EMOJIS[w] || w}
-                </div>
-              ))}
-            </div>
-          )}
           
           <div className="enemy-bars">
             <div className="bar">
@@ -103,6 +93,8 @@ export default function BattleScreen({
             <span className="emoji-primary">{primaryEmoji}</span>
             {secondaryEmoji && <span className="emoji-secondary" aria-hidden>{secondaryEmoji}</span>}
           </div>
+
+
 
           {enemy.statusEffects && enemy.statusEffects.length > 0 && (
             <div className="enemy-status-effects">
@@ -161,6 +153,20 @@ export default function BattleScreen({
             </div>
           </div>
         </div>
+
+
+        {revealWeaknesses && enemy && enemy.weaknesses && (
+          <div className="enemy-weaknesses">
+            <div className="weakness-crystal" title="Crystal Ball reveals weaknesses">🔮</div>
+            <div className="weakness-list">
+              {Object.keys(enemy.weaknesses).map((w, i) => (
+                <span key={i} className="weakness-emoji" title={`${w}: ${enemy.weaknesses[w].msg || ''}`}>
+                  {TAG_EMOJIS[w] || w}
+                </span>
+              ))}
+            </div>
+          </div>
+        )}
 
       </div>
 

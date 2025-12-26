@@ -19,9 +19,9 @@ const defaultCalculatePower = (word) => {
 };
 
 export function resolveSpell(word, caster, target, isPlayerCasting = true) {
+  const stemmedWord = stemmer(word).toUpperCase();
   const upperWord = word.toUpperCase();
-  const stemmedWord = stemmer(upperWord);
-  
+  console.log(`Resolving spell: "${word}" (stem: "${stemmedWord}")`);
   // 1. NLP TAGGING
   const doc = compromise(word);
   const json = doc.json();
@@ -30,7 +30,7 @@ export function resolveSpell(word, caster, target, isPlayerCasting = true) {
       posTags = json[0].terms[0].tags.map(t => t.toLowerCase());
   }
   const meaningfulPos = posTags.find(t => ['noun', 'verb', 'adjective', 'adverb'].includes(t));
-
+  
   // 2. GET BASE DATA
   const spellData = SPELLBOOK[stemmedWord] || SPELLBOOK[upperWord];
   let tags = [...(spellData?.tags || [])];
@@ -48,7 +48,7 @@ export function resolveSpell(word, caster, target, isPlayerCasting = true) {
   let basePower = 0;
   
   if (isPlayerCasting) {
-    // CHECK FOR DUELIST OVERRIDE
+    // CHECK FOR CHARACTER OVERRIDES (e.g., custom calculateBasePower)
     if (caster.calculateBasePower) {
         basePower = caster.calculateBasePower(upperWord);
     } else {
@@ -96,28 +96,41 @@ export function resolveSpell(word, caster, target, isPlayerCasting = true) {
 
   if (tags.includes("food")) {
     // Check if target wants food
-    if (target.weaknesses && target.weaknesses["food"]) {
-      isAttack = true; // It's a bribe/distraction attack!
-      result.emoji = "🍖";
-    } else {
-      isAttack = false; // Eat it yourself
-      result.heal = basePower * 1.5;
-      result.emoji = "🍎";
-      result.logs.push(`> A delicious snack.`);
-    }
+    // if (target.weaknesses && target.weaknesses["food"]) {
+    //   isAttack = true; // It's a bribe/distraction attack!
+    //   result.emoji = "🍖";
+    // } else {
+    isAttack = false; // Eat it yourself
+    result.heal = Math.round(basePower * 2);
+    // result.emoji = "😋";
+    result.logs.push(`> A delicious snack.`);
+    // }
   }
 
-  // STUN / ICE
-  if (tags.includes("stun") || tags.includes("ice")) {
+  // CC
+  if (tags.includes("ice")) {
     // 50% chance to stun? Or guaranteed? Let's say guaranteed for now.
     result.status = "stun";
     result.logs.push(`> Freezing effect!`);
-    result.emoji = "🧊";
+    // result.emoji = "🧊";
+  }
+
+  if (tags.includes("stun")) {
+    result.status = "stun";
+    result.logs.push(`> Stunned!`);
+    // result.emoji = "😵‍💫";
+  }
+
+  if (tags.includes("silence")) {
+    result.status = "silence";
+    result.logs.push(`> Magical silence!`);
+    // result.emoji = "🔇";
   }
 
   // 6. FINAL DAMAGE CALCULATION
   if (isAttack) {
     let finalMult = stats.multiplier; // Start with Class Multiplier
+    let seerTriggered = false;
 
     // Target Weakness/Resistance
     tags.forEach(tag => {
@@ -126,6 +139,8 @@ export function resolveSpell(word, caster, target, isPlayerCasting = true) {
         finalMult *= weak.mult;
         result.logs.push(`> ${weak.msg} (x${weak.mult})`);
         if (weak.target) result.targetStat = weak.target;
+        // Seer bonus: +3 flat damage if the caster is the Seer and a weakness matched
+        if (caster && caster.id === 'seer') seerTriggered = true;
       } else if (target.resistances && target.resistances[tag]) {
         const res = target.resistances[tag];
         finalMult *= res.mult;
@@ -135,6 +150,11 @@ export function resolveSpell(word, caster, target, isPlayerCasting = true) {
 
     // Formula: (Base + FlatBonus) * Multiplier
     result.damage = Math.floor((basePower + stats.flatBonus) * finalMult);
+
+    if (seerTriggered) {
+      result.damage += 3;
+      result.logs.push(`>(Seer) Weakness Bonus +3`);
+    }
   }
 
   // 7. DOT EFFECTS (bleed / poison): create a small lingering effect unless target is immune

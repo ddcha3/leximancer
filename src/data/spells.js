@@ -1,7 +1,5 @@
-// Helper to construct spell objects efficiently
 const spellList = {};
 
-// Register words with tags and optional options (e.g., target: 'wp' to deal willpower damage)
 const register = (words, tags = [], opts = {}) => {
   words.forEach(word => {
     spellList[word] = { tags, ...opts };
@@ -10,7 +8,7 @@ const register = (words, tags = [], opts = {}) => {
 
 // --- CONTENT DEFINITION ---
 
-// FIRE (Merged fire, heat, burn, light -> fire)
+// FIRE
 register(
   ["FIRE", "BURN", "HEAT", "HOT", "LAVA", "ASH", "COAL", "SEAR", "CHAR", "PYRE", "FLAME", "BLAZE", "IGNITE", "INFERNO", "HELLFIRE", "SCORCH", "EMBER", "SMOKE", "TORCH", "CHARCOAL"], 
   ["fire"]
@@ -21,6 +19,10 @@ register(
   ["WATER", "AQUA", "RAIN", "MIST", "SOAK", "FLOOD", "TSUNAMI", "STEAM", "DEW", "POOL", "SPLASH", "DRENCH", "DRIP", "DRIZZLE"], 
   ["water"]
 );
+register(
+  ["POND", "LAKE", "RIVER", "OCEAN", "SEA", "WAVE", "SURGE", "CURRENT", "STREAM", "CREEK", "BROOK", "FALLS"], 
+  ["water"]
+)
 register(
   ["WASH", "BATH", "SHOWER", "RINSE", "BATHE", "LATHER"],
   ["water", "clean"]
@@ -45,12 +47,31 @@ register(
   ["HEAL", "HEALTH", "MEND", "CURE", "REST", "POTION", "REGEN"], 
   ["heal"]
 );
+
+// LIFESTEAL / DRAIN
+register(
+  ["DRAIN", "SIPHON", "LIFESTEAL", "CONSUME", "DEVOUR", "LEECH", "ABSORB"],
+  ["lifesteal"]
+);
+register(
+  [
+  "SUCK", "SLURP", "GULP", "SWALLOW", "INGEST", "BITE", "NIBBLE", "CHEW", "GNAW", "MUNCH", "CRUNCH"],
+  ["lifesteal"]
+)
+register(
+  ["FOOD", "EAT", "MEAL", "BREAD", "FRUIT", "VEGGIE", "MEAT", "APPLE", "BERRY", "HUNT", "GATHER", "FORAGE", "SNACK", "FEAST", "DINE"], 
+  ["food"]
+)
+register(
+  ["PIZZA", "BURGER", "SANDWICH", "PASTA", "SOUP", "SALAD", "CAKE", "COOKIE", "CANDY", "CHOCOLATE", "ICECREAM", "DESSERT", "BREAKFAST", "LUNCH", "DINNER", "SUPPER"], 
+  ["food"]
+)
 register(
   ["RUN", "FLEE", "ESCAPE", "LEAVE", "BOLT", "SPRINT"], 
   ["motion"] // mapped to 'flee' logic in engine
 );
 register(
-  ["STUN", "STOP", "HALT", "TRAP", "PARALYZE"], 
+  ["STUN", "STOP", "HALT", "TRAP", "PARALYZE", "DAZE", "BIND", "PETRIFY", "IMMOBILIZE"], 
   ["stun"]
 );
 
@@ -66,7 +87,7 @@ register(
   ["poison"]
 );
 
-// DISGUST (vomit, poo, pee, scum, mud, slime)
+// DISGUST (vomit, poo, pee, scum, slime)
 register(
   ["VOMIT", "VOMITATE", "PUKE", "BARF", "RETCH", "SPEW", "UPCHUCK", "GURGLE"],
   ["disgust"]
@@ -80,12 +101,18 @@ register(
   ["disgust"]
 );
 register(
-  ["SCUM", "MUD", "SLUDGE", "OOZE", "SLIME"],
+  ["SCUM", "SLUDGE", "OOZE", "SLIME"],
   ["disgust"]
 );
 register(
   ["TRASH", "GARBAGE", "RUBBISH", "JUNK", "DEBRIS"],
   ["disgust"]
+);
+
+// CUTE / CHARM
+register(
+  ["CUTE", "FLUFFY", "AWW", "KAWAII", "ADORABLE", "FUZZY"],
+  ["cute"]
 );
 
 // SWEAR / PROFANITY
@@ -117,13 +144,13 @@ register(
 
 // AIR / WIND
 register(
-  ["WIND", "GUST", "BREEZE", "GALE", "ZEPHYR", "BREATH", "WHIRL"], 
+  ["WIND", "GUST", "BREEZE", "GALE", "ZEPHYR", "BREATH", "WHIRL", "AIR", "STORM", "TORNADO", "CYCLONE", "HURRICANE", "VACUUM", "WHIRLWIND"], 
   ["air"]
 );
 
 // EARTH / STONE
 register(
-  ["EARTH", "STONE", "ROCK", "QUAKE", "RUMBLE", "TREMOR"], 
+  ["EARTH", "STONE", "ROCK", "QUAKE", "RUMBLE", "TREMOR", "BOULDER", "CLAY", "DUST", "GRAVEL", "SAND", "SOIL", "MUD", "DIRT", "CRAG", "CANYON", "CAVE", "MOUNTAIN", "HILL"], 
   ["earth"]
 );
 
@@ -153,22 +180,34 @@ register(
   { target: 'wp' }
 );
 
+// LOUD / SONIC (WP damage)
+register(
+  ["YELL", "SHOUT", "ROAR", "SCREECH", "SCREAM", "BOOM", "BELLOW", "CRASH", "CLAMOR", "RESONATE", "DIN"],
+  ["loud"],
+  { target: 'wp' }
+);
+
 // STATUS / MISC
 register(
-  ["FEAR", "TERROR", "SCARE", "PANIC", "FRIGHT", "DREAD"], 
+  ["FEAR", "TERROR", "SCARE", "PANIC", "FRIGHT", "DREAD", "DANGER", "ALARM"], 
   ["fear"],
   { target: 'wp' }
 );
 register(
-  ["SILENCE", "MUTE", "HUSH", "SHUSH"], 
+  ["SILENCE", "MUTE", "HUSH", "SHUSH", "QUIET", "STIFLE", "SQUELCH"], 
   ["silence"],
   { target: 'wp' }
 );
 register(
-  ["SLEEP", "NAP", "SLUMBER", "SNOOZE", "DREAM"], 
+  ["SLEEP", "NAP", "SLUMBER", "SNOOZE", "DREAM", "ZZZ"], 
   ["sleep"],
   { target: 'wp' }
 );
+register(
+  ["NIGHTMARE"],
+  ["sleep", "fear", "dark"],
+  { target: 'wp' }
+)
 register(
   ["ARMOR", "SHIELD", "PROTECT", "GUARD", "BARRIER"], 
   ["shield"]
@@ -186,8 +225,8 @@ register(
   ["pierce"]
 );
 register(
-  ["BRIBE", "COIN", "GOLD", "TREAT", "FOOD", "MEAT", "BREAD", "APPLE"], 
-  ["bribe", "food"],
+  ["BRIBE", "COIN", "GOLD", "TREAT"], 
+  ["bribe"],
   { target: 'wp' }
 );
 
@@ -294,7 +333,7 @@ register(
   ["motion", "stealth"]
 );
 register(
-  ["BIND", "TETHER", "SNARE", "TRAP"],
+  ["BIND", "TETHER", "SNARE", "TRAP", "STOP", "HALT", "RESTRAIN"],
   ["stun"]
 );
 register(
