@@ -303,7 +303,7 @@ h1 {
   gap: 8px;
   justify-content: center;
   text-align: left;
-  width: 40%; /* Don't touch edges */
+  width: 50%; /* Don't touch edges */
   margin: 0 auto;
 }
 
@@ -323,7 +323,7 @@ h1 {
 .enemy-status-effects {
   display: flex;
   gap: 8px;
-  margin-top: 2x;
+  margin-top: 2px;
   justify-content: center;
 }
 .player-status-effects {
@@ -413,13 +413,13 @@ h1 {
 }
 .enemy-weaknesses .weakness-list {
   display: flex;
-  gap: 8px;
+  gap: 2px;
   align-items: center;
 }
 .enemy-weaknesses .weakness-emoji {
   font-size: 1rem;
-  padding: 2px 6px;
-  opacity: 0.95;
+  padding: 2px 1px;
+  opacity: 0.8;
   color: var(--ink-primary);
 }
 
