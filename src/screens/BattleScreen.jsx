@@ -32,6 +32,11 @@ export default function BattleScreen({
 
   const enemySize = `${4 + (enemy.level || 1) * 0.8}rem`;
 
+  // split combined emoji string into primary + secondary pieces
+  const emojis = Array.from(enemy.emoji || '');
+  const primaryEmoji = emojis[0] || '';
+  const secondaryEmoji = emojis.slice(1).join('');
+
   const maxArtifacts = 5;
 
   const tooltipFor = (effects, tag) => {
@@ -75,7 +80,8 @@ export default function BattleScreen({
             className={`enemy-emoji ${animState.enemy}`} 
             style={{ fontSize: enemySize }}
           >
-            {enemy.emoji}
+            <span className="emoji-primary">{primaryEmoji}</span>
+            {secondaryEmoji && <span className="emoji-secondary" aria-hidden>{secondaryEmoji}</span>}
           </div>
           
           <div className="enemy-bars">

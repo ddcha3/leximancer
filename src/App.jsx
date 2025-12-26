@@ -90,12 +90,17 @@ function App() {
       setGameState('VICTORY');
       return;
     }
-    const enemyData = JSON.parse(JSON.stringify(ENCOUNTERS[index]));
+    // ENCOUNTERS can be an array of candidate enemies per stage. Pick one randomly if so.
+    let candidate = ENCOUNTERS[index];
+    if (Array.isArray(candidate)) {
+      candidate = candidate[Math.floor(Math.random() * candidate.length)];
+    }
+    const enemyData = JSON.parse(JSON.stringify(candidate));
     enemyData.maxHp = enemyData.hp;
     enemyData.maxWp = enemyData.wp;
     enemyData.isStunned = false; // Initialize stun state
     enemyData.statusEffects = []; // Ongoing status effects (poison, bleed, stun, etc)
-    
+
     setCurrentEnemy(enemyData);
     setGameState('BATTLE');
     drawHand(HAND_SIZE, shuffle(STARTING_DECK), []);
