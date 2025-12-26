@@ -144,5 +144,142 @@ register(
   { target: 'wp' }
 );
 
+// --- MORE PHYSICAL / STANDARD ATTACKS (HP) ---
+register(
+  ["SMITE", "WHACK", "BLOW", "JAB", "PUMMEL", "CLUB", "HEAVE", "SHOVE", "RAM", "SLUG", "THUMP", "POUND"],
+  ["blunt"]
+);
+register(
+  ["RIP", "REND", "HACK", "HEW", "FELL", "SLAUGHTER", "GORE", "GASH"],
+  ["blade", "bleed"]
+);
+register(
+  ["ARROW", "BOLT", "BULLET", "SHOT", "FIREARROW", "DART", "SPEAR", "LANCE"],
+  ["pierce"]
+);
+register(
+  ["STRIKE", "ASSAULT", "AMBUSH", "BRAWL", "SKIRMISH"],
+  ["blunt"]
+);
+
+// --- ELEMENTAL / MAGIC EXPANSIONS (HP unless otherwise specified) ---
+register(
+  ["FIREBALL", "INCINERATE", "CINDER", "SCORCHED", "SINGE", "FIREBRAND", "EMBERSTORM"],
+  ["fire"]
+);
+register(
+  ["DELUGE", "DROWN", "TSUNAMI", "WAVE", "SURGE", "FLOOD"],
+  ["water"]
+);
+register(
+  ["ICICLE", "FROSTBITE", "HAIL", "SLEETSTORM", "PERMAFROST"],
+  ["ice"]
+);
+register(
+  ["SHOCKWAVE", "ELECTROCUTE", "SURGE", "CURRENT", "SPARKS", "ARC"],
+  ["electric"]
+);
+register(
+  ["TORNADO", "WHIRLWIND", "VACUUM", "GALEFORCE", "TURBULENCE"],
+  ["air"]
+);
+register(
+  ["EARTHCRACK", "QUAKE", "BOULDER", "ROCKSLIDE", "STONEFALL"],
+  ["earth"]
+);
+register(
+  ["ENTANGLE", "VINESPRING", "BRAMBLE", "THORNS"],
+  ["nature"]
+);
+register(
+  ["ROTTENBITE", "FESTER", "MOLD", "BLIGHT", "PUTRID"],
+  ["poison"]
+);
+
+// --- HOLY / UNHOLY ---
+register(
+  ["SMITE", "EXORCISE", "BAPTIZE", "SANCTIFY", "ANNOINT"],
+  ["holy"]
+);
+register(
+  ["HEX", "DEFILE", "DREADCURSE", "MALISON", "BANISH"],
+  ["dark"]
+);
+
+// --- PSYCHIC / WP-Focused (target: wp) ---
+register(
+  ["CHARM", "ENCHANT", "BEWITCH", "FASCINATE", "MESMERIZE", "LURE", "TEMPT"],
+  ["mind", "psychic"],
+  { target: 'wp' }
+);
+register(
+  ["CONFUSE", "BOGGLE", "HALLUCINATE", "DELIRIUM", "PARANOIA", "DELUSION", "MADNESS"],
+  ["mind"],
+  { target: 'wp' }
+);
+register(
+  ["WHISPER", "WHISPERED", "MURMUR", "INSINUATE", "PSYCHOWHISPER"],
+  ["taunt", "mind"],
+  { target: 'wp' }
+);
+register(
+  ["INSULT", "TAUNT", "JEER", "PROVOKE", "DERIDE", "RIDICULE", "SNEER"],
+  ["taunt"],
+  { target: 'wp' }
+);
+register(
+  ["ENRAGE", "SUBVERT", "SABOTAGE", "MANIPULATE", "COERCE"],
+  ["mind", "dark"],
+  { target: 'wp' }
+);
+
+// --- STATUS / UTILITY EXTENSIONS ---
+register(
+  ["REPEL", "WARD", "BARRIER", "Aegis".toUpperCase()],
+  ["shield"]
+);
+register(
+  ["REJUVENATE", "REVIVE", "REVITALIZE", "RENEW"],
+  ["heal"]
+);
+register(
+  ["SNEAK", "HIDE", "VANISH", "CAMOUFLAGE", "SHADOWSTEP"],
+  ["motion", "stealth"]
+);
+register(
+  ["BIND", "TETHER", "SNARE", "TRAP"],
+  ["stun"]
+);
+register(
+  ["CALL", "SUMMON", "CONJURE", "BECKON", "FAMILIAR", "SPIRIT"],
+  ["summon"]
+);
+
+// --- SOCIAL / ECONOMIC ---
+register(
+  ["HAGGLE", "BARGAIN", "NEGOTIATE", "PLEAD"],
+  ["bribe"],
+  { target: 'wp' }
+);
+register(
+  ["GIFT", "OFFER", "TRIBUTE", "PRESENT"],
+  ["bribe", "holy"],
+  { target: 'wp' }
+);
+
+// --- EXTRA FLAVOR WORDS (mixed)
+register(
+  ["ROAR", "BELLOW", "HOWL", "SCREAM"],
+  ["blunt"],
+);
+register(
+  ["SIGH", "BREATH", "INHALE", "EXHALE"],
+  ["air"]
+);
+register(
+  ["GLARE", "STARE", "GAPE", "SCOWL"],
+  ["mind", "taunt"],
+  { target: 'wp' }
+);
 
 export const SPELLBOOK = spellList;

@@ -179,10 +179,18 @@ export function resolveSpell(word, caster, target, isPlayerCasting = true) {
     result.emoji = result.emoji || '🛡️';
   }
 
-  // Prefer a tag-based emoji (e.g., fire -> 🔥) if available and no explicit emoji set
-  const tagWithEmoji = tags.find(t => TAG_EMOJIS[t]);
-  if (tagWithEmoji && result.emoji === '✨') {
-    result.emoji = TAG_EMOJIS[tagWithEmoji];
+  // Prefer an elemental tag emoji when multiple tags are present (elemental > physical)
+  const elementalPriority = ['fire','water','ice','electric','air','earth','nature','poison'];
+  let chosenTag = null;
+  for (let el of elementalPriority) {
+    if (tags.includes(el) && TAG_EMOJIS[el]) { chosenTag = el; break; }
+  }
+  // Fallback: any tag that has an emoji
+  if (!chosenTag) {
+    chosenTag = tags.find(t => TAG_EMOJIS[t]);
+  }
+  if (chosenTag && result.emoji === '✨') {
+    result.emoji = TAG_EMOJIS[chosenTag];
   }
 
   // Default visual feedback by target stat (HP/WP) for both player and enemy if still using the generic emoji

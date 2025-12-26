@@ -156,7 +156,7 @@ function App() {
       setAnimState(prev => ({ ...prev, player: '' }));
 
       // 1. CALL THE ENGINE
-     const result = resolveSpell(currentWordStr, playerChar, { ...PLAYER_DEFENSE }, true);
+     const result = resolveSpell(currentWordStr, playerChar, currentEnemy, true);
 
       // 2. SHOW VISUALS
       // Use Engine emoji or fallback to Tag lookup
