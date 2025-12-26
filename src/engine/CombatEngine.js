@@ -1,7 +1,6 @@
 // --- IMPORTS ---
 import { PLAYER_DEFENSE, LETTER_SCORES } from "../data/player";
 import { TAG_EMOJIS } from "../data/tags";
-import { ENCOUNTERS } from '../data/enemies';
 import { SPELLBOOK } from '../data/spells';
 import { stemmer } from 'stemmer';
 import compromise from 'compromise';

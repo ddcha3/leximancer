@@ -2,7 +2,7 @@
 import { useState, useEffect } from 'react'
 import './App.css'
 
-import { ENCOUNTERS } from './data/enemies';
+import { createEnemy, MAX_STAGE } from './data/enemies';
 import { SPELLBOOK } from './data/spells';
 import { TAG_EMOJIS } from './data/tags';
 import { ARTIFACTS } from './data/artifacts';
@@ -21,7 +21,7 @@ const POS_TAG_MAP = {
     adverb: 'adverb',
 };
 
-const HAND_SIZE = 16;
+const HAND_SIZE = 35;
 const MAX_PLAYER_HP = 100;
 
 const shuffle = (array) => {
@@ -97,16 +97,13 @@ function App() {
   };
 
   const startEncounter = (index) => {
-    if (index >= ENCOUNTERS.length) {
+    if (index >= MAX_STAGE) {
       setGameState('VICTORY');
       return;
     }
-    // ENCOUNTERS can be an array of candidate enemies per stage. Pick one randomly if so.
-    let candidate = ENCOUNTERS[index];
-    if (Array.isArray(candidate)) {
-      candidate = candidate[Math.floor(Math.random() * candidate.length)];
-    }
-    const enemyData = JSON.parse(JSON.stringify(candidate));
+
+    const enemyData = createEnemy(index);
+    // initialize runtime fields
     enemyData.maxHp = enemyData.hp;
     enemyData.maxWp = enemyData.wp;
     enemyData.isStunned = false; // Initialize stun state
@@ -593,7 +590,7 @@ function App() {
       playerStatusEffects={playerDots}
       revealWeaknesses={inventory.some(a => a.revealWeaknesses)}
       encounterIndex={enemyIndex}
-      totalEncounters={ENCOUNTERS.length}
+      totalEncounters={MAX_STAGE}
       enemy={currentEnemy}
       logs={logs}
       hand={hand}

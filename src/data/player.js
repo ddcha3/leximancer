@@ -1,5 +1,5 @@
 // Common elemental tags for the Elementalist
-const ELEMENTAL_TAGS = ['fire', 'water', 'ice', 'earth', 'air', 'lightning', 'cold', 'heat', 'storm', 'burn'];
+const ELEMENTAL_TAGS = ['fire', 'water', 'ice', 'earth', 'air', 'lightning'];
 
 export const LETTER_SCORES = {
   // Common (1 pt)

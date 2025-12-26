@@ -10,7 +10,7 @@ const register = (words, tags = [], opts = {}) => {
 
 // FIRE
 register(
-  ["FIRE", "BURN", "HEAT", "HOT", "LIT", "LAVA", "ASH", "COAL", "SEAR", "CHAR", "PYRE", "FLAME", "BLAZE", "IGNITE", "INFERNO", "HELLFIRE", "SCORCH", "EMBER", "SMOKE", "TORCH", "CHARCOAL"], 
+  ["FIRE", "BURN", "HEAT", "HOT", "LIT", "LAVA", "ASH", "COAL", "SEAR", "CHAR", "PYRE", "FLAME", "BLAZE", "IGNITE", "INFERNO", "HELLFIRE", "SCORCH", "EMBER", "SMOKE", "TORCH", "CHARCOAL", "ROAST", "BAKE", "SIZZLE", "CINDER", "SINGE", "FIREBRAND"], 
   ["fire"]
 );
 
@@ -38,7 +38,7 @@ register(
   ["blunt"]
 );
 register(
-  ["CUT", "SLICE", "STAB", "SLASH", "CHOP", "CLEAVE", "SWORD", "AXE", "KNIFE", "DAGGER", "SABER", "MACHEETE", "SICKLE", "SCYTHE", "BLADE", "HACK", "REAP", "FELL", "GASH", "RIP", "REND", "SLAUGHTER"], 
+  ["CUT", "SLICE", "STAB", "SLASH", "CHOP", "CLEAVE", "SWORD", "AXE", "KNIFE", "DAGGER", "SABER", "MACHEETE", "SICKLE", "SCYTHE", "BLADE", "HACK", "REAP", "FELL", "GASH", "RIP", "REND", "SLAUGHTER", "SAW"], 
   ["blade"]
 );
 
@@ -50,7 +50,7 @@ register(
 
 // LIFESTEAL / DRAIN
 register(
-  ["DRAIN", "SIPHON", "LIFESTEAL", "CONSUME", "DEVOUR", "LEECH", "ABSORB"],
+  ["DRAIN", "SIPHON", "LIFESTEAL", "CONSUME", "DEVOUR", "LEECH", "ABSORB", "SAP"],
   ["lifesteal"]
 );
 register(
@@ -63,7 +63,7 @@ register(
   ["food"]
 )
 register(
-  ["PIZZA", "BURGER", "SANDWICH", "PASTA", "SOUP", "SALAD", "CAKE", "COOKIE", "CANDY", "CHOCOLATE", "ICECREAM", "DESSERT", "BREAKFAST", "LUNCH", "DINNER", "SUPPER"], 
+  ["PIZZA", "PATE", "QUICHE","BURGER", "SANDWICH", "PASTA", "SOUP", "SALAD", "CAKE", "COOKIE", "CANDY", "CHOCOLATE", "ICECREAM", "DESSERT", "BREAKFAST", "LUNCH", "DINNER", "SUPPER"], 
   ["food"]
 )
 register(
@@ -86,6 +86,10 @@ register(
   ["POISON", "TOXIN", "VENOM", "BLIGHT", "FUMES", "ROT"], 
   ["poison"]
 );
+register(
+  ["SICK", "AIL", "ILL", "DISEASE", "FEVER", "VIRUS", "PLAGUE", "MALADY", "CONTAGION"], 
+  ["poison"]
+)
 
 // DISGUST (vomit, poo, pee, scum, slime)
 register(
@@ -165,7 +169,7 @@ register(
 
 // NATURE / PLANT
 register(
-  ["ROOT", "VINE", "GROW", "SEED", "BLOOM", "LEAF", "SPROUT", "NECTAR"], 
+  ["ROOT", "VINE", "GROW", "SEED", "BLOOM", "LEAF", "SPROUT", "NECTAR", "WOOD", "TREE"], 
   ["nature"]
 );
 
@@ -219,7 +223,7 @@ register(
   { target: 'wp' }
 )
 register(
-  ["ARMOR", "SHIELD", "PROTECT", "GUARD", "BARRIER"], 
+  ["ARMOR", "SHIELD", "PROTECT", "GUARD", "BARRIER", "SHELL", "WARD", "AEGIS", "DEFEND", "CLOAK", "COVERING"], 
   ["shield"]
 );
 register(
@@ -235,14 +239,14 @@ register(
   ["pierce"]
 );
 register(
-  ["BRIBE", "COIN", "GOLD", "TREAT"], 
+  ["BRIBE", "COIN", "GOLD", "TREAT", "MONEY", "PAY", "RICHES", "WEALTH", "TREASURE"], 
   ["bribe"],
   { target: 'wp' }
 );
 
 // --- MORE PHYSICAL / STANDARD ATTACKS (HP) ---
 register(
-  ["SMITE", "WHACK", "BLOW", "JAB", "PUMMEL", "CLUB", "HEAVE", "SHOVE", "RAM", "SLUG", "THUMP", "POUND"],
+  ["SMITE", "BONK", "WHACK", "JAB", "PUMMEL", "CLUB", "HEAVE", "SHOVE", "RAM", "SLUG", "THUMP", "POUND"],
   ["blunt"]
 );
 register(
@@ -264,7 +268,7 @@ register(
   ["fire"]
 );
 register(
-  ["DELUGE", "DROWN", "TSUNAMI", "WAVE", "SURGE", "FLOOD"],
+  ["DELUGE", "DROWN", "TSUNAMI", "WAVE", "FLOOD"],
   ["water"]
 );
 register(
@@ -295,7 +299,8 @@ register(
 // --- HOLY / UNHOLY ---
 register(
   ["SMITE", "EXORCISE", "BAPTIZE", "SANCTIFY", "ANNOINT"],
-  ["holy"]
+  ["holy"],
+  { target: 'wp' }
 );
 register(
   ["HEX", "DEFILE", "DREADCURSE", "MALISON", "BANISH"],
@@ -310,7 +315,7 @@ register(
   { target: 'wp' }
 );
 register(
-  ["CONFUSE", "BOGGLE", "HALLUCINATE", "DELIRIUM", "PARANOIA", "DELUSION", "MADNESS"],
+  ["CONFUSE", "QUIZ", "BOGGLE", "HALLUCINATE", "DELIRIUM", "PARANOIA", "DELUSION", "MADNESS", "PAIN", "AGONY", "TORMENT", "ANGUISH", "SUFFERING"],
   ["mind"],
   { target: 'wp' }
 );
@@ -365,7 +370,7 @@ register(
 );
 
 register(
-  ["SIGH", "BREATH", "INHALE", "EXHALE"],
+  ["SIGH", "BREATH", "INHALE", "EXHALE", "BLOW"],
   ["air"]
 );
 register(
@@ -373,5 +378,15 @@ register(
   ["mind", "taunt"],
   { target: 'wp' }
 );
+
+// --- AFFIX-LEVEL VOCABULARY (from enemy affixes) ---
+register(["INCENDIO", "CONFLARE", "CONFLAGRATE", "APOCALYPSE"], ["fire"]);
+register(["MONSOON"], ["water"]);
+register(["TEMPEST"], ["air"]);
+register(["NOCTURNAL", "OBLIVION", "DARKNESS"], ["dark"], { target: 'wp' });
+register(["CHAIN", "THUNDERCLAP"], ["electric"]);
+register(["OVERGROWTH", "FORESTCALL"], ["nature"]);
+register(["RUPTURE", "LANDSLIDE", "CATACLYSM"], ["earth"]);
+register(["SNIPER", "VOLLEY"], ["pierce"]);
 
 export const SPELLBOOK = spellList;
