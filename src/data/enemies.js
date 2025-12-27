@@ -303,14 +303,8 @@ export function createEnemy(stageIndex) {
   const vocabulary = Array.from(new Set([...(base.vocabulary || []), ...affixVocab]));
 
   // Merge weaknesses and resistances (affix overrides base where specified)
-  // NOTE: Individual `mult` values on weakness/resistance entries are deprecated.
-  // The engine now uses standardized receiving multipliers: weaknesses = 2.0, resistances = 0.5.
-  // To make a tag fully immune (no damage and no status effects), add it to `immunities` (array of tag ids).
-  // Merge weaknesses and resistances (affix overrides base where specified)
   const weaknesses = Array.from(new Set([...(base.weaknesses || []), ...(affix && affix.weaknesses ? affix.weaknesses : [])]));
   const resistances = Array.from(new Set([...(base.resistances || []), ...(affix && affix.resistances ? affix.resistances : [])]));
-
-  // Merge immunities (new field): list of tags this enemy is immune to
   const immunities = Array.from(new Set([...(base.immunities || []), ...(affix && affix.immunities ? affix.immunities : [])]));
 
   return {

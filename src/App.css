@@ -304,7 +304,7 @@ h1 {
   gap: 8px;
   justify-content: center;
   text-align: left;
-  width: 50%; /* Don't touch edges */
+  width: 60%; /* Don't touch edges */
   margin: 0 auto;
 }
 

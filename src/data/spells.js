@@ -71,6 +71,10 @@ register(
   ["food"]
 )
 register(
+  ["GRAPE", "ORANGE", "BANANA", "MANGO", "PINEAPPLE", "PEACH", "PEAR", "PLUM", "CHERRY", "STRAWBERRY", "BLUEBERRY", "RASPBERRY", "WATERMELON", "KIWI"],
+  ["food"]
+)
+register(
   ["RUN", "FLEE", "ESCAPE", "LEAVE", "BOLT", "SPRINT"], 
   ["motion"]
 );
