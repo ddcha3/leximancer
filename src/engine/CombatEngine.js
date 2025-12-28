@@ -38,9 +38,9 @@ export function resolveSpell(word, caster, target, isPlayerCasting = true) {
   let tags = [...(spellData?.tags || [])];
   // if (meaningfulPos) tags.push(meaningfulPos);
 
-  // Determine target stat (hp vs wp): use tag-level config first, otherwise fallback to POS rules
+  // Determine target stat (hp vs wp)
   let inferredTarget = 'hp';
-  // Prefer the first tag which has an explicit target defined in TAG_TARGETS
+  // Choose the first tag target
   const tagWithTarget = tags.find(t => TAG_TARGETS[t]);
   if (tagWithTarget) {
     inferredTarget = TAG_TARGETS[tagWithTarget];
@@ -168,16 +168,7 @@ export function resolveSpell(word, caster, target, isPlayerCasting = true) {
         result.logs.push(`> Weak to ${tag}! (x${WEAKNESS_MULT})`);
         // Seer bonus: +3 flat damage if the caster is the Seer and a weakness matched
         if (caster && caster.id === 'seer') seerTriggered = true;
-      } else if (target.weaknesses && target.weaknesses[tag]) {
-        // Back-compat for object-style weaknesses
-        finalMult *= WEAKNESS_MULT;
-        result.logs.push(`> Weak to ${tag}! (x${WEAKNESS_MULT})`);
-        if (caster && caster.id === 'seer') seerTriggered = true;
       } else if (Array.isArray(target.resistances) && target.resistances.includes(tag)) {
-        finalMult *= RESISTANCE_MULT;
-        result.logs.push(`> Resistant to ${tag}! (x${RESISTANCE_MULT})`);
-      } else if (target.resistances && target.resistances[tag]) {
-        // Back-compat for object-style resistances
         finalMult *= RESISTANCE_MULT;
         result.logs.push(`> Resistant to ${tag}! (x${RESISTANCE_MULT})`);
       }

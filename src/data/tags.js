@@ -6,7 +6,6 @@ export const TAGS = [
   { id: 'ice', emoji: '❄️', target: 'hp' },   // Covers: cold, frost, snow
   { id: 'earth', emoji: '🪨', target: 'hp' }, // Covers: rock, stone, mountain
   { id: 'air', emoji: '💨', target: 'hp' },   // Covers: wind, storm, gas
-  { id: 'plant', emoji: '🌿', target: 'hp' }, // Covers: nature, wood, vine
   { id: 'nature', emoji: '🌱', target: 'hp' },
 
   // PHYSICAL

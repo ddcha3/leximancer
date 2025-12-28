@@ -16,9 +16,9 @@ export const CHARACTERS = [
   {
     id: 'summoner',
     name: 'Summoner',
-    avatar: '🧞',
+    avatar: '🧙🏿‍♂️',
     desc: 'Nouns deal +2 damage.',
-    // HOOK: Modify the calculated stats before damage is dealt
+    // Modify the calculated stats before damage is dealt
     onCast: (stats, tags, word) => {
       if (tags.includes('noun')) {
         stats.flatBonus += 2;
@@ -30,7 +30,7 @@ export const CHARACTERS = [
   {
     id: 'elementalist',
     name: 'Elementalist',
-    avatar: '🧙🏾‍♂️',
+    avatar: '🧘🏻‍♂️',
     desc: 'Elemental spells deal double damage.',
     onCast: (stats, tags, word) => {
       // Check if any tag on the word matches the elemental list
@@ -45,7 +45,7 @@ export const CHARACTERS = [
   {
     id: 'seer',
     name: 'Seer',
-    avatar: '🧕',
+    avatar: '🧙‍♀️',
     desc: 'Knows enemy weaknesses. +3 damage when exploiting them.',
   }
 ];

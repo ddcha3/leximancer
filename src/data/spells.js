@@ -218,7 +218,7 @@ register(
   ["summon"]
 );
 register(
-  ["BLEED", "GASH", "WOUND", "GORE"], 
+  ["BLEED", "GASH", "WOUND", "GORE", "BLOOD", "HEMORRHAGE"], 
   ["bleed"]
 );
 register(
