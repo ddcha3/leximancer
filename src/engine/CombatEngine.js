@@ -84,7 +84,6 @@ export function resolveSpell(word, caster, target, isPlayerCasting = true) {
   if (tags.includes("motion")) {
     result.logs.push(`> Increased speed!`);
     // result.emoji = "🏃";
-    return result;
   }
 
   if (tags.includes("heal")) {
