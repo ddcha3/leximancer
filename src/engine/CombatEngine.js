@@ -16,8 +16,8 @@ const defaultCalculatePower = (word) => {
   for (let char of upper) {
     score += LETTER_SCORES[char] || 1;
   }
-  // Standard Ramp: Bonus for length > 4
-  if (upper.length > 4) score += (upper.length - 4) * 2;
+  // Remove length bonuses for now
+  // if (upper.length > 4) score += (upper.length - 4) * 2;
   return score;
 };
 

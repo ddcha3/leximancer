@@ -19,7 +19,7 @@ const BASES = {
       level: 1,
       hp: 12,
       wp: 12,
-      vocabulary: ['BUG', 'CRAWL', "CLICK", "SCUTTLE"],
+      vocabulary: ['BUG', 'HOLE', "ROOM", "ANT", "RUG"],
       weaknesses: ['holy', 'blunt'],
       immunities: ['loud', 'silence'],
       resistances: []
@@ -31,9 +31,9 @@ const BASES = {
       level: 1,
       hp: 18,
       wp: 8,
-      vocabulary: ['SLIME', 'SHELL', 'CREEP', 'SNAIL', "SLITHER"],
-      weaknesses: [],
-      resistances: ['water', 'pierce']
+      vocabulary: ['SLIME', 'SHELL', 'CREEP', 'SNAIL'],
+      weaknesses: ['gravity'],
+      resistances: ['water', 'pierce', 'disgust']
     },
     {
       id: 'crab',
@@ -42,7 +42,7 @@ const BASES = {
       level: 1,
       hp: 20,
       wp: 10,
-      vocabulary: ['CLAW', 'PINCH', 'CRAB', 'SCUTTLE', 'SHELL'],
+      vocabulary: ['CLAW', 'SAND', 'SHELL'],
       weaknesses: ['fire', 'gravity'],
       resistances: ['water', 'earth']
     }
@@ -50,30 +50,30 @@ const BASES = {
 
   2: [
     {
-      id: 'bird',
-      name: 'bird',
+      id: 'warbler',
+      name: 'warbler',
       emoji: '🐦',
       level: 2,
       hp: 22,
       wp: 15,
-      vocabulary: ['CHIRP', 'PECK', 'FLY', 'NEST', 'TWEET', 'SQUAWK'],
+      vocabulary: ['CHIRP', 'PECK', 'FLY', 'NEST', 'WING'],
       weaknesses: ['loud', 'electric'],
       resistances: ['earth', 'air']
     },
     {
-      id: 'snake',
-      name: 'snake',
+      id: 'snek',
+      name: 'snek',
       emoji: '🐍',
       level: 2,
       hp: 24,
       wp: 12,
-      vocabulary: ['BITE', 'HISS', 'VENOM', 'SLITHER', 'SNEK', 'COIL', 'STRIKE'],
+      vocabulary: ['BITE', 'HISS', 'SNEK', 'COIL', 'STRIKE'],
       weaknesses: ['fire'],
       resistances: ['poison']
     },
     {
-      id: 'cat',
-      name: 'cat',
+      id: 'kitty',
+      name: 'kitty',
       emoji: '🐈',
       level: 2,
       hp: 20,
@@ -83,8 +83,8 @@ const BASES = {
       resistances: ['dark', 'disgust']
     },
     {
-      id: 'dog',
-      name: 'dog',
+      id: 'pup',
+      name: 'pup',
       emoji: '🐕',
       level: 2,
       hp: 25,
@@ -119,8 +119,8 @@ const BASES = {
       resistances: ['dark', 'blunt']
     },
     {
-      id: 'gorilla',
-      name: 'gorilla',
+      id: 'ape',
+      name: 'ape',
       emoji: '🦍',
       level: 3,
       hp: 40,
@@ -202,8 +202,8 @@ const BASES = {
       resistances: ['earth','water']
     },
     {
-      id: 'crocodile',
-      name: 'crocodile',
+      id: 'croc',
+      name: 'croc',
       emoji: '🐊',
       level: 5,
       hp: 100,
@@ -216,8 +216,8 @@ const BASES = {
 
   6: [
     {
-      id: 'dragon',
-      name: 'dragon',
+      id: 'drake',
+      name: 'drake',
       emoji: '🐉',
       level: 6,
       hp: 200,
@@ -248,6 +248,20 @@ const BASES = {
       weaknesses: ['water','electric','dark'],
       resistances: ['fire','air','chaos']
     }
+  ],
+
+  7: [
+    {
+      id: 'leximancer',
+      name: 'leximancer',
+      emoji: '🧙🏻‍♂️',
+      level: 7,
+      hp: 300,
+      wp: 200,
+      vocabulary: ['WORDSMITH', 'INCANTATION', 'ENCHANTMENT', 'LEXICON', 'OMNISCIENT', 'SOLILOQUY', 'SPELLCRAFT', 'ARTICULATE'],
+      weaknesses: ['tech','holy','knowledge'],
+      resistances: ['chaos','dark','negotiate']
+    }
   ]
 };
 
@@ -263,7 +277,8 @@ const AFFIXES = [
       3: ['BLAZE', 'EMBER', 'INFERNO'],
       4: ['INCENDIO', 'CONFLARE'],
       5: ['CONFLAGRATE', 'INCINERATE'],
-      6: ['IMMOLATION', 'PYROCLASM']
+      6: ['IMMOLATION', 'PYROCLASM'],
+      7: []
     },
     weaknesses: ['water'],
     resistances: [],
@@ -279,7 +294,8 @@ const AFFIXES = [
       3: ['WAVE', 'SURGE'],
       4: ['TSUNAMI'],
       5: ['DELUGE', 'MONSOON'],
-      6: ['AQUATIC']
+      6: ['AQUATIC'],
+      7: []
     },
     weaknesses: ['ice'],
     resistances: [],
@@ -295,7 +311,8 @@ const AFFIXES = [
       3: ['WHIRL', 'TORNADO'],
       4: ['CYCLONE'],
       5: ['TEMPEST'],
-      6: ['WHIRLWIND']
+      6: ['WHIRLWIND'],
+      7: []
     },
     weaknesses: [],
     resistances: ['air']
@@ -310,7 +327,8 @@ const AFFIXES = [
       3: ['CURSE', 'NOCTURNAL'],
       4: ['OBLIVION'],
       5: ['DARKNESS'],
-      6: ['NIGHTMARE']
+      6: ['NIGHTMARE'],
+      7: []
     },
     weaknesses: ['holy'],
     resistances: [],
@@ -326,7 +344,8 @@ const AFFIXES = [
       3: ['SHOCK', 'CHAIN'],
       4: ['STORMY'],
       5: ['THUNDERCLAP'],
-      6: ['ELECTRICAL']
+      6: ['ELECTRICAL'],
+      7: []
     },
     weaknesses: ['earth'],
     resistances: [],
@@ -342,7 +361,8 @@ const AFFIXES = [
       3: ['ENTANGLE', 'VINE'],
       4: ['OVERGROWTH'],
       5: ['FORESTCALL'],
-      6: ['VERDANT']
+      6: ['VERDANT'],
+      7: []
     },
     weaknesses: ['fire'],
     resistances: ['earth']
@@ -357,7 +377,8 @@ const AFFIXES = [
       3: ['QUAKE', 'RUPTURE'],
       4: ['LANDSLIDE'],
       5: ['CATACLYSM'],
-      6: ['EARTHQUAKE']
+      6: ['EARTHQUAKE'],
+      7: []
     },
     weaknesses: ['ice'],
     resistances: [],
@@ -373,7 +394,8 @@ const AFFIXES = [
       3: ['BOLT', 'SNIPER'],
       4: ['VOLLEY'],
       5: ['CROSSBOW'],
-      6: ['LACERATION']
+      6: ['LACERATION'],
+      7: []
     },
     weaknesses: ['blunt'],
     resistances: ['sharp']
@@ -388,7 +410,8 @@ const AFFIXES = [
       3: ['TOXIC', 'POISON'],
       4: ['VENOMOUS'],
       5: ['ROTTENBITE'],
-      6: ['CONTAMINATE']
+      6: ['CONTAMINATE'],
+      7: []
     },
     weaknesses: ['earth'],
     resistances: [],
@@ -404,7 +427,8 @@ const AFFIXES = [
       3: ['HUG', 'CHARM'],
       4: ['ADORABLE'],
       5: ['ENDEARING'],
-      6: ['IRRESISTIBLE']
+      6: ['IRRESISTIBLE'],
+      7: []
     },
     weaknesses: ['taunt'],
     resistances: ['charm']
@@ -419,7 +443,8 @@ const AFFIXES = [
       3: ['COLD', 'BLIZZARD'],
       4: ['SNOWSTORM'],
       5: ['HAILSTORM'], 
-      6: ['FROSTBITE']
+      6: ['FROSTBITE'],
+      7: []
     },
     weaknesses: ['fire'],
     resistances: [],
@@ -427,12 +452,12 @@ const AFFIXES = [
   }
 ];
 
-export const MAX_STAGE = 6;
+export const MAX_STAGE = 7;
 
 // Create a new enemy instance by combining a base (by level) and a random affix
 export function createEnemy(stageIndex) {
-  const level = Math.min(5, stageIndex + 1);
-  const bases = BASES[level] || BASES[5];
+  const level = Math.min(7, stageIndex + 1);
+  const bases = BASES[level] || BASES[7];
   const base = bases[Math.floor(Math.random() * bases.length)];
 
   // 25% chance to spawn without an affix
