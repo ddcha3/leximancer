@@ -25,7 +25,8 @@ export const CHARACTERS = [
         stats.logs.push(">(Summoner) Noun Bonus +2");
       }
       return stats;
-    }
+    },
+    starting_items: []
   },
   {
     id: 'elementalist',
@@ -40,24 +41,21 @@ export const CHARACTERS = [
         stats.logs.push(">(Elementalist) Elemental Mastery x2");
       }
       return stats;
-    }
+    },
+    starting_items: []
   },
   {
     id: 'seer',
     name: 'Seer',
     avatar: '🧙‍♀️',
     desc: 'Knows enemy weaknesses. +3 damage when exploiting them.',
+    starting_items: ['crystal_ball'],
   }
 ];
 
 export const PLAYER_DEFENSE = {
-  weaknesses: {
-    "fear": { mult: 1.5, msg: "Your resolve shakes!" },
-    "blunt": { mult: 1.2, msg: "Oof! Heavy hit." }
-  },
-  resistances: {
-    "bribe": { mult: 0.0, msg: "You cannot be bought." }
-  }
+  weaknesses: [],
+  resistances: []
 };
 
 export const STARTING_DECK = [

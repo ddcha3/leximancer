@@ -1,59 +1,229 @@
-// Single source of truth for tags: export a list of tag objects with emoji and target
+// src/data/tags.js
+
 export const TAGS = [
-  // CORE ELEMENTS
-  { id: 'fire', emoji: '🔥', target: 'hp' },  // Covers: heat, burn, lava, ash
-  { id: 'water', emoji: '💧', target: 'hp' }, // Covers: rain, mist, river
-  { id: 'ice', emoji: '❄️', target: 'hp' },   // Covers: cold, frost, snow
-  { id: 'earth', emoji: '🪨', target: 'hp' }, // Covers: rock, stone, mountain
-  { id: 'air', emoji: '💨', target: 'hp' },   // Covers: wind, storm, gas
-  { id: 'nature', emoji: '🌱', target: 'hp' },
+  // --- 1. ELEMENTAL ---
+  {
+    id: 'fire',
+    emoji: '🔥',
+    target: 'hp',
+    desc: 'Heat, burn, lava, ash, flame, scorch, ember'
+  },
+  {
+    id: 'water',
+    emoji: '💧',
+    target: 'hp',
+    desc: 'Rain, river, soak, flood, liquid, ocean, wave'
+  },
+  {
+    id: 'ice',
+    emoji: '❄️',
+    target: 'hp',
+    desc: 'Cold, frost, snow, freeze, chill, glacier'
+  },
+  {
+    id: 'air',
+    emoji: '💨',
+    target: 'hp',
+    desc: 'Wind, storm, gust, blow, breeze, tornado'
+  },
+  {
+    id: 'earth',
+    emoji: '🪨',
+    target: 'hp',
+    desc: 'Rock, stone, mud, quake, sand, mountain, soil'
+  },
+  {
+    id: 'electric',
+    emoji: '⚡',
+    target: 'hp',
+    desc: 'Lightning, spark, shock, volt, energy, zap'
+  },
+  {
+    id: 'nature',
+    emoji: '🌿',
+    target: 'hp',
+    desc: 'Plant, vine, root, wild, beast, wood, animal, tree'
+  },
 
-  // PHYSICAL
-  { id: 'blade', emoji: '⚔️', target: 'hp' }, // Covers: cut, sharp, axe
-  { id: 'blunt', emoji: '🔨', target: 'hp' }, // Covers: smash, force, heavy
-  { id: 'metal', emoji: '⚙️', target: 'hp' }, // Covers: iron, steel
-  { id: 'pierce', emoji: '🏹', target: 'hp' },
-  { id: 'bleed', emoji: '🩸', target: 'hp' },
+  // --- 2. PHYSICAL ---
+  {
+    id: 'sharp',
+    emoji: '🩸',
+    target: 'hp',
+    desc: 'Cut, slice, stab, pierce, bleed, sword, arrow, blade'
+  },
+  {
+    id: 'blunt',
+    emoji: '👊',
+    target: 'hp',
+    desc: 'Smash, hit, bash, hammer, crush, force, pound'
+  },
+  {
+    id: 'gravity',
+    emoji: '🪐',
+    target: 'hp',
+    desc: 'Fall, weight, crush, heavy, orbit, pull, drop, table, car'
+  },
 
-  // ELEMENTAL / STATUS
-  { id: 'poison', emoji: '☣️', target: 'hp' },
-  { id: 'electric', emoji: '⚡', target: 'hp' },
-  { id: 'dark', emoji: '🌑', target: 'hp' },
-  { id: 'holy', emoji: '✨', target: 'hp' },
-  { id: 'mind', emoji: '🧠', target: 'wp' },
-  { id: 'taunt', emoji: '💬', target: 'wp' },
+  // --- 3. MENTAL & SOCIAL ---
+  {
+    id: 'dark',
+    emoji: '🌑',
+    target: 'wp',
+    desc: 'Shadow, curse, void, night, evil, terror, nightmare, scare, ghost, spooky, fear, dread, blind'
+  },
+  {
+    id: 'taunt',
+    emoji: '🤬',
+    target: 'wp',
+    desc: 'Insult, mock, rude, anger, provoke, profanity, rage'
+  },
+  {
+    id: 'charm',
+    emoji: '😍',
+    target: 'wp',
+    desc: 'Love, cute, attract, seduce, calm, soothe, comfort, peace, praise'
+  },
+  {
+    id: 'negotiate',
+    emoji: '🤝',
+    target: 'wp',
+    desc: 'Trade, bargain, deal, bribe, diplomacy, agreement, treaty, gift, give, friend, ally'
+  },
+  {
+    id: 'sorrow',
+    emoji: '😢',
+    target: 'wp',
+    desc: 'Sad, cry, grief, regret, tears, loss, mourn'
+  },
+  {
+    id: 'disgust',
+    emoji: '🤢',
+    target: 'wp',
+    desc: 'Gross, vomit, slime, rot, filth, trash, decay'
+  },
+  {
+    id: 'loud',
+    emoji: '📢',
+    target: 'wp',
+    desc: 'Loud, scream, noise, shout, thunder, roar, blast'
+  },
+  {
+    id: 'knowledge',
+    emoji: '📚',
+    target: 'wp',
+    desc: 'Learn, study, book, wisdom, fact, discover, reveal, truth, science, logic, mind, smart, brain, analyze, prepare'
+  },
+  {
+    id: 'luck',
+    emoji: '🎲',
+    target: 'wp',
+    desc: 'Chance, gamble, random, fortune, risk, fate'
+  },
 
-  // ABSTRACT / UTILITY
-  { id: 'bribe', emoji: '💰', target: 'wp' }, // Covers: greed, gold, wealth
-  { id: 'fear', emoji: '😱', target: 'wp' },  // Covers: terror, undead, scare
-  { id: 'heal', emoji: '💖', target: 'hp' },  // Covers: health, cure
-  { id: 'food', emoji: '😋', target: 'hp' },  // Covers: eat, fruit, meat
-  { id: 'motion', emoji: '🏃', target: 'wp' }, // Covers: run, flee, speed
-  { id: 'stun', emoji: '😵‍💫', target: 'wp' },  // Covers: stop, trap
-  { id: 'silence', emoji: '🔇', target: 'wp' },
-  { id: 'sleep', emoji: '💤', target: 'wp' },
-  { id: 'shield', emoji: '🛡️', target: 'hp' },
-  { id: 'summon', emoji: '🪄', target: 'hp' },
+  // --- 4. STATUS & UTILITY ---
+  {
+    id: 'poison',
+    emoji: '☣️',
+    target: 'hp',
+    desc: 'Venom, toxic, virus, sick, disease, contaminate'
+  },
+  {
+    id: 'stun',
+    emoji: '😵‍💫',
+    target: 'wp',
+    desc: 'Stop, paralysis, bind, trap, hold, immobilize'
+  },
+  {
+    id: 'silence',
+    emoji: '🔇',
+    target: 'wp',
+    desc: 'Mute, quiet, hush, soundless, speechless'
+  },
+  {
+    id: 'chaos',
+    emoji: '🌀',
+    target: 'wp',
+    desc: 'Confuse, illusion, trick, puzzle, dizzy, fake, deceive, disorder, scramble, mirage'
+  },
+  {
+    id: 'motion',
+    emoji: '🏃',
+    target: 'wp',
+    desc: 'Run, flee, speed, fast, travel, dash, escape'
+  },
+  {
+    id: 'heal',
+    emoji: '💖',
+    target: 'hp',
+    desc: 'Health, cure, mend, restore, life, potion, recovery'
+  },
+  {
+    id: 'shield',
+    emoji: '🛡️',
+    target: 'hp',
+    desc: 'Guard, protect, armor, wall, block, defend'
+  },
+  {
+    id: 'food',
+    emoji: '😋',
+    target: 'hp',
+    desc: 'Eat, meat, fruit, snack, delicious, meal, feast'
+  },
+  {
+    id: 'lifesteal',
+    emoji: '💞',
+    target: 'hp',
+    desc: 'Drain, absorb, leech, vampire, suck, siphon'
+  },
 
-  // DISGUST
-  { id: 'disgust', emoji: '🤢', target: 'wp' },
+  // --- 5. META / SPECIAL ---
+  {
+    id: 'metal',
+    emoji: '⚙️',
+    target: 'hp',
+    desc: 'Iron, steel, alloy, robot, anvil, forge'
+  },
+  {
+    id: 'tech',
+    emoji: '💻',
+    target: 'hp',
+    desc: 'Computer, machine, tool, gadget, digital, device'
+  },
+  {
+    id: 'holy',
+    emoji: '😇',
+    target: 'wp',
+    desc: 'Divine, bless, radiant, angel, god, purify, sacred, wash, cleanse'
+  },
+  {
+    id: 'time',
+    emoji: '⏰',
+    target: 'wp',
+    desc: 'Clock, age, moment, future, past, delay, schedule, eternal'
+  },
+  {
+    id: 'space',
+    emoji: '🌌',
+    target: 'wp',
+    desc: 'Galaxy, cosmos, void, distance, dimension, universe, star'
+  },
 
-  // LIFESTEAL (Heal for damage dealt)
-  { id: 'lifesteal', emoji: '💞', target: 'hp' },
-
-  // SWEARING / PROFANITY
-  { id: 'profanity', emoji: '🤬', target: 'wp' },
-
-  // LOUD / SONIC
-  { id: 'loud', emoji: '📢', target: 'wp' },
-
-  // CUTE / CHARM
-  { id: 'cute', emoji: '🥹', target: 'wp' },
-
-  // CLEAN
-  { id: 'clean', emoji: '🧼', target: 'hp' }
+  // --- 6. FALLBACKS (The Two-Layer Logic) ---
+  {
+    id: 'concrete',
+    emoji: '💥',
+    target: 'hp',
+    desc: 'Physical Object (Default HP)'
+  },
+  {
+    id: 'abstract',
+    emoji: '✨',
+    target: 'wp',
+    desc: 'Mental Concept (Default WP)'
+  }
 ];
 
-// Backwards-compatible lookup maps derived from the single TAGS list
+// Helper Exports
 export const TAG_EMOJIS = Object.fromEntries(TAGS.map(t => [t.id, t.emoji]));
 export const TAG_TARGETS = Object.fromEntries(TAGS.map(t => [t.id, t.target]));

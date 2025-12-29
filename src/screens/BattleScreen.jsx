@@ -1,6 +1,7 @@
 import Tile from "../components/Tile";
 import CombatLog from "../components/CombatLog";
 import { TAG_EMOJIS } from "../data/tags"; 
+import { STATUS_PROPERTIES } from "../data/statusEffects"; 
 
 export default function BattleScreen({ 
   playerAvatar, 
@@ -45,6 +46,7 @@ export default function BattleScreen({
 
     switch (eff.tag) {
       case 'poison':
+        return `${eff.tag.toUpperCase()}: ${eff.damagePerTick || 0} dmg/turn, ${eff.ticks || 0} turn(s)`;
       case 'bleed':
         return `${eff.tag.toUpperCase()}: ${eff.damagePerTick || 0} dmg/turn, ${eff.ticks || 0} turn(s)`;
       case 'shield':
@@ -53,8 +55,10 @@ export default function BattleScreen({
         return `Stunned: ${eff.ticks || 1} turn(s)`;
       case 'sleep':
         return `Sleeping: ${eff.ticks || 1} turn(s)`;
-      case 'cute':
-        return `Cute: target deals ${eff.reduceMult ? `${Math.round(eff.reduceMult * 100)}%` : 'reduced'} damage for ${eff.ticks || 1} turn(s)`;
+      case 'charm':
+        return `Charmed: target deals ${eff.reduceMult ? `${Math.round(eff.reduceMult * 100)}%` : 'reduced'} damage for ${eff.ticks || 1} turn(s)`;
+      case 'confusion':
+        return `Confused: 50% chance to attack self for ${eff.ticks || 1} turn(s)`;
       default:
         if (eff.ticks) return `${eff.tag.toUpperCase()}: ${eff.ticks} turn(s)`;
         return eff.tag.toUpperCase();
@@ -102,9 +106,10 @@ export default function BattleScreen({
             <div className="enemy-status-effects">
               {Array.from(new Set(enemy.statusEffects.map(s => s.tag))).map((tag, i) => {
                 const title = tooltipFor(enemy.statusEffects, tag);
+                const emoji = STATUS_PROPERTIES[tag]?.emoji || TAG_EMOJIS[tag] || '•';
                 return (
                   <div key={i} className="dot-pill" title={title}>
-                    <span className="dot-emoji">{TAG_EMOJIS[tag] || '•'}</span>
+                    <span className="dot-emoji">{emoji}</span>
                   </div>
                 );
               })}
@@ -125,9 +130,10 @@ export default function BattleScreen({
                  <div className="player-status-effects">
                    {Array.from(new Set(playerStatusEffects.map(s => s.tag))).map((tag, i) => {
                      const title = tooltipFor(playerStatusEffects, tag);
+                     const emoji = STATUS_PROPERTIES[tag]?.emoji || TAG_EMOJIS[tag] || '•';
                      return (
                        <div key={i} className="dot-pill" title={title}>
-                         <span className="dot-emoji">{TAG_EMOJIS[tag] || '•'}</span>
+                         <span className="dot-emoji">{emoji}</span>
                        </div>
                      );
                    })}
