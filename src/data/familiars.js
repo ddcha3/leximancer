@@ -32,13 +32,18 @@ export const FAMILIARS = [
   { 
     name: "wolf",
     emoji: "🐺",
-    vocabulary: ["HOWL"] 
+    vocabulary: ["AOO"] 
   },
   { 
     name: "fox",
     emoji: "🦊",
     vocabulary: ["YIP"] 
   },
+  {
+    name: "bear",
+    emoji: "🐻",
+    vocabulary: ["ROAR"]
+  }
   { 
     name: "raccoon",
     emoji: "🦝",

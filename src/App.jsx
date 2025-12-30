@@ -1,5 +1,5 @@
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import './App.css'
 
 import { createEnemy, MAX_STAGE } from './data/enemies';
@@ -177,6 +177,8 @@ function App() {
   const [shakeError, setShakeError] = useState(false);
   const [animState, setAnimState] = useState({ player: '', enemy: '', familiars: {} });
   const [spellEffect, setSpellEffect] = useState(null);
+  
+  const isProcessingDeath = useRef(false);
 
   let effectiveMaxHp = MAX_PLAYER_HP;
 
@@ -195,6 +197,19 @@ function App() {
       loadDictionary();
   }, []);
 
+  // Check for enemy death (from any source: player, familiar, DOTs)
+  useEffect(() => {
+    if (gameState === 'BATTLE' && currentEnemy && (currentEnemy.hp <= 0 || currentEnemy.wp <= 0)) {
+        if (isProcessingDeath.current) return;
+        isProcessingDeath.current = true;
+        
+        setTimeout(() => {
+             addLog(`The #${currentEnemy.name}# is defeated!`);
+             setTimeout(() => setGameState('REWARD'), 1000);
+        }, 500);
+    }
+  }, [currentEnemy, gameState]);
+
   const currentWordStr = spellSlots.map(t => t.char).join("");
   const isValidWord = currentWordStr.length > 2 && 
                      (dictionary.has(currentWordStr) || SPELLBOOK[currentWordStr]);
@@ -212,6 +227,7 @@ function App() {
   };
 
   const startEncounter = (index) => {
+    isProcessingDeath.current = false;
     setEnemyIndex(index);
     if (index >= MAX_STAGE) {
       setGameState('VICTORY');
@@ -486,10 +502,7 @@ function App() {
 
       // 5. CHECK DEATH
       if (nextEnemyState.hp <= 0 || nextEnemyState.wp <= 0) {
-          setTimeout(() => {
-             addLog(`The #${nextEnemyState.name}# is defeated!`);
-             setTimeout(() => setGameState('REWARD'), 1000);
-          }, 500);
+          // Handled by useEffect
           return;
       }
 
@@ -518,7 +531,7 @@ function App() {
          if (totalDamage > 0) {
              addLog(`#${enemyEntity.name}# takes *${totalDamage}* damage from ongoing effects.`);
              if (newHp <= 0) {
-                setTimeout(() => { addLog(`The #${enemyEntity.name}# is defeated!`); setTimeout(() => setGameState('REWARD'), 1000); }, 500);
+                // Handled by useEffect
                 return; // enemy died from DOT, skip its action
              }
          }
