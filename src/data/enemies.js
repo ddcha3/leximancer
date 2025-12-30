@@ -9,7 +9,7 @@ const BASES = {
       hp: 15,
       wp: 10,
       vocabulary: ['BITE', 'GNAW', 'CHEW', 'RAT', 'CHIT', 'EEK', 'TOE'],
-      weaknesses: ['earth', 'heavy', 'electric'],
+      weaknesses: ['heavy', 'electric'],
       resistances: ['poison']
     },
     {
@@ -20,7 +20,7 @@ const BASES = {
       hp: 12,
       wp: 12,
       vocabulary: ['BUG', 'HOLE', "ROOM", "ANT", "RUG"],
-      weaknesses: ['holy', 'blunt'],
+      weaknesses: ['heavy', 'blunt'],
       immunities: [],
       resistances: []
     },
@@ -43,7 +43,7 @@ const BASES = {
       hp: 20,
       wp: 10,
       vocabulary: ['CLAW', 'SAND', 'SHELL'],
-      weaknesses: ['charm', 'heavy', 'chaos'],
+      weaknesses: [],
       resistances: []
     }
   ],
@@ -68,7 +68,7 @@ const BASES = {
       hp: 24,
       wp: 16,
       vocabulary: ['BITE', 'HISS', 'SNEK', 'COIL', 'STRIKE'],
-      weaknesses: ['earth', 'dark'],
+      weaknesses: [],
       resistances: ['poison']
     },
     {
@@ -79,7 +79,7 @@ const BASES = {
       hp: 20,
       wp: 20,
       vocabulary: ['MEOW', 'SCRATCH', 'PURR', 'LEAP', 'CLAW', 'STALK'],
-      weaknesses: ['loud', 'charm'],
+      weaknesses: ['loud'],
       resistances: []
     },
     {
@@ -90,7 +90,7 @@ const BASES = {
       hp: 25,
       wp: 15,
       vocabulary: ['BARK', 'GROWL', 'FETCH', 'SNARL', 'HOWL', 'CHASE'],
-      weaknesses: ['taunt', 'chaos', 'charm'],
+      weaknesses: ['taunt', 'charm'],
       resistances: []
     }
   ],
@@ -104,7 +104,7 @@ const BASES = {
       hp: 30,
       wp: 45,
       vocabulary: ['ROLL', 'ROLLING', 'SMASH', 'ORANGE', 'LANTERN', 'VEGETATIVE'],
-      weaknesses: ['sharp', 'fire', 'ice'],
+      weaknesses: ['sharp', 'fire'],
       resistances: ['dark']
     },
     {
@@ -281,8 +281,8 @@ const AFFIXES = [
       7: []
     },
     weaknesses: ['water'],
-    resistances: [],
-    immunities: ['fire']
+    resistances: ['fire'],
+    immunities: []
   },
   {
     id: 'water',
@@ -297,9 +297,9 @@ const AFFIXES = [
       6: ['AQUATIC'],
       7: []
     },
-    weaknesses: ['ice'],
-    resistances: [],
-    immunities: ['water']
+    weaknesses: ['electric'],
+    resistances: ['water'],
+    immunities: []
   },
   {
     id: 'wind',
@@ -331,8 +331,8 @@ const AFFIXES = [
       7: []
     },
     weaknesses: ['holy'],
-    resistances: [],
-    immunities: ['dark']
+    resistances: ['dark'],
+    immunities: []
   },
   {
     id: 'lightning',
@@ -348,8 +348,8 @@ const AFFIXES = [
       7: []
     },
     weaknesses: ['earth'],
-    resistances: [],
-    immunities: ['electric']
+    resistances: ['electric'],
+    immunities: []
   },
   {
     id: 'verdant',
@@ -365,7 +365,7 @@ const AFFIXES = [
       7: []
     },
     weaknesses: ['fire'],
-    resistances: ['earth']
+    resistances: ['plant']
   },
   {
     id: 'stone',
@@ -381,8 +381,8 @@ const AFFIXES = [
       7: []
     },
     weaknesses: ['ice'],
-    resistances: [],
-    immunities: ['earth']
+    resistances: ['earth'],
+    immunities: []
   },
   {
     id: 'archer',
@@ -398,7 +398,7 @@ const AFFIXES = [
       7: []
     },
     weaknesses: ['blunt'],
-    resistances: ['sharp']
+    resistances: []
   },
   {
     id: 'toxic',
@@ -430,7 +430,7 @@ const AFFIXES = [
       6: ['IRRESISTIBLE'],
       7: []
     },
-    weaknesses: ['taunt'],
+    weaknesses: ['sorrow'],
     resistances: ['charm']
   },
   {
@@ -447,8 +447,8 @@ const AFFIXES = [
       7: []
     },
     weaknesses: ['fire'],
-    resistances: [],
-    immunities: ['ice']
+    resistances: ['ice'],
+    immunities: []
   }
 ];
 
