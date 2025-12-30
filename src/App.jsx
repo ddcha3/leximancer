@@ -8,7 +8,7 @@ import { TAG_EMOJIS } from './data/tags';
 import { ARTIFACTS } from './data/artifacts';
 import { FAMILIARS } from './data/familiars';
 import { PLAYER_DEFENSE, STARTING_DECK } from './data/player';
-import dictionaryText from './data/dictionary.txt?raw';
+// import dictionaryText from './data/dictionary.txt?raw';
 
 import { resolveSpell } from './engine/CombatEngine'
 import { STATUS_EFFECTS, STATUS_PROPERTIES } from './data/statusEffects';
@@ -24,7 +24,7 @@ const POS_TAG_MAP = {
     adverb: 'adverb',
 };
 
-const HAND_SIZE = 18;
+const HAND_SIZE = 45;
 const MAX_PLAYER_HP = 100;
 
 const shuffle = (array) => {
@@ -184,9 +184,7 @@ function App() {
   useEffect(() => {
       const loadDictionary = async () => {
         try {
-          const words = dictionaryText.split('\n').map(w => w.trim().toUpperCase());
-          const dictSet = new Set(words);
-          Object.keys(SPELLBOOK).forEach(w => dictSet.add(w));
+          const dictSet = new Set(Object.keys(SPELLBOOK));
           setDictionary(dictSet);
           setIsDictLoading(false);
         } catch (err) {
