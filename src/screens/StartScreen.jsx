@@ -52,7 +52,7 @@ export default function StartScreen({ onStart, isLoading }) {
         disabled={isLoading}
         style={{marginTop: '30px', fontSize: '1.2rem'}}
       >
-        {isLoading ? "Loading..." : "Begin Journey"}
+        {isLoading ? "Loading..." : "START"}
       </button>
 
       {/* --- THE MODAL --- */}
@@ -67,21 +67,21 @@ export default function StartScreen({ onStart, isLoading }) {
           <h4>Combat</h4>
           <ul>
             <li><strong>Spellcasting:</strong> Click tiles to form words. Words must be at least 3 letters long. Longer words generally deal more damage.</li>
-            <li><strong>Elements:</strong> Words like <em>FIRE</em>, <em>ICE</em>, or <em>BLADE</em> have tags. Use them to exploit enemy weaknesses.</li>
-            <li><strong>Utility:</strong> Words like <em>HEAL</em> or <em>FOOD</em> can restore your health. Words like <em>STUN</em> can freeze enemies.</li>
+            <li><strong>Tags:</strong> Words like <em>FIRE</em>, <em>ICE</em>, or <em>POISON</em> have elemental affinities or special effects. Use them to exploit enemy weaknesses.</li>
+            <li><strong>Utility:</strong> Words like <em>HEAL</em> or <em>FOOD</em> can restore your health. Words like <em>TRAP</em> can stun enemies.</li>
           </ul>
 
           <h4>Hand Management</h4>
           <ul>
-            <li><strong>🔀 Shuffle:</strong> Rearrange the order of your tiles (Free).</li>
-            <li><strong>♻ Mulligan:</strong> Discard your hand for 16 new tiles, but <strong>skip your turn</strong>.</li>
+            <li><strong>🔀 Shuffle:</strong> Rearrange the order of your tiles (free).</li>
+            <li><strong>♻ Mulligan:</strong> Discard your hand for 16 new tiles (skips your turn).</li>
           </ul>
 
           <h4>Enemies</h4>
           <ul>
             <li>Enemies have their own vocabulary and will attack you with words.</li>
-            <li>Enemies have both health (❤️) and willpower (🧠). Reduce either to zero to subdue them.</li>
-            <li>Some enemies are resistant to physical attacks but susceptible to psychological spells like <em>FEAR</em> or <em>BRIBE</em>.</li>
+            <li>Enemies have both health (❤️) and willpower (🧠). Reduce either to zero to win.</li>
+            <li>Some enemies are resistant to physical attacks but weak to psychological spells like <em>FEAR</em> or <em>BRIBE</em>.</li>
           </ul>
         </div>
       </Modal>

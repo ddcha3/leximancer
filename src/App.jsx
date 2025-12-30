@@ -8,7 +8,6 @@ import { TAG_EMOJIS } from './data/tags';
 import { ARTIFACTS } from './data/artifacts';
 import { FAMILIARS } from './data/familiars';
 import { PLAYER_DEFENSE, STARTING_DECK } from './data/player';
-// import dictionaryText from './data/dictionary.txt?raw';
 
 import { resolveSpell } from './engine/CombatEngine'
 import { STATUS_EFFECTS, STATUS_PROPERTIES } from './data/statusEffects';
@@ -705,8 +704,18 @@ function App() {
         if (familiars.length > 0) {
             familiars.forEach((familiar, index) => {
                 setTimeout(() => {
-                    setAnimState(prev => ({ ...prev, familiars: { ...prev.familiars, [familiar.id]: 'anim-action' } }));
-                    setTimeout(() => setAnimState(prev => ({ ...prev, familiars: { ...prev.familiars, [familiar.id]: '' } })), 400);
+                    setAnimState(prev => {
+                        const newFamiliars = Object.assign({}, prev.familiars);
+                        newFamiliars[familiar.id] = 'anim-action';
+                        return { ...prev, familiars: newFamiliars };
+                    });
+                    setTimeout(() => {
+                        setAnimState(prev => {
+                            const newFamiliars = Object.assign({}, prev.familiars);
+                            newFamiliars[familiar.id] = '';
+                            return { ...prev, familiars: newFamiliars };
+                        });
+                    }, 400);
                     
                     addLog(`${familiar.emoji} ${familiar.name} attacks with ${familiar.spell}!`);
                     const familiarResult = resolveSpell(familiar.spell, playerChar, currentEnemy, true);
