@@ -243,7 +243,8 @@ function App() {
     setGameState('BATTLE');
     drawHand(HAND_SIZE, shuffle(STARTING_DECK), []);
     setSpellSlots([]);
-    setFamiliars([]); // Clear familiars for new encounter
+    setFamiliars([]);
+    setPlayerStatusEffects([]);
     setAnimState({ player: '', enemy: '', familiars: {} });
     addLog(`A wild #${enemyData.name}# appears!`);
   };
