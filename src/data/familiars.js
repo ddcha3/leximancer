@@ -177,17 +177,17 @@ export const FAMILIARS = [
   { 
     name: "mouse",
     emoji: "🐁",
-    vocabulary: ["SQUEE"] 
+    vocabulary: ["NNN"] 
   },
   { 
     name: "rat",
     emoji: "🐀",
-    vocabulary: ["SQUEK"] 
+    vocabulary: ["SSS"] 
   },
   { 
     name: "hamster",
     emoji: "🐹",
-    vocabulary: ["SQUEK"] 
+    vocabulary: ["NYUM"] 
   },
   { 
     name: "rabbit",

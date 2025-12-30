@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react'
 import './App.css'
 
 import { createEnemy, MAX_STAGE } from './data/enemies';
-import { SPELLBOOK } from './data/spells';
+import { SPELLBOOK, loadSpellbook } from './data/spells';
 import { TAG_EMOJIS } from './data/tags';
 import { ARTIFACTS } from './data/artifacts';
 import { FAMILIARS } from './data/familiars';
@@ -183,6 +183,7 @@ function App() {
   useEffect(() => {
       const loadDictionary = async () => {
         try {
+          await loadSpellbook();
           const dictSet = new Set(Object.keys(SPELLBOOK));
           setDictionary(dictSet);
           setIsDictLoading(false);
