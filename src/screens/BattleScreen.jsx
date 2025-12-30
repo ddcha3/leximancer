@@ -217,12 +217,8 @@ export default function BattleScreen({
       <div className="controls">
         {/* SHUFFLE BUTTON */}
         <button onClick={onShuffle} title="Shuffle tile order in hand">🔀</button>
-        <button onClick={onClear} title="Clear staged tiles">✖</button>
-        <button 
-          onClick={onDiscard} 
-          style={{ borderColor: '#b85c50', color: '#b85c50' }}
-          title="Discard hand and skip turn"	
-        >
+        <button onClick={onClear} title="Clear staged tiles">❌</button>
+        <button onClick={onDiscard} title="Discard hand and skip turn">
           ♻
         </button>
         <button 

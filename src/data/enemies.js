@@ -229,7 +229,7 @@ const BASES = {
     {
       id: 'vampire',
       name: 'vampire',
-      emoji: '🧛',
+      emoji: '🧑‍⚖️',
       level: 6,
       hp: 160,
       wp: 140,
@@ -254,7 +254,7 @@ const BASES = {
     {
       id: 'leximancer',
       name: 'leximancer',
-      emoji: '🧙🏻‍♂️',
+      emoji: '🧙‍♂️',
       level: 7,
       hp: 300,
       wp: 200,

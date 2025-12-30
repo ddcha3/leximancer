@@ -21,16 +21,18 @@ export default function StartScreen({ onStart, isLoading }) {
         onClick={() => setShowHelp(true)}
         style={{
           marginBottom: '20px', 
-          fontSize: '0.9rem', 
+          fontSize: '1rem', 
           padding: '8px 16px',
-          borderColor: '#8b735b',
-          color: '#ffffffff'
+          borderColor: '#000000ff',
+          color: '#fff',
+          backgroundColor: 'var(--accent-red)',
+          fontFamily: 'FFFFORWA',
         }}
       >
-        📖 How to Play
+        HOW TO PLAY
       </button>
 
-      <p style={{marginBottom: '20px'}}>Choose your character:</p>
+      <p style={{marginBottom: '20px', fontSize: '0.8rem', fontFamily: 'FFFFORWA'}}>CHOOSE YOUR CHARACTER:</p>
       
       <div className="char-select-container">
         {CHARACTERS.map(char => (
@@ -50,7 +52,7 @@ export default function StartScreen({ onStart, isLoading }) {
         className="cast-btn" 
         onClick={handleStart} 
         disabled={isLoading}
-        style={{marginTop: '30px', fontSize: '1.2rem'}}
+        style={{marginTop: '30px', fontSize: '1rem', fontFamily: 'FFFFORWA', background: 'var(--accent-red)'}}
       >
         {isLoading ? "Loading..." : "START"}
       </button>
@@ -64,20 +66,20 @@ export default function StartScreen({ onStart, isLoading }) {
         <div className="modal-body">
           <p>You are a Leximancer, a mage who weaves reality through language.</p>
           
-          <h4>Combat</h4>
+          <h4>COMBAT</h4>
           <ul>
             <li><strong>Spellcasting:</strong> Click tiles to form words. Words must be at least 3 letters long. Longer words generally deal more damage.</li>
             <li><strong>Tags:</strong> Words like <em>FIRE</em>, <em>ICE</em>, or <em>POISON</em> have elemental affinities or special effects. Use them to exploit enemy weaknesses.</li>
             <li><strong>Utility:</strong> Words like <em>HEAL</em> or <em>FOOD</em> can restore your health. Words like <em>TRAP</em> can stun enemies.</li>
           </ul>
 
-          <h4>Hand Management</h4>
+          <h4>HAND MANAGEMENT</h4>
           <ul>
             <li><strong>🔀 Shuffle:</strong> Rearrange the order of your tiles (free).</li>
             <li><strong>♻ Mulligan:</strong> Discard your hand for 16 new tiles (skips your turn).</li>
           </ul>
 
-          <h4>Enemies</h4>
+          <h4>ENEMIES</h4>
           <ul>
             <li>Enemies have their own vocabulary and will attack you with words.</li>
             <li>Enemies have both health (❤️) and willpower (🧠). Reduce either to zero to win.</li>

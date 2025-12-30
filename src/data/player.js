@@ -23,7 +23,7 @@ export const CHARACTERS = [
   {
     id: 'elementalist',
     name: 'Elementalist',
-    avatar: '🧙🏿‍♂️',
+    avatar: '🧝‍♂️',
     desc: 'Deals double damage with elemental spells.',
     onCast: (stats, tags, word) => {
       // Check if any tag on the word matches the elemental list
@@ -40,7 +40,7 @@ export const CHARACTERS = [
     id: 'seer',
     name: 'Seer',
     avatar: '🧙‍♀️',
-    desc: 'Knows enemy weaknesses. Deals +3 damage when exploiting them.',
+    desc: 'Knows and exploits enemy weaknesses.',
     starting_items: ['crystal_ball'],
   }
 ];

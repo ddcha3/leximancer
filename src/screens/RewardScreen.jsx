@@ -5,8 +5,10 @@ export default function RewardScreen({ enemy, onNext }) {
       <p>{enemy?.name} defeated.</p>
       <div className="controls">
         {/* Placeholder for future upgrades */}
-        <button className="cast-btn" onClick={onNext}>
-          Next Encounter ➡
+        <button className="cast-btn" 
+          style={{marginTop: '30px', fontSize: '1rem', fontFamily: 'FFFFORWA', background: 'var(--accent-red)'}}
+          onClick={onNext}>
+          NEXT ENCOUNTER ➡
         </button>
       </div>
     </div>

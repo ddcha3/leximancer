@@ -837,7 +837,10 @@ function App() {
         <div className="reward-screen">
             <h1>DEFEAT</h1>
             <p>Your journey ends here.</p>
-            <button className="cast-btn" onClick={() => setGameState('START')}>Try Again</button>
+            <button 
+                className="cast-btn" 
+                style={{marginTop: '30px', fontSize: '1.2rem', fontFamily: 'FFFFORWA', background: 'var(--accent-red)'}}
+                onClick={() => setGameState('START')}>TRY AGAIN</button>
         </div>
     );
   }
@@ -859,7 +862,10 @@ function App() {
       <div className="reward-screen">
         <h1>LEGENDARY!</h1>
         <p>You have cleared the archives.</p>
-        <button className="cast-btn" onClick={() => setGameState('START')}>New Run</button>
+        <button 
+            className="cast-btn" 
+            style={{marginTop: '30px', fontSize: '1rem', fontFamily: 'FFFFORWA', background: 'var(--accent-red)'}}
+            onClick={() => setGameState('START')}>NEW RUN</button>
       </div>
     );
   }

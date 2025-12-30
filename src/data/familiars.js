@@ -160,19 +160,9 @@ export const FAMILIARS = [
     vocabulary: ["TRUMP"] 
   },
   { 
-    name: "rhino",
-    emoji: "🦏",
-    vocabulary: ["SNORT"] 
-  },
-  { 
     name: "hippo",
     emoji: "🦛",
     vocabulary: ["GRUNT"] 
-  },
-  { 
-    name: "rhinoceros",
-    emoji: "🦏",
-    vocabulary: ["SNORT"] 
   },
   { 
     name: "hippopotamus",
