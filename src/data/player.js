@@ -16,14 +16,14 @@ export const CHARACTERS = [
   {
     id: 'conjurer',
     name: 'Conjurer',
-    avatar: '🧙🏿‍♂️',
+    avatar: '🧞',
     desc: 'Summon familiars to aid in battle.',
     starting_items: []
   },
   {
     id: 'elementalist',
     name: 'Elementalist',
-    avatar: '🧘🏻‍♂️',
+    avatar: '🧙🏿‍♂️',
     desc: 'Elemental spells deal double damage.',
     onCast: (stats, tags, word) => {
       // Check if any tag on the word matches the elemental list
