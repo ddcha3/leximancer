@@ -8,7 +8,6 @@ console.log("Loaded SPELLBOOK with", Object.keys(SPELLBOOK).length, "spells.");
 const WEAKNESS_MULT = 2.0;
 const RESISTANCE_MULT = 0.5;
 const IMMUNITY_MULT = 0.0;
-import nlp from 'compromise';
 
 const defaultCalculatePower = (word) => {
   const upper = word.toUpperCase();
@@ -23,23 +22,8 @@ const defaultCalculatePower = (word) => {
 
 export function resolveSpell(word, caster, target, isPlayerCasting = true) {
   const upperWord = word.toUpperCase();
-  // NLP TAGGING
-  const doc = nlp(word);
-  doc.compute('root');
-  const lemma = doc.json()[0]?.terms[0]?.root?.toUpperCase() || upperWord;
-  console.log(`Resolving spell: "${word}" (lemma: "${lemma}")`);
-
-  const json = doc.json();
-  let posTags = [];
-  if (json[0] && json[0].terms[0]) {
-      posTags = json[0].terms[0].tags.map(t => t.toLowerCase());
-  }
-  const meaningfulPos = posTags.find(t => ['noun', 'verb', 'adjective', 'adverb'].includes(t));
-  
-  // GET BASE DATA
-  const tags = SPELLBOOK[lemma] || SPELLBOOK[upperWord] ? SPELLBOOK[lemma] || SPELLBOOK[upperWord] : ['concrete'];
+  let tags = SPELLBOOK[upperWord] ? SPELLBOOK[upperWord] : ['concrete'];
   console.log(`Spell data for "${word}":`, tags);
-  // if (meaningfulPos) tags.push(meaningfulPos);
 
   // Determine target stat (hp vs wp)
   let inferredTarget = 'hp';
@@ -143,6 +127,25 @@ export function resolveSpell(word, caster, target, isPlayerCasting = true) {
     }
   }
 
+  if (tags.includes('dark')) {
+    const duration = 3;
+    result.statusEffect = { tag: STATUS_EFFECTS.FEAR, ticks: duration };
+    result.logs.push(`> Fear! Defense lowered for ${duration} turns.`);
+  }
+
+  if (tags.includes('luck')) {
+    if (Math.random() < 0.05) {
+      result.instantKill = true;
+      result.logs.push(`> 🎲 JACKPOT! Instant defeat!`);
+      result.emoji = '🎰';
+    }
+  }
+
+  if (tags.includes('holy')) {
+    result.cleanse = true;
+    result.logs.push(`> Divine purification!`);
+  }
+
   if (tags.includes('shield')) {
     isAttack = false;
     const blockAmount = basePower * 1.5;
@@ -229,8 +232,22 @@ export function resolveSpell(word, caster, target, isPlayerCasting = true) {
     result.statusEffect = { tag: STATUS_EFFECTS.CHARM, ticks: duration, reduceMult: 0.5 };
     result.logs.push(`> The target is charmed and will deal reduced damage for ${duration} turns.`);
   }
+
+  // POWER: increase damage for hp-targeting spells for the next 2 turns
+  if (tags.includes('power')) {
+    const duration = 2;
+    result.statusEffect = { tag: STATUS_EFFECTS.POWER_BUFF, ticks: duration, damageMult: 1.5, targetType: 'hp', applyTo: 'caster' };
+    result.logs.push(`> Physical might increased for ${duration} turns!`);
+  }
+
+  // INTELLIGENCE: increase damage for wp-targeting spells for the next 2 turns
+  if (tags.includes('intelligence')) {
+    const duration = 2;
+    result.statusEffect = { tag: STATUS_EFFECTS.INTELLIGENCE_BUFF, ticks: duration, damageMult: 1.5, targetType: 'wp', applyTo: 'caster' };
+    result.logs.push(`> Mental prowess increased for ${duration} turns!`);
+  }
   // Prefer an elemental tag emoji when multiple tags are present (elemental > physical)
-  const elementalPriority = ['fire','water','ice','electric','air','earth','nature','poison'];
+  const elementalPriority = ['fire','water','ice','electric','air','earth','plant','poison'];
   let chosenTag = null;
   for (let el of elementalPriority) {
     if (tags.includes(el) && TAG_EMOJIS[el]) { chosenTag = el; break; }

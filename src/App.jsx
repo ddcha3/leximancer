@@ -10,7 +10,7 @@ import { PLAYER_DEFENSE, STARTING_DECK } from './data/player';
 import dictionaryText from './data/dictionary.txt?raw';
 
 import { resolveSpell } from './engine/CombatEngine'
-import { STATUS_EFFECTS } from './data/statusEffects';
+import { STATUS_EFFECTS, STATUS_PROPERTIES } from './data/statusEffects';
 
 import StartScreen from './screens/StartScreen'
 import BattleScreen from './screens/BattleScreen'
@@ -86,13 +86,23 @@ function addStatusEffect(currentEffects, newEffect, logCallback) {
     return effects;
 }
 
-function reduceIncomingDamage(currentEffects, incomingDamage, logCallback) {
+function applyStatusDamageMultipliers(currentEffects, incomingDamage, logCallback) {
     if (!currentEffects || currentEffects.length === 0) {
         return { remainingDamage: incomingDamage, newStatusEffects: [] };
     }
     let damage = incomingDamage;
     let newEffects = [...currentEffects];
     
+    // Check for FEAR (increases damage taken by 50%)
+    const fearEffect = newEffects.find(s => s.tag === STATUS_EFFECTS.FEAR);
+    if (fearEffect) {
+        const originalDamage = damage;
+        damage = Math.floor(damage * 1.5);
+        if (damage > originalDamage && logCallback) {
+             logCallback(`Fear increases damage by ${damage - originalDamage}!`);
+        }
+    }
+
     // Find shield
     const shieldIndex = newEffects.findIndex(s => s.tag === STATUS_EFFECTS.SHIELD);
     if (shieldIndex >= 0) {
@@ -110,7 +120,7 @@ function reduceIncomingDamage(currentEffects, incomingDamage, logCallback) {
     return { remainingDamage: damage, newStatusEffects: newEffects };
 }
 
-function getOutgoingDamageMultiplier(currentEffects, logCallback) {
+function getOutgoingDamageMultiplier(currentEffects, logCallback, spellTargetType = null) {
     if (!currentEffects) return 1.0;
 
     let multiplier = 1.0;
@@ -120,6 +130,24 @@ function getOutgoingDamageMultiplier(currentEffects, logCallback) {
         multiplier *= charmEffect.reduceMult;
         if (logCallback) {
             logCallback(`Damage reduced by ${(1 - charmEffect.reduceMult) * 100}% due to charm.`);
+        }
+    }
+
+    // Power buff: increases damage for hp-targeting spells
+    const powerBuff = currentEffects.find(s => s.tag === STATUS_EFFECTS.POWER_BUFF);
+    if (powerBuff && powerBuff.damageMult && spellTargetType === 'hp') {
+        multiplier *= powerBuff.damageMult;
+        if (logCallback) {
+            logCallback(`Physical damage increased by ${(powerBuff.damageMult - 1) * 100}% due to power buff!`);
+        }
+    }
+
+    // Intelligence buff: increases damage for wp-targeting spells
+    const intelligenceBuff = currentEffects.find(s => s.tag === STATUS_EFFECTS.INTELLIGENCE_BUFF);
+    if (intelligenceBuff && intelligenceBuff.damageMult && spellTargetType === 'wp') {
+        multiplier *= intelligenceBuff.damageMult;
+        if (logCallback) {
+            logCallback(`Mental damage increased by ${(intelligenceBuff.damageMult - 1) * 100}% due to intelligence buff!`);
         }
     }
 
@@ -173,7 +201,6 @@ function App() {
   const startGame = (character) => {
     setPlayerChar(character);
     setDeck(shuffle(STARTING_DECK));
-    setEnemyIndex(0);
     setLogs(["Entering the archives..."]);
     setInventory(character.starting_items.map(itemId => ARTIFACTS.find(a => a.id === itemId)));
     effectiveMaxHp = MAX_PLAYER_HP + inventory.reduce((s,a)=> s + (a.maxHpBonus || 0), 0);
@@ -183,6 +210,7 @@ function App() {
   };
 
   const startEncounter = (index) => {
+    setEnemyIndex(index);
     if (index >= MAX_STAGE) {
       setGameState('VICTORY');
       return;
@@ -272,6 +300,14 @@ function App() {
         }
       }
 
+      // Apply power/intelligence buffs to outgoing damage
+      if (result.damage > 0) {
+        const damageMult = getOutgoingDamageMultiplier(playerStatusEffects, (msg) => addLog(`You: ${msg}`), result.targetStat);
+        if (damageMult !== 1.0) {
+          result.damage = Math.floor(result.damage * damageMult);
+        }
+      }
+
       // 2. SHOW VISUALS
       let visualEmoji = result.emoji;
       if (!visualEmoji && result.tags.length > 0) {
@@ -300,6 +336,21 @@ function App() {
       if (result.heal > 0) {
           setPlayerHp(prev => Math.min(effectiveMaxHp, prev + result.heal));
           addLog(`Restored *${result.heal}* HP.`);
+      }
+
+      // B. CLEANSE (Self)
+      if (result.cleanse) {
+          setPlayerStatusEffects(prev => {
+              const newEffects = prev.filter(e => {
+                  const props = STATUS_PROPERTIES[e.tag];
+                  return props && props.type === 'buff';
+              });
+              
+              if (prev.length > newEffects.length) {
+                  addLog(`You are purified of all negative effects!`);
+              }
+              return newEffects;
+          });
       }
 
       // C. DAMAGE (Enemy or Self)
@@ -334,13 +385,23 @@ function App() {
           }
       }
 
-      if (result.damage > 0) {
+      if (result.instantKill) {
+          if (isSelfHit) {
+              // Player instant kill on self? Unlikely but possible with confusion
+              setPlayerHp(0);
+              setGameState('GAMEOVER');
+              addLog(`You accidentally defeated yourself instantly!`);
+          } else {
+              nextEnemyState.wp = 0;
+              addLog(`#${nextEnemyState.name}# was instantly defeated!`);
+          }
+      } else if (result.damage > 0) {
           if (isSelfHit) {
               setAnimState(prev => ({ ...prev, player: 'anim-damage' }));
               setTimeout(() => setAnimState(prev => ({ ...prev, player: '' })), 400);
               
               // Check for shield on player
-              const { remainingDamage, newStatusEffects } = reduceIncomingDamage(
+              const { remainingDamage, newStatusEffects } = applyStatusDamageMultipliers(
                   playerStatusEffects, 
                   result.damage, 
                   (msg) => addLog(`You: ${msg}`)
@@ -364,7 +425,7 @@ function App() {
               setTimeout(() => setAnimState(prev => ({ ...prev, enemy: '' })), 400);
 
               // Check for shield on enemy
-              const { remainingDamage, newStatusEffects } = reduceIncomingDamage(
+              const { remainingDamage, newStatusEffects } = applyStatusDamageMultipliers(
                   nextEnemyState.statusEffects, 
                   result.damage, 
                   (msg) => addLog(`#${nextEnemyState.name}#: ${msg}`)
@@ -520,7 +581,7 @@ function App() {
             let damageToApply = result.damage;
 
             // Apply charm reduction on the attacker if present (enemy statusEffects reducing outgoing damage)
-            const outgoingMult = getOutgoingDamageMultiplier(enemyEntity.statusEffects, (msg) => addLog(`#${enemyEntity.name}#: ${msg}`));
+            const outgoingMult = getOutgoingDamageMultiplier(enemyEntity.statusEffects, (msg) => addLog(`#${enemyEntity.name}#: ${msg}`), result.targetStat);
             if (outgoingMult !== 1.0) {
                 damageToApply = Math.max(0, Math.floor(damageToApply * outgoingMult));
             }
@@ -531,7 +592,7 @@ function App() {
                 setTimeout(() => setAnimState(prev => ({ ...prev, enemy: '' })), 400);
 
                 // Check for shield on enemy
-                const { remainingDamage, newStatusEffects } = reduceIncomingDamage(
+                const { remainingDamage, newStatusEffects } = applyStatusDamageMultipliers(
                     enemyEntity.statusEffects, 
                     damageToApply, 
                     (msg) => addLog(`#${enemyEntity.name}#: ${msg}`)
@@ -561,7 +622,7 @@ function App() {
                 }
 
                 // Check for shield on player
-                const { remainingDamage, newStatusEffects } = reduceIncomingDamage(
+                const { remainingDamage, newStatusEffects } = applyStatusDamageMultipliers(
                     playerStatusEffects, 
                     damageToApply, 
                     (msg) => addLog(`You: ${msg}`)

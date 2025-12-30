@@ -39,18 +39,24 @@ export const TAGS = [
     desc: 'Lightning, spark, shock, volt, energy, zap'
   },
   {
-    id: 'nature',
+    id: 'plant',
     emoji: '🌿',
     target: 'hp',
-    desc: 'Plant, vine, root, wild, beast, wood, animal, tree'
+    desc: 'Leaf, vine, root, wood, tree, flower, seed'
+  },
+  {
+    id: 'creature',
+    emoji: '🐾',
+    target: 'hp',
+    desc: 'Beast, animal, monster, wild, fauna, critter, unicorn'
   },
 
   // --- 2. PHYSICAL ---
   {
     id: 'sharp',
-    emoji: '🩸',
+    emoji: '🗡️',
     target: 'hp',
-    desc: 'Cut, slice, stab, pierce, bleed, sword, arrow, blade'
+    desc: 'Cut, slice, stab, pierce, bleed, sword, blade, bite'
   },
   {
     id: 'blunt',
@@ -59,10 +65,16 @@ export const TAGS = [
     desc: 'Smash, hit, bash, hammer, crush, force, pound'
   },
   {
-    id: 'gravity',
-    emoji: '🪐',
+    id: 'projectile',
+    emoji: '🏹',
     target: 'hp',
-    desc: 'Fall, weight, crush, heavy, orbit, pull, drop, table, car'
+    desc: 'Throw, shoot, launch, hurl, toss, catapult, sling, bullet, ball, arrow'
+  },
+  {
+    id: 'heavy',
+    emoji: '🪨',
+    target: 'hp',
+    desc: 'Fall, weight, crush, drop, table, car, sofa'
   },
 
   // --- 3. MENTAL & SOCIAL ---
@@ -70,7 +82,7 @@ export const TAGS = [
     id: 'dark',
     emoji: '🌑',
     target: 'wp',
-    desc: 'Shadow, curse, void, night, evil, terror, nightmare, scare, ghost, spooky, fear, dread, blind'
+    desc: 'Shadow, curse, void, night, evil, terror, nightmare, scare, ghost, spooky, fear, dread, blind, backstab'
   },
   {
     id: 'taunt',
@@ -82,13 +94,13 @@ export const TAGS = [
     id: 'charm',
     emoji: '😍',
     target: 'wp',
-    desc: 'Love, cute, attract, seduce, calm, soothe, comfort, peace, praise'
+    desc: 'Love, cute, attract, seduce, calm, soothe, comfort, peace, praise, friend, gift, give, fluffy, soft'
   },
   {
     id: 'negotiate',
     emoji: '🤝',
     target: 'wp',
-    desc: 'Trade, bargain, deal, bribe, diplomacy, agreement, treaty, gift, give, friend, ally'
+    desc: 'Trade, bargain, deal, bribe, diplomacy, agreement, treaty, persuade, money'
   },
   {
     id: 'sorrow',
@@ -97,22 +109,22 @@ export const TAGS = [
     desc: 'Sad, cry, grief, regret, tears, loss, mourn'
   },
   {
-    id: 'disgust',
-    emoji: '🤢',
-    target: 'wp',
-    desc: 'Gross, vomit, slime, rot, filth, trash, decay'
-  },
-  {
     id: 'loud',
     emoji: '📢',
     target: 'wp',
     desc: 'Loud, scream, noise, shout, thunder, roar, blast'
   },
   {
-    id: 'knowledge',
+    id: 'intelligence',
     emoji: '📚',
     target: 'wp',
-    desc: 'Learn, study, book, wisdom, fact, discover, reveal, truth, science, logic, mind, smart, brain, analyze, prepare'
+    desc: 'Learn, study, book, wisdom, fact, discover, reveal, truth, science, logic, mind, smart, brain, analyze, prepare, magic, arcane'
+  },
+  {
+    id: 'art',
+    emoji: '🎨',
+    target: 'wp',
+    desc: 'Create, draw, paint, music, craft, design, sculpt, profound, expressive, poetry'
   },
   {
     id: 'luck',
@@ -126,13 +138,13 @@ export const TAGS = [
     id: 'poison',
     emoji: '☣️',
     target: 'hp',
-    desc: 'Venom, toxic, virus, sick, disease, contaminate'
+    desc: 'Venom, disgust, toxic, virus, sick, disease, contaminate, rot, vomit, scum, slime, filth, trash, decay'
   },
   {
     id: 'stun',
     emoji: '😵‍💫',
     target: 'wp',
-    desc: 'Stop, paralysis, bind, trap, hold, immobilize'
+    desc: 'Stop, paralysis, bind, trap, hold, immobilize, petrify, snared, stuck'
   },
   {
     id: 'silence',
@@ -150,7 +162,7 @@ export const TAGS = [
     id: 'motion',
     emoji: '🏃',
     target: 'wp',
-    desc: 'Run, flee, speed, fast, travel, dash, escape'
+    desc: 'Run, flee, speed, fast, travel, dash, escape, movement'
   },
   {
     id: 'heal',
@@ -174,7 +186,7 @@ export const TAGS = [
     id: 'lifesteal',
     emoji: '💞',
     target: 'hp',
-    desc: 'Drain, absorb, leech, vampire, suck, siphon'
+    desc: 'Drain, absorb, leech, vampire, suck, siphon, blood'
   },
 
   // --- 5. META / SPECIAL ---
@@ -186,7 +198,7 @@ export const TAGS = [
   },
   {
     id: 'tech',
-    emoji: '💻',
+    emoji: '⚙️',
     target: 'hp',
     desc: 'Computer, machine, tool, gadget, digital, device'
   },
@@ -200,13 +212,19 @@ export const TAGS = [
     id: 'time',
     emoji: '⏰',
     target: 'wp',
-    desc: 'Clock, age, moment, future, past, delay, schedule, eternal'
+    desc: 'Clock, age, moment, future, past, delay, schedule, eternal, slow'
   },
   {
     id: 'space',
     emoji: '🌌',
     target: 'wp',
     desc: 'Galaxy, cosmos, void, distance, dimension, universe, star'
+  },
+  {
+    id: 'power',
+    emoji: '💪',
+    target: 'wp',
+    desc: 'Strong, buff, might, courage, force, vigor, fortitude'
   },
 
   // --- 6. FALLBACKS (The Two-Layer Logic) ---

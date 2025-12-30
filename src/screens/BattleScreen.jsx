@@ -59,6 +59,12 @@ export default function BattleScreen({
         return `Charmed: target deals ${eff.reduceMult ? `${Math.round(eff.reduceMult * 100)}%` : 'reduced'} damage for ${eff.ticks || 1} turn(s)`;
       case 'confusion':
         return `Confused: 50% chance to attack self for ${eff.ticks || 1} turn(s)`;
+      case 'fear':
+        return `Fear: +50% damage taken for ${eff.ticks || 1} turn(s)`;
+      case 'power_buff':
+        return `Power: +${eff.damageMult ? `${Math.round((eff.damageMult - 1) * 100)}%` : '50%'} HP damage for ${eff.ticks || 1} turn(s)`;
+      case 'intelligence_buff':
+        return `Intelligence: +${eff.damageMult ? `${Math.round((eff.damageMult - 1) * 100)}%` : '50%'} WP damage for ${eff.ticks || 1} turn(s)`;
       default:
         if (eff.ticks) return `${eff.tag.toUpperCase()}: ${eff.ticks} turn(s)`;
         return eff.tag.toUpperCase();
@@ -120,7 +126,6 @@ export default function BattleScreen({
         {/* --- PLAYER SECTION --- */}
         <div className="player-position">
           <div className="player-row">
-            {/* Apply animation class here */}
             <div className={`player-avatar ${animState.player}`}>
               {playerAvatar}
             </div>
@@ -180,7 +185,6 @@ export default function BattleScreen({
 
       <CombatLog logs={logs} />
       
-      {/* ... Rest of Controls ... */}
       {/* <div style={{ 
         height: '20px', 
         color: feedbackColor, 

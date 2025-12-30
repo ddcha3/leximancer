@@ -9,8 +9,8 @@ const BASES = {
       hp: 15,
       wp: 10,
       vocabulary: ['BITE', 'GNAW', 'CHEW', 'RAT', 'CHIT', 'EEK', 'TOE'],
-      weaknesses: ['earth', 'gravity', 'electric'],
-      resistances: ['disgust']
+      weaknesses: ['earth', 'heavy', 'electric'],
+      resistances: ['poison']
     },
     {
       id: 'roach',
@@ -32,8 +32,8 @@ const BASES = {
       hp: 18,
       wp: 8,
       vocabulary: ['SLIME', 'SHELL', 'CREEP', 'SNAIL'],
-      weaknesses: ['gravity', 'blunt'],
-      resistances: ['disgust']
+      weaknesses: ['heavy', 'blunt'],
+      resistances: ['poison']
     },
     {
       id: 'crab',
@@ -43,7 +43,7 @@ const BASES = {
       hp: 20,
       wp: 10,
       vocabulary: ['CLAW', 'SAND', 'SHELL'],
-      weaknesses: ['charm', 'gravity', 'chaos'],
+      weaknesses: ['charm', 'heavy', 'chaos'],
       resistances: []
     }
   ],
@@ -137,7 +137,7 @@ const BASES = {
       hp: 30,
       wp: 45,
       vocabulary: ['HOOT', 'FLY', 'STARE', 'NIGHT', 'WISE', 'SILENT'],
-      weaknesses: ['loud', 'electric', 'knowledge'],
+      weaknesses: ['loud', 'electric', 'intelligence'],
       resistances: ['dark', 'air']
     }
   ],
@@ -162,7 +162,7 @@ const BASES = {
       hp: 40,
       wp: 55,
       vocabulary: ['NYUM', 'ZAP', 'PROBE', 'HUM', 'FLOAT', 'EXTRATERRESTRIAL'],
-      weaknesses: ['knowledge', 'disgust', 'charm', 'negotiate'],
+      weaknesses: ['intelligence', 'poison', 'charm', 'negotiate'],
       resistances: ['chaos', 'tech']
     },
     {
@@ -187,7 +187,7 @@ const BASES = {
       hp: 140,
       wp: 40,
       vocabulary: ['SMASH', 'THUMP', 'ROAR', 'CRUSH', 'TROLLING', 'GRUMBLE'],
-      weaknesses: ['taunt','knowledge','charm'],
+      weaknesses: ['taunt','intelligence','charm'],
       resistances: ['blunt','earth']
     },
     {
@@ -240,7 +240,7 @@ const BASES = {
     {
       id: 'phoenix',
       name: 'phoenix',
-      emoji: '🐦‍🔥',
+      emoji: '🦚',
       level: 6,
       hp: 180,
       wp: 120,
@@ -259,7 +259,7 @@ const BASES = {
       hp: 300,
       wp: 200,
       vocabulary: ['WORDSMITH', 'INCANTATION', 'ENCHANTMENT', 'LEXICON', 'OMNISCIENT', 'SOLILOQUY', 'SPELLCRAFT', 'ARTICULATE'],
-      weaknesses: ['tech','holy','knowledge'],
+      weaknesses: ['tech','holy','intelligence'],
       resistances: ['chaos','dark','negotiate']
     }
   ]

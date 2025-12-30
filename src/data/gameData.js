@@ -150,7 +150,7 @@ export const TAG_EMOJIS = {
   fear: "💀",
   undead: "👻",
   light: "✨",
-  nature: "🌿",
+  plant: "🌿",
   wood: "🪵",
   lightning: "⚡",
   air: "💨",
