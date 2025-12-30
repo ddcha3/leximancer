@@ -127,16 +127,19 @@ export default function BattleScreen({
         {/* --- FAMILIAR SECTION --- */}
         {familiars && familiars.length > 0 && (
           <div className="familiar-position">
-            {familiars.map((familiar, index) => (
-              <div 
-                key={familiar.id} 
-                className={`familiar-avatar ${animState.familiars?.[familiar.id] || ''}`} 
-                title={`${familiar.name} - ${familiar.turnsLeft} turns left`}
-                style={{ marginLeft: index > 0 ? '10px' : '0' }}
-              >
-                {familiar.emoji}
-              </div>
-            ))}
+            {familiars.map((familiar, index) => {
+              const familiarAnim = (animState.familiars && animState.familiars[familiar.id]) || '';
+              return (
+                <div 
+                  key={familiar.id} 
+                  className={`familiar-avatar ${familiarAnim}`} 
+                  title={`${familiar.name} - ${familiar.turnsLeft} turns left`}
+                  style={{ marginLeft: index > 0 ? '10px' : '0' }}
+                >
+                  {familiar.emoji}
+                </div>
+              );
+            })}
           </div>
         )}
 
