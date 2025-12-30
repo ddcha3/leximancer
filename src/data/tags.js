@@ -28,7 +28,7 @@ export const TAGS = [
   },
   {
     id: 'earth',
-    emoji: '🪨',
+    emoji: '🌍',
     target: 'hp',
     desc: 'Rock, stone, mud, quake, sand, mountain, soil'
   },

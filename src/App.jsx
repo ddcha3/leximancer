@@ -6,6 +6,7 @@ import { createEnemy, MAX_STAGE } from './data/enemies';
 import { SPELLBOOK } from './data/spells';
 import { TAG_EMOJIS } from './data/tags';
 import { ARTIFACTS } from './data/artifacts';
+import { FAMILIARS } from './data/familiars';
 import { PLAYER_DEFENSE, STARTING_DECK } from './data/player';
 import dictionaryText from './data/dictionary.txt?raw';
 
@@ -23,7 +24,7 @@ const POS_TAG_MAP = {
     adverb: 'adverb',
 };
 
-const HAND_SIZE = 18;
+const HAND_SIZE = 45;
 const MAX_PLAYER_HP = 100;
 
 const shuffle = (array) => {
@@ -65,9 +66,10 @@ function processTurnStart(currentEffects, logCallback) {
             }
         }
 
-        // Decrement ticks
-        if (effect.ticks > 1) {
-            newStatusEffects.push({ ...effect, ticks: effect.ticks - 1 });
+        // Decrement ticks and keep if still active
+        const newTicks = effect.ticks - 1;
+        if (newTicks > 0) {
+            newStatusEffects.push({ ...effect, ticks: newTicks });
         }
     });
 
@@ -170,10 +172,11 @@ function App() {
   const [currentEnemy, setCurrentEnemy] = useState(null);
   const [enemyIndex, setEnemyIndex] = useState(0);
   const [playerStatusEffects, setPlayerStatusEffects] = useState([]);
+  const [familiars, setFamiliars] = useState([]); // Array of { id, emoji, spell, turnsLeft, name }
   const [logs, setLogs] = useState([]);
   
   const [shakeError, setShakeError] = useState(false);
-  const [animState, setAnimState] = useState({ player: '', enemy: '' });
+  const [animState, setAnimState] = useState({ player: '', enemy: '', familiars: {} });
   const [spellEffect, setSpellEffect] = useState(null);
 
   let effectiveMaxHp = MAX_PLAYER_HP;
@@ -206,6 +209,7 @@ function App() {
     effectiveMaxHp = MAX_PLAYER_HP + inventory.reduce((s,a)=> s + (a.maxHpBonus || 0), 0);
     setPlayerHp(effectiveMaxHp);
     setPlayerStatusEffects([]);
+    setFamiliars([]);
     startEncounter(0);
   };
 
@@ -225,7 +229,8 @@ function App() {
     setGameState('BATTLE');
     drawHand(HAND_SIZE, shuffle(STARTING_DECK), []);
     setSpellSlots([]);
-    setAnimState({ player: '', enemy: '' });
+    setFamiliars([]); // Clear familiars for new encounter
+    setAnimState({ player: '', enemy: '', familiars: {} });
     addLog(`A wild #${enemyData.name}# appears!`);
   };
 
@@ -289,6 +294,24 @@ function App() {
 
       // 1. CALL THE ENGINE
      const result = resolveSpell(currentWordStr, playerChar, spellTarget, true);
+
+      // Check if Conjurer is summoning a familiar
+      if (playerChar.id === 'conjurer') {
+          const familiarData = FAMILIARS.find(f => f.name.toUpperCase() === currentWordStr);
+          if (familiarData) {
+              const newFamiliar = {
+                  id: Date.now(),
+                  emoji: familiarData.emoji, 
+                  spell: familiarData.vocabulary[0], 
+                  turnsLeft: 3,
+                  name: familiarData.name
+              };
+              setFamiliars(prev => [...prev, newFamiliar]);
+              addLog(`Summoned ${familiarData.name}! ${familiarData.emoji}`);
+              setSpellEffect(familiarData.emoji);
+              setTimeout(() => setSpellEffect(null), 1000);
+          }
+      }
 
       // Artifact: Fairy Wings (+verb damage)
       const fairy = inventory.find(a => a.id === 'fairy_wings');
@@ -680,7 +703,59 @@ function App() {
           addLog(`You are afflicted with ${result.dot.tag}!`);
         }
 
-        // 3. REFILL HAND
+        // 3. FAMILIAR ATTACKS (if any summoned)
+        if (familiars.length > 0) {
+            familiars.forEach((familiar, index) => {
+                setTimeout(() => {
+                    setAnimState(prev => ({ ...prev, familiars: { ...prev.familiars, [familiar.id]: 'anim-action' } }));
+                    setTimeout(() => setAnimState(prev => ({ ...prev, familiars: { ...prev.familiars, [familiar.id]: '' } })), 400);
+                    
+                    addLog(`${familiar.emoji} ${familiar.name} attacks with ${familiar.spell}!`);
+                    const familiarResult = resolveSpell(familiar.spell, playerChar, currentEnemy, true);
+                    
+                    // Apply familiar damage
+                    if (familiarResult.damage > 0) {
+                        const { remainingDamage, newStatusEffects } = applyStatusDamageMultipliers(
+                            currentEnemy.statusEffects,
+                            familiarResult.damage,
+                            (msg) => addLog(`#${currentEnemy.name}#: ${msg}`)
+                        );
+                        
+                        if (remainingDamage > 0) {
+                            setCurrentEnemy(prev => {
+                                const newEnemy = { ...prev, statusEffects: newStatusEffects };
+                                if (familiarResult.targetStat === 'hp') {
+                                    newEnemy.hp = Math.max(0, newEnemy.hp - remainingDamage);
+                                } else {
+                                    newEnemy.wp = Math.max(0, newEnemy.wp - remainingDamage);
+                                }
+                                return newEnemy;
+                            });
+                            addLog(`Familiar dealt *${remainingDamage}* ${familiarResult.targetStat.toUpperCase()} damage!`);
+                        }
+                    }
+                }, 1000 + (index * 500));
+            });
+            
+            // Decrement all familiar turns after all attacks
+            setTimeout(() => {
+                setFamiliars(prev => {
+                    const updated = prev.map(f => ({
+                        ...f,
+                        turnsLeft: f.turnsLeft - 1
+                    })).filter(f => {
+                        if (f.turnsLeft <= 0) {
+                            addLog(`${f.emoji} ${f.name} vanishes...`);
+                            return false;
+                        }
+                        return true;
+                    });
+                    return updated;
+                });
+            }, 1000 + (familiars.length * 500));
+        }
+
+        // 4. REFILL HAND
         const tilesNeeded = HAND_SIZE - hand.filter(Boolean).length;
         if (tilesNeeded > 0) drawHand(tilesNeeded, deck, hand);
 
@@ -778,6 +853,7 @@ function App() {
       encounterIndex={enemyIndex}
       totalEncounters={MAX_STAGE}
       enemy={currentEnemy}
+      familiars={familiars}
       logs={logs}
       hand={hand}
       spellSlots={spellSlots}

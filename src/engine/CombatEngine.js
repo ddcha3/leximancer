@@ -2,6 +2,8 @@ import { LETTER_SCORES } from "../data/player";
 import { TAG_EMOJIS, TAG_TARGETS } from "../data/tags";
 import { SPELLBOOK } from '../data/spells';
 import { STATUS_EFFECTS } from '../data/statusEffects';
+import { FAMILIARS } from '../data/familiars';
+
 console.log("Loaded SPELLBOOK with", Object.keys(SPELLBOOK).length, "spells.");
 
 // Standardized multipliers (weakness/resistance/immunity)
@@ -65,6 +67,15 @@ export function resolveSpell(word, caster, target, isPlayerCasting = true) {
   };
 
   let isAttack = true;
+  if (caster.id === 'conjurer') {
+    // If conjurer is summoning a familiar, don't attack
+    const familiarData = FAMILIARS.find(f => f.name.toUpperCase() === word);
+    if (familiarData) {
+      isAttack = false;
+      result.emoji = familiarData.emoji;
+    }
+  }
+
   if (tags.includes("motion")) {
     result.logs.push(`> Increased speed!`);
     // result.emoji = "🏃";
@@ -235,16 +246,16 @@ export function resolveSpell(word, caster, target, isPlayerCasting = true) {
 
   // POWER: increase damage for hp-targeting spells for the next 2 turns
   if (tags.includes('power')) {
-    const duration = 2;
+    const duration = 3;
     result.statusEffect = { tag: STATUS_EFFECTS.POWER_BUFF, ticks: duration, damageMult: 1.5, targetType: 'hp', applyTo: 'caster' };
-    result.logs.push(`> Physical might increased for ${duration} turns!`);
+    result.logs.push(`> Physical might increased!`);
   }
 
   // INTELLIGENCE: increase damage for wp-targeting spells for the next 2 turns
   if (tags.includes('intelligence')) {
-    const duration = 2;
+    const duration = 3;
     result.statusEffect = { tag: STATUS_EFFECTS.INTELLIGENCE_BUFF, ticks: duration, damageMult: 1.5, targetType: 'wp', applyTo: 'caster' };
-    result.logs.push(`> Mental prowess increased for ${duration} turns!`);
+    result.logs.push(`> Mental prowess increased!`);
   }
   // Prefer an elemental tag emoji when multiple tags are present (elemental > physical)
   const elementalPriority = ['fire','water','ice','electric','air','earth','plant','poison'];

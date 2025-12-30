@@ -8,8 +8,8 @@ export const STATUS_EFFECTS = {
     SILENCE: 'silence',
     CONFUSION: 'confusion',
     FEAR: 'fear',
-    POWER_BUFF: 'power_buff',
-    INTELLIGENCE_BUFF: 'intelligence_buff',
+    POWER_BUFF: 'power buff',
+    INTELLIGENCE_BUFF: 'intelligence buff',
 };
 
 export const STATUS_PROPERTIES = {

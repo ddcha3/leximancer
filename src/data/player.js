@@ -14,18 +14,10 @@ export const LETTER_SCORES = {
 
 export const CHARACTERS = [
   {
-    id: 'summoner',
-    name: 'Summoner',
+    id: 'conjurer',
+    name: 'Conjurer',
     avatar: '🧙🏿‍♂️',
-    desc: 'Nouns deal +2 damage.',
-    // Modify the calculated stats before damage is dealt
-    onCast: (stats, tags, word) => {
-      if (tags.includes('noun')) {
-        stats.flatBonus += 2;
-        stats.logs.push(">(Summoner) Noun Bonus +2");
-      }
-      return stats;
-    },
+    desc: 'Summon familiars to aid in battle.',
     starting_items: []
   },
   {

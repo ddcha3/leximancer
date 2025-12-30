@@ -12,7 +12,8 @@ export default function BattleScreen({
   revealWeaknesses, 
   encounterIndex, 
   totalEncounters,
-  enemy, 
+  enemy,
+  familiars,
   logs, 
   hand, 
   spellSlots, 
@@ -122,6 +123,22 @@ export default function BattleScreen({
             </div>
           )}
         </div>
+
+        {/* --- FAMILIAR SECTION --- */}
+        {familiars && familiars.length > 0 && (
+          <div className="familiar-position">
+            {familiars.map((familiar, index) => (
+              <div 
+                key={familiar.id} 
+                className={`familiar-avatar ${animState.familiars?.[familiar.id] || ''}`} 
+                title={`${familiar.name} - ${familiar.turnsLeft} turns left`}
+                style={{ marginLeft: index > 0 ? '10px' : '0' }}
+              >
+                {familiar.emoji}
+              </div>
+            ))}
+          </div>
+        )}
 
         {/* --- PLAYER SECTION --- */}
         <div className="player-position">
