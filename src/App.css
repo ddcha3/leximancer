@@ -1,27 +1,31 @@
 @font-face {
   font-family: 'FFFFORWA';
-  src: url('./assets/fonts/FFFFORWA.ttf') format('truetype'); 
+  src: url('./assets/fonts/FFFFORWA.woff2') format('woff2'),
+       url('./assets/fonts/FFFFORWA.ttf') format('truetype'); 
   font-weight: normal;
   font-style: normal;
 }
 
 @font-face {
   font-family: 'PixeloidSans';
-  src: url('./assets/fonts/PixeloidSans.ttf') format('truetype'); 
+  src: url('./assets/fonts/PixeloidSans.woff2') format('woff2'),
+       url('./assets/fonts/PixeloidSans.ttf') format('truetype');
   font-weight: normal;
   font-style: normal;
 }
 
 @font-face {
   font-family: 'SerenityOS';
-  src: url('./assets/fonts/SerenityOS-Emoji.ttf') format('truetype'); 
+  src: url('./assets/fonts/SerenityOS-Emoji.woff2') format('woff2'),
+       url('./assets/fonts/SerenityOS-Emoji.ttf') format('truetype');
   font-weight: normal;
   font-style: normal;
 }
 
 @font-face {
   font-family: 'ari-bold';
-  src: url('./assets/fonts/ari-bold.ttf') format('truetype'); 
+  src: url('./assets/fonts/ari-bold.woff2') format('woff2'),
+       url('./assets/fonts/ari-bold.ttf') format('truetype'); 
   font-weight: normal;
   font-style: normal;
 }
