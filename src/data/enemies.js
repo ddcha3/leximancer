@@ -420,7 +420,7 @@ const AFFIXES = [
   {
     id: 'cute',
     name: 'cute',
-    emoji: '❤️‍🔥',
+    emoji: '💕',
     vocabByLevel: {
       1: ['KISS'],
       2: ['CUDDLE', 'KISS'],

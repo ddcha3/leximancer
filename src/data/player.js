@@ -17,14 +17,14 @@ export const CHARACTERS = [
     id: 'conjurer',
     name: 'Conjurer',
     avatar: '🧞',
-    desc: 'Summon familiars to aid in battle.',
+    desc: 'Summons familiars to aid in battle.',
     starting_items: []
   },
   {
     id: 'elementalist',
     name: 'Elementalist',
     avatar: '🧙🏿‍♂️',
-    desc: 'Elemental spells deal double damage.',
+    desc: 'Deals double damage with elemental spells.',
     onCast: (stats, tags, word) => {
       // Check if any tag on the word matches the elemental list
       const isElemental = tags.some(t => ELEMENTAL_TAGS.includes(t));
@@ -40,7 +40,7 @@ export const CHARACTERS = [
     id: 'seer',
     name: 'Seer',
     avatar: '🧙‍♀️',
-    desc: 'Knows enemy weaknesses. +3 damage when exploiting them.',
+    desc: 'Knows enemy weaknesses. Deals +3 damage when exploiting them.',
     starting_items: ['crystal_ball'],
   }
 ];

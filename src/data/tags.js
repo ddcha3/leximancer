@@ -22,7 +22,7 @@ export const TAGS = [
   },
   {
     id: 'air',
-    emoji: '💨',
+    emoji: '🌪️',
     target: 'hp',
     desc: 'Wind, storm, gust, blow, breeze, tornado'
   },
@@ -111,7 +111,7 @@ export const TAGS = [
   {
     id: 'loud',
     emoji: '📢',
-    target: 'wp',
+    target: 'hp',
     desc: 'Loud, scream, noise, shout, thunder, roar, blast'
   },
   {
@@ -160,8 +160,8 @@ export const TAGS = [
   },
   {
     id: 'motion',
-    emoji: '🏃',
-    target: 'wp',
+    emoji: '💨',
+    target: 'hp',
     desc: 'Run, flee, speed, fast, travel, dash, escape, movement'
   },
   {
@@ -217,13 +217,13 @@ export const TAGS = [
   {
     id: 'space',
     emoji: '🌌',
-    target: 'wp',
+    target: 'hp',
     desc: 'Galaxy, cosmos, void, distance, dimension, universe, star'
   },
   {
     id: 'power',
     emoji: '💪',
-    target: 'wp',
+    target: 'hp',
     desc: 'Strong, buff, might, courage, force, vigor, fortitude'
   },
 

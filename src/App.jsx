@@ -139,7 +139,7 @@ function getOutgoingDamageMultiplier(currentEffects, logCallback, spellTargetTyp
     if (powerBuff && powerBuff.damageMult && spellTargetType === 'hp') {
         multiplier *= powerBuff.damageMult;
         if (logCallback) {
-            logCallback(`Physical damage increased by ${(powerBuff.damageMult - 1) * 100}% due to power buff!`);
+            logCallback(`HP damage increased by ${(powerBuff.damageMult - 1) * 100}% due to power buff!`);
         }
     }
 
@@ -148,7 +148,7 @@ function getOutgoingDamageMultiplier(currentEffects, logCallback, spellTargetTyp
     if (intelligenceBuff && intelligenceBuff.damageMult && spellTargetType === 'wp') {
         multiplier *= intelligenceBuff.damageMult;
         if (logCallback) {
-            logCallback(`Mental damage increased by ${(intelligenceBuff.damageMult - 1) * 100}% due to intelligence buff!`);
+            logCallback(`WP damage increased by ${(intelligenceBuff.damageMult - 1) * 100}% due to intelligence buff!`);
         }
     }
 
