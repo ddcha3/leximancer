@@ -43,7 +43,7 @@ export const FAMILIARS = [
     name: "bear",
     emoji: "🐻",
     vocabulary: ["ROAR"]
-  }
+  },
   { 
     name: "raccoon",
     emoji: "🦝",
