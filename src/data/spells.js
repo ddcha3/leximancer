@@ -1,12 +1,9 @@
 import { CUSTOM_SPELLS } from './manual_spells';
 
-// Initialize with custom spells. 
-// The generated spells will be merged in asynchronously.
 export const SPELLBOOK = { ...CUSTOM_SPELLS };
 
 export async function loadSpellbook() {
   try {
-    // Use Vite's BASE_URL to construct the correct path
     const baseUrl = import.meta.env.BASE_URL;
     const url = `${baseUrl}generated_dictionary.json`;
     
@@ -16,10 +13,7 @@ export async function loadSpellbook() {
     }
     const data = await response.json();
     
-    // Merge generated spells into SPELLBOOK
     Object.assign(SPELLBOOK, data);
-    
-    // Re-apply custom spells to ensure they override generated ones if there are collisions
     Object.assign(SPELLBOOK, CUSTOM_SPELLS);
     
     console.log("Spellbook loaded with " + Object.keys(SPELLBOOK).length + " words.");

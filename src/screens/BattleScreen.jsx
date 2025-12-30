@@ -9,9 +9,7 @@ export default function BattleScreen({
   maxPlayerHp,   
   inventory,     
   playerStatusEffects, 
-  revealWeaknesses, 
-  encounterIndex, 
-  totalEncounters,
+  revealWeaknesses,
   enemy,
   familiars,
   logs, 
@@ -30,16 +28,13 @@ export default function BattleScreen({
   const playerHpPct = Math.max(0, (playerHp / maxPlayerHp) * 100);
 
   const feedbackColor = isValidWord ? '#4e6d46' : (spellSlots.length > 0 ? '#b85c50' : '#8b735b');
-  // const feedbackText = spellSlots.length > 2 ? (isValidWord ? "VALID SPELL" : "") : "PREPARE SPELL";
 
   const enemySize = `${3 + (enemy.level || 1) * 0.7}rem`;
 
-  // split combined emoji string into primary + secondary pieces
-  const emojis = Array.from(enemy.emoji || '');
-  const primaryEmoji = emojis[0] || '';
-  const secondaryEmoji = emojis.slice(1).join('');
+  const primaryEmoji = enemy.emoji;
+  const secondaryEmoji = enemy.affixEmoji || '';
 
-  const maxArtifacts = 3;
+  const maxArtifacts = 4;
 
   const tooltipFor = (effects, tag) => {
     const eff = effects && effects.find(s => s.tag === tag);
@@ -106,8 +101,6 @@ export default function BattleScreen({
             <span className="emoji-primary">{primaryEmoji}</span>
             {secondaryEmoji && <span className="emoji-secondary" aria-hidden>{secondaryEmoji}</span>}
           </div>
-
-
 
           {enemy.statusEffects && enemy.statusEffects.length > 0 && (
             <div className="enemy-status-effects">
@@ -204,17 +197,6 @@ export default function BattleScreen({
       </div>
 
       <CombatLog logs={logs} />
-      
-      {/* <div style={{ 
-        height: '20px', 
-        color: feedbackColor, 
-        fontWeight: 'bold', 
-        fontSize: '0.8rem',
-        marginBottom: '5px',
-        letterSpacing: '1px'
-      }}>
-        {feedbackText}
-      </div> */}
 
       <div 
         className={`spell-slot ${shakeError ? 'shake' : ''}`} 

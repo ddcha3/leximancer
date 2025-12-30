@@ -17,8 +17,8 @@ const BASES = {
       name: 'roach',
       emoji: '🪳',
       level: 1,
-      hp: 12,
-      wp: 12,
+      hp: 10,
+      wp: 15,
       vocabulary: ['BUG', 'HOLE', "ROOM", "ANT", "RUG"],
       weaknesses: ['heavy', 'blunt'],
       immunities: [],
@@ -467,7 +467,8 @@ export function createEnemy(stageIndex) {
   const capitalize = s => s.charAt(0).toUpperCase() + s.slice(1);
   const id = affix ? `${base.id}_${affix.id}` : base.id;
   const name = affix ? `${capitalize(affix.name)} ${capitalize(base.name)}` : capitalize(base.name);
-  const emoji = affix ? `${base.emoji}${affix.emoji ? affix.emoji : ''}` : base.emoji;
+  const emoji = base.emoji;
+  const affixEmoji = affix ? affix.emoji : '';
 
   // Merge vocabulary and tags; choose affix vocab based on base level (longer words for higher levels)
   let affixVocab = [];
@@ -489,6 +490,7 @@ export function createEnemy(stageIndex) {
     id,
     name,
     emoji,
+    affixEmoji,
     level: base.level,
     hp: base.hp,
     wp: base.wp,
