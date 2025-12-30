@@ -204,13 +204,13 @@ export const TAGS = [
   },
   {
     id: 'holy',
-    emoji: '😇',
+    emoji: '🪬',
     target: 'wp',
     desc: 'Divine, bless, radiant, angel, god, purify, sacred, wash, cleanse'
   },
   {
     id: 'time',
-    emoji: '⏰',
+    emoji: '⏳',
     target: 'wp',
     desc: 'Clock, age, moment, future, past, delay, schedule, eternal, slow'
   },
