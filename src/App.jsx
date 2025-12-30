@@ -23,7 +23,7 @@ const POS_TAG_MAP = {
     adverb: 'adverb',
 };
 
-const HAND_SIZE = 45;
+const HAND_SIZE = 18;
 const MAX_PLAYER_HP = 100;
 
 const shuffle = (array) => {
