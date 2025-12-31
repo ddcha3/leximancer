@@ -552,13 +552,13 @@ h1 {
 
 /* --- TILES (Wooden Blocks / Ivory) --- */
 .tile {
-  width: 45px;
-  height: 45px;
+  width: 35px;
+  height: 35px;
   background: #fdf5e6; /* Ivory */
   color: #2c241b;
   font-family: var(--font-header);
   font-weight: bold;
-  font-size: 1.3rem;
+  font-size: 1rem;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -580,7 +580,7 @@ h1 {
   position: absolute;
   bottom: 2px;
   right: 4px;
-  font-size: 0.7rem;
+  font-size: 0.6rem;
   font-weight: normal;
   color: var(--ink-secondary);
   opacity: 0.9;
@@ -614,10 +614,10 @@ h1 {
 .hand {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
+  gap: 6px;
   justify-content: center;
   min-height: 100px;
-  padding: 10px;
+  padding: 5px;
   background: rgba(0,0,0,0.02);
   border-radius: 8px;
 }
