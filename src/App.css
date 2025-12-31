@@ -1,31 +1,32 @@
 @font-face {
-  font-family: 'FFFFORWA';
+  font-family:'FFFFORWA';
   src: url('./assets/fonts/FFFFORWA.woff2') format('woff2'),
        url('./assets/fonts/FFFFORWA.ttf') format('truetype'); 
-  font-weight: normal;
-  font-style: normal;
+  font-weight:normal;
+  font-style:normal;
 }
 
 @font-face {
-  font-family: 'PixeloidSans';
+  font-family:'PixeloidSans';
   src: url('./assets/fonts/PixeloidSans.woff2') format('woff2'),
        url('./assets/fonts/PixeloidSans.ttf') format('truetype');
-  font-weight: normal;
-  font-style: normal;
+  font-weight:normal;
+  font-style:normal;
 }
 
 @font-face {
-  font-family: 'ari-bold';
+  font-family:'ari-bold';
   src: url('./assets/fonts/ari-bold.woff2') format('woff2'),
        url('./assets/fonts/ari-bold.ttf') format('truetype'); 
-  font-weight: normal;
-  font-style: normal;
+  font-weight:normal;
+  font-style:normal;
 }
 
 .pixel-emoji {
   image-rendering: pixelated; /* Chrome/Safari */
   image-rendering: crisp-edges; /* Firefox */
   object-fit: contain;
+  transform: translateY(-2px); 
 }
 
 :root {
@@ -39,8 +40,8 @@
   --accent-green: #4e6d46;
   
   /* --- TYPOGRAPHY --- */
-  --font-header: 'FFFFORWA', monospace;
-  --font-body: 'PixeloidSans', monospace;
+  --font-header:'FFFFORWA', monospace;
+  --font-body:'PixeloidSans', monospace;
 }
 
 body {
@@ -514,7 +515,7 @@ h1 {
   color: #fff;
   /* font-weight: bold; */
   text-shadow: 1px 1px 0 #000;
-  font-family: "ari-bold", monospace;
+  font-family:"ari-bold", monospace;
 }
 
 /* --- LOG --- */
@@ -573,7 +574,7 @@ h1 {
   transition: transform 0.1s;
   animation: tile-pop 0.2s ease-out;
   position: relative;
-  font-family: "ari-bold", monospace;
+  font-family:"ari-bold", monospace;
 }
 
 .tile-score {
