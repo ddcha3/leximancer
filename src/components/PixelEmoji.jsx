@@ -1,4 +1,3 @@
-import React, { useState, useEffect } from 'react';
 import spriteData from '../data/emoji-map.json'; 
 
 const PixelEmoji = ({ icon, size = "1.5rem", className = "", style = {} }) => {
@@ -22,7 +21,7 @@ const PixelEmoji = ({ icon, size = "1.5rem", className = "", style = {} }) => {
     );
   }
 
-
+  const sheetUrl = `${import.meta.env.BASE_URL}emoji-sheet.png`;
   const bgSize = `${spriteData.cols * 100}%`;
   const xPos = (coords.x / ( (spriteData.cols * spriteData.spriteSize) - spriteData.spriteSize )) * 100;
   const yPos = (coords.y / ( (spriteData.rows * spriteData.spriteSize) - spriteData.spriteSize )) * 100;
@@ -36,7 +35,7 @@ const PixelEmoji = ({ icon, size = "1.5rem", className = "", style = {} }) => {
         height: size,
         imageRendering: 'pixelated',
         
-        backgroundImage: 'url(/leximancer/public/emoji-sheet.png)',
+        backgroundImage: `url(${sheetUrl})`,
         backgroundSize: bgSize,
         backgroundPosition: `${xPos}% ${yPos}%`,
         backgroundRepeat: 'no-repeat',
