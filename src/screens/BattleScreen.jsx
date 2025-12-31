@@ -45,7 +45,7 @@ export default function BattleScreen({
   animState, 
   spellEffect 
 }) {
-  const { onMoveTile, onReturnTile, onCast, onClear, onDiscard, onShuffle, setSpellSlots } = actions;
+  const { onMoveTile, onReturnTile, onCast, onClear, onDiscard, onShuffle, onSort, setSpellSlots } = actions;
   const [showHelp, setShowHelp] = useState(false);
   const [activeId, setActiveId] = useState(null);
   const [activeTile, setActiveTile] = useState(null);
@@ -489,6 +489,9 @@ export default function BattleScreen({
         </button>
         <button onClick={onShuffle} title="Shuffle tile order in hand">
           <PixelEmoji icon="🔀" size="1.2rem"/>
+        </button>
+        <button onClick={onSort} title="Sort hand alphabetically">
+          <PixelEmoji icon="🔡" size="1.2rem"/>
         </button>
         <button onClick={onClear} title="Clear staged tiles">
           <PixelEmoji icon="🗑️" size="1.2rem"/>

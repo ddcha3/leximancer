@@ -359,6 +359,14 @@ function App() {
             });
             addLog(`You take *${totalDamage}* damage from ongoing effects.`);
         }
+  const handleSort = () => {
+    setHand(prev => {
+      const slots = [...prev];
+      const tiles = slots.filter(Boolean).sort((a, b) => a.char.localeCompare(b.char));
+      return slots.map(s => s ? tiles.shift() : null);
+    });
+    playSound('interface/paper', { volume: 0.8 });
+  };
     }
 
     if (!isValidWord) {
@@ -911,6 +919,14 @@ function App() {
     setTimeout(() => playSound('interface/paper', { volume: 0.8 }), 100);
     setTimeout(() => playSound('interface/paper', { volume: 0.8 }), 200);
   };
+  const handleSort = () => {
+    setHand(prev => {
+      const slots = [...prev];
+      const tiles = slots.filter(Boolean).sort((a, b) => a.char.localeCompare(b.char));
+      return slots.map(s => s ? tiles.shift() : null);
+    });
+    playSound('interface/paper', { volume: 0.8 });
+  };
   const handleDiscard = () => {
     setSpellSlots([]);
     drawHand(HAND_SIZE, deck, []);
@@ -999,6 +1015,7 @@ function App() {
         onClear: handleClear,
         onDiscard: handleDiscard,
         onShuffle: handleShuffle,
+        onSort: handleSort,
         setSpellSlots: setSpellSlots
       }}
     />
