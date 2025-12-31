@@ -169,7 +169,7 @@ export function resolveSpell(word, caster, target, isPlayerCasting = true, playS
 
   if (tags.includes('shield')) {
     isAttack = false;
-    const blockAmount = basePower * 1.5;
+    const blockAmount = Math.round(basePower * 1.5);
     const duration = 1; // next hit
     // Default: shield applies to the caster (self-buff)
     result.statusEffect = { tag: STATUS_EFFECTS.SHIELD, ticks: duration, block: blockAmount, applyTo: 'caster' };
