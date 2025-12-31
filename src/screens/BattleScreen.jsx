@@ -302,7 +302,7 @@ export default function BattleScreen({
             alignItems: 'center'
           }}>
             {resolvedSpell.isConfused && (
-              <div style={{
+              <div title="Confused: 50% chance to hit self" style={{
                 padding: '4px 8px',
                 backgroundColor: 'rgba(147, 51, 234, 0.5)',
                 borderRadius: '4px',
@@ -314,7 +314,8 @@ export default function BattleScreen({
               </div>
             )}
             {resolvedSpell.damage > 0 && (
-              <div style={{
+              <div title={`Deals ${resolvedSpell.damage} ${resolvedSpell.targetStat === 'hp' ? 'HP' : 'WP'} damage`}
+                style={{
                 display: 'flex',
                 alignItems: 'center',
                 gap: '4px',
@@ -327,7 +328,8 @@ export default function BattleScreen({
               </div>
             )}
             {resolvedSpell.heal > 0 && (
-              <div style={{
+              <div title={`Heals ${resolvedSpell.heal} HP`}
+                style={{
                 display: 'flex',
                 alignItems: 'center',
                 gap: '4px',
@@ -340,7 +342,8 @@ export default function BattleScreen({
               </div>
             )}
             {resolvedSpell.tags && resolvedSpell.tags.length > 0 && (
-              <div style={{
+              <div title={`Tags: ${resolvedSpell.tags.join(', ')}`}
+                style={{
                 display: 'flex',
                 alignItems: 'center',
                 gap: '4px',
@@ -354,7 +357,8 @@ export default function BattleScreen({
               </div>
             )}
             {resolvedSpell.statusEffect && (
-              <div style={{
+              <div title={`Status: ${resolvedSpell.statusEffect.tag}${resolvedSpell.statusEffect.ticks ? ` (${resolvedSpell.statusEffect.ticks} turn${resolvedSpell.statusEffect.ticks > 1 ? 's' : ''})` : ''}${resolvedSpell.statusEffect.block ? `, blocks ${resolvedSpell.statusEffect.block}` : ''}`}
+                style={{
                 display: 'flex',
                 alignItems: 'center',
                 gap: '4px',
@@ -367,7 +371,8 @@ export default function BattleScreen({
               </div>
             )}
             {resolvedSpell.dot && (
-              <div style={{
+              <div title={`${resolvedSpell.dot.tag}: ${resolvedSpell.dot.damagePerTick} dmg/turn for ${resolvedSpell.dot.ticks} turns`}
+                style={{
                 display: 'flex',
                 alignItems: 'center',
                 gap: '4px',
@@ -380,7 +385,8 @@ export default function BattleScreen({
               </div>
             )}
             {resolvedSpell.status && (
-              <div style={{
+              <div title={`Status: ${resolvedSpell.status}`}
+                style={{
                 display: 'flex',
                 alignItems: 'center',
                 gap: '4px',
@@ -393,7 +399,8 @@ export default function BattleScreen({
               </div>
             )}
             {resolvedSpell.cleanse && (
-              <div style={{
+              <div title="Cleanses negative effects"
+                style={{
                 display: 'flex',
                 alignItems: 'center',
                 gap: '4px',
