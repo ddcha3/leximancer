@@ -274,7 +274,7 @@ h1 {
 /* --- THE ARENA (Scene) --- */
 .arena {
   position: relative;
-  height: 280px; /* Fixed height for the "stage" */
+  height: 260px; /* Fixed height for the "stage" */
   margin-bottom: 20px;
   border-bottom: 2px solid var(--ink-secondary);
   background: rgba(93, 75, 53, 0.06);
@@ -420,7 +420,7 @@ h1 {
 .player-row {
   display: flex;
   align-items: flex-end;
-  gap: 10px;
+  gap: 5px;
 }
 
 .player-avatar {
@@ -519,10 +519,10 @@ h1 {
 
 /* --- LOG --- */
 .log {
-  height: 100px;
+  height: 90px;
   overflow-y: auto;
   background: rgba(255, 255, 255, 0.3);
-  border: 1px solid var(--ink-secondary);
+  border: 2px solid var(--ink-secondary);
   padding: 10px;
   text-align: left;
   font-size: 0.9rem;
@@ -600,7 +600,7 @@ h1 {
 }
 
 .spell-slot {
-  min-height: 55px;
+  min-height: 50px;
   background: rgba(0, 0, 0, 0.03);
   border-bottom: 2px solid var(--ink-primary);
   margin-bottom: 10px;
