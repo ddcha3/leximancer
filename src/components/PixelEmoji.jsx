@@ -1,11 +1,16 @@
+import React from 'react';
 import spriteData from '../data/emoji-map.json'; 
 
 const PixelEmoji = ({ icon, size = "1.5rem", className = "", style = {} }) => {
+  
   const getHexSequence = (str) => {
     if (!str) return "";
     const hexList = [];
     for (const char of str) {
-      hexList.push(char.codePointAt(0).toString(16).toUpperCase());
+      const code = char.codePointAt(0).toString(16).toUpperCase();
+      if (code !== 'FE0F') {
+        hexList.push(code);
+      }
     }
     return hexList.join('_');
   };
@@ -13,6 +18,7 @@ const PixelEmoji = ({ icon, size = "1.5rem", className = "", style = {} }) => {
   const hex = getHexSequence(icon);
   const coords = spriteData.map[hex];
 
+  // Fallback if not found
   if (!coords) {
     return (
       <span style={{ fontSize: size, lineHeight: 1, ...style }} className={className}>
@@ -21,10 +27,16 @@ const PixelEmoji = ({ icon, size = "1.5rem", className = "", style = {} }) => {
     );
   }
 
+  const bgWidth = (spriteData.sheetWidth / spriteData.spriteSize) * 100;
+  const bgHeight = (spriteData.sheetHeight / spriteData.spriteSize) * 100;
+
+  const xDenom = spriteData.sheetWidth - spriteData.spriteSize;
+  const yDenom = spriteData.sheetHeight - spriteData.spriteSize;
+
+  const xPos = xDenom > 0 ? (coords.x / xDenom) * 100 : 0;
+  const yPos = yDenom > 0 ? (coords.y / yDenom) * 100 : 0;
+
   const sheetUrl = `${import.meta.env.BASE_URL}emoji-sheet.png`;
-  const bgSize = `${spriteData.cols * 100}%`;
-  const xPos = (coords.x / ( (spriteData.cols * spriteData.spriteSize) - spriteData.spriteSize )) * 100;
-  const yPos = (coords.y / ( (spriteData.rows * spriteData.spriteSize) - spriteData.spriteSize )) * 100;
 
   return (
     <div 
@@ -36,7 +48,7 @@ const PixelEmoji = ({ icon, size = "1.5rem", className = "", style = {} }) => {
         imageRendering: 'pixelated',
         
         backgroundImage: `url(${sheetUrl})`,
-        backgroundSize: bgSize,
+        backgroundSize: `${bgWidth}% ${bgHeight}%`,
         backgroundPosition: `${xPos}% ${yPos}%`,
         backgroundRepeat: 'no-repeat',
         
