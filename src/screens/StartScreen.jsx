@@ -1,25 +1,32 @@
 import { useState } from 'react';
 import { CHARACTERS } from '../data/player';
 import Title from '../components/Title';
-import HelpModal from '../components/HelpModal'; // Import the new component
+import HelpModal from '../components/HelpModal';
 import PixelEmoji from '../components/PixelEmoji';
+import { useSound } from '../contexts/SoundContext';
+import SoundToggle from '../components/SoundToggle';
 
 export default function StartScreen({ onStart, isLoading }) {
   const [selectedCharId, setSelectedCharId] = useState(CHARACTERS[0].id);
-  const [showHelp, setShowHelp] = useState(false); // State for modal
+  const [showHelp, setShowHelp] = useState(false);
+  const { playSound } = useSound();
 
   const handleStart = () => {
+    playSound('interface/bonus');
     const char = CHARACTERS.find(c => c.id === selectedCharId);
     onStart(char);
   };
 
   return (
     <div className="start-screen">
+      <SoundToggle />
       <Title text="LEXIMANCER" />
       
-      {/* --- INSTRUCTION BUTTON --- */}
       <button 
-        onClick={() => setShowHelp(true)}
+        onClick={() => {
+          playSound('interface/click');
+          setShowHelp(true);
+        }}
         style={{
           marginBottom: '20px', 
           fontSize: '1rem', 
@@ -40,7 +47,10 @@ export default function StartScreen({ onStart, isLoading }) {
           <div 
             key={char.id}
             className={`char-card ${selectedCharId === char.id ? 'selected' : ''}`}
-            onClick={() => setSelectedCharId(char.id)}
+            onClick={() => {
+              playSound('interface/click');
+              setSelectedCharId(char.id);
+            }}
           >
             <div className="char-avatar"><PixelEmoji icon={char.avatar} size="4rem" /> </div>
             <h3>{char.name}</h3>

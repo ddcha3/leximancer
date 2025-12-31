@@ -1,6 +1,7 @@
 
 import { useState, useEffect, useRef } from 'react'
 import './App.css'
+import { useSound } from './contexts/SoundContext';
 
 import { createEnemy, MAX_STAGE } from './data/enemies';
 import { SPELLBOOK, loadSpellbook } from './data/spells';
@@ -156,7 +157,22 @@ function getOutgoingDamageMultiplier(currentEffects, logCallback, spellTargetTyp
 }
 
 function App() {
+  const { playMusic, playSound } = useSound();
   const [gameState, setGameState] = useState('START'); 
+  const battleTrackIndex = useRef(0);
+
+  useEffect(() => {
+    if (gameState === 'BATTLE') {
+      const battleTracks = ['music/battle1', 'music/battle2', 'music/battle3'];
+      const track = battleTracks[battleTrackIndex.current];
+      playMusic(track);
+      
+      battleTrackIndex.current = (battleTrackIndex.current + 1) % battleTracks.length;
+    } else {
+      playMusic('music/menu');
+    }
+  }, [gameState, playMusic]);
+
   const [playerChar, setPlayerChar] = useState(null); 
   const [dictionary, setDictionary] = useState(new Set());
   const [isDictLoading, setIsDictLoading] = useState(true);
@@ -199,12 +215,24 @@ function App() {
 
   // Check for enemy death (from any source: player, familiar, DOTs)
   useEffect(() => {
+    // If either HP or WP is zero or below, enemy is defeated
     if (gameState === 'BATTLE' && currentEnemy && (currentEnemy.hp <= 0 || currentEnemy.wp <= 0)) {
         if (isProcessingDeath.current) return;
         isProcessingDeath.current = true;
         
         setTimeout(() => {
              addLog(`The #${currentEnemy.name}# is defeated!`);
+             setTimeout(() => setGameState('REWARD'), 1000);
+        }, 500);
+    }
+
+    // If both HP and WP are below 25%, enemy surrenders
+    if (gameState === 'BATTLE' && currentEnemy && (currentEnemy.hp <= currentEnemy.maxHp * 0.25 && currentEnemy.wp <= currentEnemy.maxWp * 0.25)) {
+        if (isProcessingDeath.current) return;
+        isProcessingDeath.current = true;
+        
+        setTimeout(() => {
+             addLog(`The #${currentEnemy.name}# surrenders!`);
              setTimeout(() => setGameState('REWARD'), 1000);
         }, 500);
     }
@@ -265,6 +293,13 @@ function App() {
     }
     setDeck(deckCopy);
     setHand(newHand);
+
+    // Play shuffle sound effect
+    // playSound('interface/paper', { volume: 0.8 });
+    // setTimeout(() => playSound('interface/paper', { volume: 0.8 }), 100);
+    // setTimeout(() => playSound('interface/paper', { volume: 0.8 }), 200);
+    // setTimeout(() => playSound('interface/paper', { volume: 0.8 }), 300);
+    // setTimeout(() => playSound('interface/paper', { volume: 0.8 }), 400);
   };
 
   const handleCast = () => {
@@ -308,7 +343,7 @@ function App() {
       }
 
       // 1. CALL THE ENGINE
-     const result = resolveSpell(currentWordStr, playerChar, spellTarget, true);
+     const result = resolveSpell(currentWordStr, playerChar, spellTarget, true, playSound);
 
       // Check if Conjurer is summoning a familiar
       let updatedFamiliars = [...familiars];
@@ -576,7 +611,7 @@ function App() {
         }
 
         // 1. CALL ENGINE (isPlayerCasting = false)
-        const result = resolveSpell(word, enemyEntity, spellTarget, false);
+        const result = resolveSpell(word, enemyEntity, spellTarget, false, playSound);
 
         setSpellEffect(result.emoji || "💥");
         setTimeout(() => setSpellEffect(null), 1000);
@@ -736,7 +771,7 @@ function App() {
                     }, 400);
                     
                     addLog(`#${familiar.name}# casts ^${familiar.spell}^!`);
-                    const familiarResult = resolveSpell(familiar.spell, playerChar, currentEnemy, true);
+                    const familiarResult = resolveSpell(familiar.spell, playerChar, currentEnemy, true, playSound);
                     
                     // Apply familiar damage
                     if (familiarResult.damage > 0) {
@@ -790,6 +825,7 @@ function App() {
   const handleMoveTile = (tile) => {
     setHand(prev => prev.map(h => (h && h.id === tile.id) ? null : h));
     setSpellSlots(prev => [...prev, tile]);
+    playSound('interface/click');
   };
   const handleReturnTile = (tile) => {
     setSpellSlots(prev => prev.filter(t => t.id !== tile.id));
@@ -800,6 +836,7 @@ function App() {
       else res.push(tile);
       return res;
     });
+    playSound('interface/paper');
   };
   const handleClear = () => {
     setHand(prev => {
@@ -812,6 +849,7 @@ function App() {
       return res;
     });
     setSpellSlots([]);
+    playSound('interface/paper');
   };
   const handleShuffle = () => {
     setHand(prev => {
@@ -821,12 +859,18 @@ function App() {
       return slots.map(s => s ? shuffled.shift() : null);
     });
     setHand(prev => shuffle([...prev]));
+
+    // Play the paper sound three times
+    playSound('interface/paper', { volume: 0.8 });
+    setTimeout(() => playSound('interface/paper', { volume: 0.8 }), 100);
+    setTimeout(() => playSound('interface/paper', { volume: 0.8 }), 200);
   };
   const handleDiscard = () => {
     setSpellSlots([]);
     drawHand(HAND_SIZE, deck, []);
     addLog("Mulligan! You waste a turn.");
     handleEnemyAttack(currentEnemy);
+    playSound('interface/bonus');
   };
   const addLog = (...messages) => setLogs(prev => [...prev, ...messages]);
 

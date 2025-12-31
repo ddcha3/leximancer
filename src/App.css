@@ -149,7 +149,7 @@ h1 {
   width: 125px;
   cursor: pointer;
   transition: all 0.2s;
-  background: rgba(226, 164, 106, 0.5);
+  background: rgba(240, 214, 190, 0.5);
   box-shadow: 3px 3px 0 rgba(0,0,0,0.3);
 }
 
@@ -160,7 +160,7 @@ h1 {
 
 .char-card.selected {
   border: 4px solid var(--accent-red);
-  background: rgba(230, 176, 60, 0.8);
+  background: rgba(211, 159, 47, 0.8);
 }
 
 .char-avatar {
@@ -324,12 +324,12 @@ h1 {
 }
 .enemy-emoji .emoji-secondary {
   display: inline-block;
-  z-index: -1;
+  z-index: 2;
   line-height: 1;
   font-size: 0.5em;
-  margin-left: -0.5em;
+  margin-left: -0.6em;
   position: relative;
-  top: -0.6em;
+  top: 0.8em;
   opacity: 0.95;
   animation: bounce 5s infinite ease-in-out;
 }

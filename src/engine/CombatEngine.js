@@ -1,5 +1,5 @@
 import { LETTER_SCORES } from "../data/player";
-import { TAG_EMOJIS, TAG_TARGETS } from "../data/tags";
+import { TAG_EMOJIS, TAG_TARGETS, TAG_SOUNDS } from "../data/tags";
 import { SPELLBOOK } from '../data/spells';
 import { STATUS_EFFECTS } from '../data/statusEffects';
 import { FAMILIARS } from '../data/familiars';
@@ -22,10 +22,20 @@ const defaultCalculatePower = (word) => {
   return score;
 };
 
-export function resolveSpell(word, caster, target, isPlayerCasting = true) {
+export function resolveSpell(word, caster, target, isPlayerCasting = true, playSound = null) {
   const upperWord = word.toUpperCase();
   let tags = SPELLBOOK[upperWord] ? SPELLBOOK[upperWord] : ['concrete'];
   console.log(`Spell data for "${word}":`, tags);
+
+  // PLAY SOUND EFFECT
+  if (playSound) {
+    const soundTag = tags.find(t => TAG_SOUNDS[t]);
+    if (soundTag) {
+      playSound(TAG_SOUNDS[soundTag], { volume: 0.7 });
+    } else {
+      playSound('abilities/woosh_b', { volume: 0.5 });
+    }
+  }
 
   // Determine target stat (hp vs wp)
   let inferredTarget = 'hp';

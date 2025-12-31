@@ -5,6 +5,7 @@ import { TAG_EMOJIS } from "../data/tags";
 import { STATUS_PROPERTIES } from "../data/statusEffects"; 
 import PixelEmoji from '../components/PixelEmoji';
 import HelpModal from '../components/HelpModal';
+import SoundToggle from '../components/SoundToggle';
 
 export default function BattleScreen({ 
   playerAvatar, 
@@ -73,6 +74,7 @@ export default function BattleScreen({
 
   return (
     <div className="app">
+      <SoundToggle />
       <div className="arena">
         
         {/* --- SPELL EFFECT OVERLAY --- */}
@@ -144,7 +146,7 @@ export default function BattleScreen({
         <div className="player-position">
           <div className="player-row">
             <div className={`player-avatar ${animState.player}`}>
-              <PixelEmoji icon={playerAvatar} size="6rem"/>
+              <PixelEmoji icon={playerAvatar} size="4.5rem"/>
             </div>
             
             <div className="player-stats">
