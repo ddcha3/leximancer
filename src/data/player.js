@@ -14,13 +14,20 @@ export const LETTER_SCORES = {
 
 export const CHARACTERS = [
   {
+    id: 'seer',
+    name: 'Seer',
+    avatar: '🧙‍♀️',
+    desc: 'Knows and exploits enemy weaknesses.',
+    starting_items: ['crystal_ball'],
+  },
+  {
     id: 'conjurer',
     name: 'Conjurer',
     avatar: '🧞',
     desc: 'Summons familiars to aid in battle.',
     starting_items: []
   },
-  {
+ {
     id: 'elementalist',
     name: 'Elementalist',
     avatar: '🧝‍♂️',
@@ -35,13 +42,6 @@ export const CHARACTERS = [
       return stats;
     },
     starting_items: []
-  },
-  {
-    id: 'seer',
-    name: 'Seer',
-    avatar: '🧙‍♀️',
-    desc: 'Knows and exploits enemy weaknesses.',
-    starting_items: ['crystal_ball'],
   }
 ];
 

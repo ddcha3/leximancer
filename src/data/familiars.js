@@ -468,5 +468,10 @@ export const FAMILIARS = [
     name: "Worm",
     emoji: "🪱",
     vocabulary: ["SQRM"] 
+  },
+  {
+    name: "Frog",
+    emoji: "🐸",
+    vocabulary: ["RIB"]
   }
 ]
