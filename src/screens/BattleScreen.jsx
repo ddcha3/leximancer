@@ -37,7 +37,8 @@ export default function BattleScreen({
   familiars,
   logs, 
   hand, 
-  spellSlots, 
+  spellSlots,
+  resolvedSpell,
   actions,
   isValidWord,
   shakeError,
@@ -284,6 +285,152 @@ export default function BattleScreen({
       </div>
 
       <CombatLog logs={logs} />
+
+       {/* --- SPELL PREVIEW INFO --- */}
+        {resolvedSpell && spellSlots.length > 0 && resolvedSpell.isValid && (
+          <div className="spell-preview" style={{
+            display: 'flex',
+            flexWrap: 'wrap',
+            gap: '8px',
+            marginTop: '8px',
+            padding: '8px',
+            // backgroundColor: 'rgba(0, 0, 0, 0.3)',
+            borderRadius: '8px',
+            fontSize: '0.9rem',
+            color: '#c9ad8a',
+            justifyContent: 'center',
+            alignItems: 'center'
+          }}>
+            {resolvedSpell.isConfused && (
+              <div style={{
+                padding: '4px 8px',
+                backgroundColor: 'rgba(147, 51, 234, 0.5)',
+                borderRadius: '4px',
+                fontSize: '0.8rem',
+                fontWeight: 'bold',
+                color: '#e9d5ff'
+              }}>
+                CONFUSED
+              </div>
+            )}
+            {resolvedSpell.damage > 0 && (
+              <div style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '4px',
+                padding: '4px 8px',
+                backgroundColor: 'rgba(90, 75, 73, 0.3)',
+                borderRadius: '4px'
+              }}>
+                <PixelEmoji icon={resolvedSpell.targetStat === 'hp' ? '❤️' : '🧠'} size="1rem"/>
+                <span style={{fontWeight: 'bold', color: resolvedSpell.targetStat === 'hp' ? '#ff6b6b' : '#4949f3ff'}}>{resolvedSpell.damage}</span>
+              </div>
+            )}
+            {resolvedSpell.heal > 0 && (
+              <div style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '4px',
+                padding: '4px 8px',
+                backgroundColor: 'rgba(78, 109, 70, 0.3)',
+                borderRadius: '4px'
+              }}>
+                <PixelEmoji icon="💚" size="1rem"/>
+                <span style={{fontWeight: 'bold', color: '#4ade80'}}>+{resolvedSpell.heal}</span>
+              </div>
+            )}
+            {resolvedSpell.tags && resolvedSpell.tags.length > 0 && (
+              <div style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '4px',
+                padding: '4px 8px',
+                backgroundColor: 'rgba(139, 115, 91, 0.3)',
+                borderRadius: '4px'
+              }}>
+                {resolvedSpell.tags.filter(t => TAG_EMOJIS[t]).slice(0, 3).map((tag, i) => (
+                  <PixelEmoji key={i} icon={TAG_EMOJIS[tag]} size="1rem" title={tag}/>
+                ))}
+              </div>
+            )}
+            {resolvedSpell.statusEffect && (
+              <div style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '4px',
+                padding: '4px 8px',
+                backgroundColor: 'rgba(147, 51, 234, 0.3)',
+                borderRadius: '4px'
+              }}>
+                <PixelEmoji icon={STATUS_PROPERTIES[resolvedSpell.statusEffect.tag]?.emoji || '✨'} size="1rem"/>
+                <span style={{fontSize: '0.8rem'}}>{resolvedSpell.statusEffect.tag} {resolvedSpell.statusEffect.block}</span>
+              </div>
+            )}
+            {resolvedSpell.dot && (
+              <div style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '4px',
+                padding: '4px 8px',
+                backgroundColor: 'rgba(147, 51, 234, 0.3)',
+                borderRadius: '4px'
+              }}>
+                <PixelEmoji icon={STATUS_PROPERTIES[resolvedSpell.dot.tag]?.emoji || '🩸'} size="1rem"/>
+                <span style={{fontSize: '0.8rem'}}>{resolvedSpell.dot.damagePerTick}×{resolvedSpell.dot.ticks}</span>
+              </div>
+            )}
+            {resolvedSpell.status && (
+              <div style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '4px',
+                padding: '4px 8px',
+                backgroundColor: 'rgba(147, 51, 234, 0.3)',
+                borderRadius: '4px'
+              }}>
+                <PixelEmoji icon={STATUS_PROPERTIES[resolvedSpell.status]?.emoji || '😵‍💫'} size="1rem"/>
+                <span style={{fontSize: '0.8rem'}}>{resolvedSpell.status}</span>
+              </div>
+            )}
+            {resolvedSpell.cleanse && (
+              <div style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '4px',
+                padding: '4px 8px',
+                backgroundColor: 'rgba(250, 204, 21, 0.3)',
+                borderRadius: '4px'
+              }}>
+                <PixelEmoji icon="✨" size="1rem"/>
+                <span style={{fontSize: '0.8rem'}}>cleanse</span>
+              </div>
+            )}
+            {/* {resolvedSpell.instantKill && (
+              <div style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '4px',
+                padding: '4px 8px',
+                backgroundColor: 'rgba(250, 204, 21, 0.3)',
+                borderRadius: '4px'
+              }}>
+                <PixelEmoji icon="💀" size="1rem"/>
+                <span style={{fontSize: '0.8rem', fontWeight: 'bold'}}>INSTANT KILL</span>
+              </div>
+            )} */}
+            {/* {!resolvedSpell.isValid && (
+              <div style={{
+                padding: '4px 8px',
+                backgroundColor: 'rgba(184, 92, 80, 0.3)',
+                borderRadius: '4px',
+                fontSize: '0.8rem',
+                color: '#ff6b6b'
+              }}>
+                Invalid word - will fizzle!
+              </div>
+            )} */}
+          </div>
+        )}
 
       <DndContext 
         sensors={sensors} 

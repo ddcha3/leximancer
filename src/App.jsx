@@ -5,7 +5,7 @@ import { useSound } from './contexts/SoundContext';
 
 import { createEnemy, MAX_STAGE } from './data/enemies';
 import { SPELLBOOK, loadSpellbook } from './data/spells';
-import { TAG_EMOJIS } from './data/tags';
+import { TAG_EMOJIS, TAG_SOUNDS } from './data/tags';
 import { ARTIFACTS } from './data/artifacts';
 import { FAMILIARS } from './data/familiars';
 import { PLAYER_DEFENSE, STARTING_DECK } from './data/player';
@@ -180,6 +180,7 @@ function App() {
   const [deck, setDeck] = useState([]);
   const [hand, setHand] = useState([]);
   const [spellSlots, setSpellSlots] = useState([]);
+  const [resolvedSpell, setResolvedSpell] = useState(null);
 
   const [currentEnemy, setCurrentEnemy] = useState(null);
   const [enemyIndex, setEnemyIndex] = useState(0);
@@ -238,6 +239,51 @@ function App() {
   const currentWordStr = spellSlots.map(t => t.char).join("");
   const isValidWord = currentWordStr.length > 2 && 
                      (dictionary.has(currentWordStr) || SPELLBOOK[currentWordStr]);
+
+  // Resolve spell preview whenever spell slots change
+  useEffect(() => {
+    if (spellSlots.length === 0) {
+      setResolvedSpell(null);
+      return;
+    }
+
+    if (!currentEnemy || !playerChar) {
+      setResolvedSpell(null);
+      return;
+    }
+
+    const word = currentWordStr;
+    if (word.length === 0) {
+      setResolvedSpell(null);
+      return;
+    }
+
+    // Always preview against the enemy (confusion is resolved during actual cast)
+    const spellTarget = currentEnemy;
+    const isConfused = playerStatusEffects.some(e => e.tag === STATUS_EFFECTS.CONFUSION);
+
+    // Resolve the spell (don't play sound during preview)
+    let result = resolveSpell(word, playerChar, spellTarget, true, null);
+
+    // Apply fairy wings bonus if applicable
+    const fairy = inventory.find(a => a.id === 'fairy_wings');
+    if (fairy && result.tags.includes(POS_TAG_MAP.verb)) {
+      const bonus = fairy.verbBonusDamage || 0;
+      if (bonus > 0) {
+        result = { ...result, damage: (result.damage || 0) + bonus };
+      }
+    }
+
+    // Apply power/intelligence buffs to damage preview
+    if (result.damage > 0) {
+      const damageMult = getOutgoingDamageMultiplier(playerStatusEffects, null, result.targetStat);
+      if (damageMult !== 1.0) {
+        result = { ...result, damage: Math.floor(result.damage * damageMult) };
+      }
+    }
+
+    setResolvedSpell({ ...result, isConfused, isValid: isValidWord });
+  }, [spellSlots, currentEnemy, playerChar, playerStatusEffects, inventory, currentWordStr, isValidWord]);
 
   const startGame = (character) => {
     setPlayerChar(character);
@@ -316,31 +362,45 @@ function App() {
     }
 
     if (!isValidWord) {
+      playSound('abilities/summon')
       addLog(`"${currentWordStr}" fizzles!`);
       setShakeError(true);
       setTimeout(() => setShakeError(false), 400);
       return;
     }
 
+    playSound('misc/wave');
     setAnimState(prev => ({ ...prev, player: 'anim-action' }));
     setTimeout(() => {
       setAnimState(prev => ({ ...prev, player: '' }));
 
-      // Check confusion
+      // Use the pre-resolved spell data
+      if (!resolvedSpell) {
+        addLog(`Something went wrong!`);
+        return;
+      }
+
+      // Check confusion for actual targeting during cast
       const isConfused = playerStatusEffects.some(e => e.tag === STATUS_EFFECTS.CONFUSION);
-      let spellTarget = currentEnemy;
       let isSelfHit = false;
 
       if (isConfused) {
           if (Math.random() < 0.5) {
-              spellTarget = PLAYER_DEFENSE; // Use player defense stats
               isSelfHit = true;
               addLog("You are confused and attack yourself!");
           }
       }
 
-      // 1. CALL THE ENGINE
-     const result = resolveSpell(currentWordStr, playerChar, spellTarget, true, playSound);
+      // Use the already resolved spell data
+      const result = { ...resolvedSpell };
+      
+      // Play sound effect based on tags
+      const soundTag = result.tags.find(t => TAG_SOUNDS[t]);
+      if (soundTag) {
+        playSound(TAG_SOUNDS[soundTag], { volume: 0.7 });
+      } else {
+        playSound('abilities/woosh_b', { volume: 0.5 });
+      }
 
       // Check if Conjurer is summoning a familiar
       let updatedFamiliars = [...familiars];
@@ -362,25 +422,7 @@ function App() {
           }
       }
 
-      // Artifact: Fairy Wings (+verb damage)
-      const fairy = inventory.find(a => a.id === 'fairy_wings');
-      if (fairy && result.tags.includes(POS_TAG_MAP.verb)) {
-        const bonus = fairy.verbBonusDamage || 0;
-        if (bonus > 0) {
-          result.damage = (result.damage || 0) + bonus;
-          addLog(`(Fairy Wings) Verbs deal +${bonus} damage.`);
-        }
-      }
-
-      // Apply power/intelligence buffs to outgoing damage
-      if (result.damage > 0) {
-        const damageMult = getOutgoingDamageMultiplier(playerStatusEffects, (msg) => addLog(`You: ${msg}`), result.targetStat);
-        if (damageMult !== 1.0) {
-          result.damage = Math.floor(result.damage * damageMult);
-        }
-      }
-
-      // 2. SHOW VISUALS
+      // Show visual effects
       let visualEmoji = result.emoji;
       if (!visualEmoji && result.tags.length > 0) {
          const found = result.tags.find(t => TAG_EMOJIS[t]);
@@ -389,12 +431,11 @@ function App() {
       setSpellEffect(visualEmoji || "✨");
       setTimeout(() => setSpellEffect(null), 1000);
 
-
       console.log("Spell Result:", result);
-      // 3. LOGGING
+      
+      // Logging
       addLog(`You cast ^${currentWordStr}^!`);
       if (result.tags.length > 0) {
-          // Filter out common ones for cleaner logs
           const meaningfulTags = result.tags.filter(t => !['concrete', 'abstract', 'noun', 'verb', 'adjective', 'adverb'].includes(t));
           if (meaningfulTags.length > 0) {
              addLog(`(Tags: ${meaningfulTags.join(', ')})`);
@@ -875,7 +916,16 @@ function App() {
     drawHand(HAND_SIZE, deck, []);
     addLog("Mulligan! You waste a turn.");
     handleEnemyAttack(currentEnemy);
-    playSound('interface/bonus');
+
+    // Play the paper sound 7 times
+    playSound('interface/paper', { volume: 0.8 });
+    setTimeout(() => playSound('interface/paper', { volume: 0.8 }), 100);
+    setTimeout(() => playSound('interface/paper', { volume: 0.8 }), 200);
+    setTimeout(() => playSound('interface/paper', { volume: 0.8 }), 300);
+    setTimeout(() => playSound('interface/paper', { volume: 0.8 }), 400);
+    setTimeout(() => playSound('interface/paper', { volume: 0.8 }), 500);
+    setTimeout(() => playSound('interface/paper', { volume: 0.8 }), 600);
+    setTimeout(() => playSound('interface/paper', { volume: 0.8 }), 700);
   };
   const addLog = (...messages) => setLogs(prev => [...prev, ...messages]);
 
@@ -937,6 +987,7 @@ function App() {
       logs={logs}
       hand={hand}
       spellSlots={spellSlots}
+      resolvedSpell={resolvedSpell}
       isValidWord={!!isValidWord}
       shakeError={shakeError} 
       animState={animState}

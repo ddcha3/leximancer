@@ -112,7 +112,7 @@ export function resolveSpell(word, caster, target, isPlayerCasting = true, playS
       // 50% chance to stun
       if (Math.random() < 0.5) {
         result.status = STATUS_EFFECTS.FREEZE;
-        result.logs.push(`> Freezing effect!`);
+        // result.logs.push(`> Freezing effect!`);
       }
     } else {
       result.logs.push(`> Immune to ice.`);
@@ -122,7 +122,7 @@ export function resolveSpell(word, caster, target, isPlayerCasting = true, playS
   if (tags.includes("stun")) {
     if (!isImmuneTo('stun')) {
       result.status = STATUS_EFFECTS.STUN;
-      result.logs.push(`> Stunned!`);
+      // result.logs.push(`> Stunned!`);
     } else {
       result.logs.push(`> Immune to stun.`);
     }
@@ -132,7 +132,7 @@ export function resolveSpell(word, caster, target, isPlayerCasting = true, playS
   if (tags.includes("silence")) {
     if (!isImmuneTo('silence')) {
       result.status = STATUS_EFFECTS.SILENCE;
-      result.logs.push(`> Magical silence!`);
+      // result.logs.push(`> Magical silence!`);
     } else {
       result.logs.push(`> Immune to silence.`);
     }
@@ -142,7 +142,7 @@ export function resolveSpell(word, caster, target, isPlayerCasting = true, playS
   if (tags.includes("chaos")) {
     if (!isImmuneTo('confusion')) {
       result.status = STATUS_EFFECTS.CONFUSION;
-      result.logs.push(`> Confusion!`);
+      // result.logs.push(`> Confusion!`);
     } else {
       result.logs.push(`> Immune to confusion.`);
     }
@@ -151,7 +151,7 @@ export function resolveSpell(word, caster, target, isPlayerCasting = true, playS
   if (tags.includes('dark')) {
     const duration = 3;
     result.statusEffect = { tag: STATUS_EFFECTS.FEAR, ticks: duration };
-    result.logs.push(`> Fear! Defense lowered for ${duration} turns.`);
+    // result.logs.push(`> Fear! Defense lowered for ${duration} turns.`);
   }
 
   if (tags.includes('luck')) {
@@ -207,7 +207,7 @@ export function resolveSpell(word, caster, target, isPlayerCasting = true, playS
 
     if (seerTriggered) {
       result.damage += 3;
-      result.logs.push(`>(Seer) Weakness Bonus +3`);
+      result.logs.push(`> (Seer) Weakness Bonus +3`);
     }
   }
 

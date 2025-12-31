@@ -37,7 +37,7 @@ export const CHARACTERS = [
       const isElemental = tags.some(t => ELEMENTAL_TAGS.includes(t));
       if (isElemental) {
         stats.multiplier *= 2;
-        stats.logs.push(">(Elementalist) Elemental Mastery x2");
+        stats.logs.push("> Elemental Mastery x2");
       }
       return stats;
     },
