@@ -16,6 +16,7 @@ export const useSound = () => {
 export const SoundProvider = ({ children }) => {
   const [isMuted, setIsMuted] = useState(false);
   const [volume, setVolume] = useState(0.5);
+  const [isTabVisible, setIsTabVisible] = useState(true);
   const currentMusicRef = useRef(null);
   const currentMusicPathRef = useRef(null);
   
@@ -32,7 +33,7 @@ export const SoundProvider = ({ children }) => {
   };
 
   const playSound = (path, options = {}) => {
-    if (isMuted) return;
+    if (isMuted || !isTabVisible) return;
 
     const module = getModule(path);
 
@@ -100,16 +101,16 @@ export const SoundProvider = ({ children }) => {
     }
   };
 
-  // Handle mute toggling for music
+  // Handle mute toggling and tab visibility for music
   useEffect(() => {
     if (currentMusicRef.current) {
-        if (isMuted) {
+        if (isMuted || !isTabVisible) {
             currentMusicRef.current.pause();
         } else {
             currentMusicRef.current.play().catch(e => console.warn("Music resume failed", e));
         }
     }
-  }, [isMuted]);
+  }, [isMuted, isTabVisible]);
 
   // Handle volume changes for music
   useEffect(() => {
@@ -118,10 +119,23 @@ export const SoundProvider = ({ children }) => {
     }
   }, [volume]);
 
+  // Handle tab visibility changes
+  useEffect(() => {
+    const handleVisibilityChange = () => {
+      setIsTabVisible(!document.hidden);
+    };
+
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+
+    return () => {
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+    };
+  }, []);
+
   // Handle autoplay policy
   useEffect(() => {
     const handleUserInteraction = () => {
-      if (currentMusicRef.current && currentMusicRef.current.paused && !isMuted) {
+      if (currentMusicRef.current && currentMusicRef.current.paused && !isMuted && isTabVisible) {
         currentMusicRef.current.play().catch(e => console.warn("Music resume on interaction failed", e));
       }
     };
@@ -133,7 +147,7 @@ export const SoundProvider = ({ children }) => {
       window.removeEventListener('click', handleUserInteraction);
       window.removeEventListener('keydown', handleUserInteraction);
     };
-  }, [isMuted]);
+  }, [isMuted, isTabVisible]);
 
   const value = {
     playSound,

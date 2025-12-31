@@ -159,17 +159,14 @@ function getOutgoingDamageMultiplier(currentEffects, logCallback, spellTargetTyp
 function App() {
   const { playMusic, playSound } = useSound();
   const [gameState, setGameState] = useState('START'); 
-  const battleTrackIndex = useRef(0);
 
   useEffect(() => {
     if (gameState === 'BATTLE') {
       const battleTracks = ['music/battle1', 'music/battle2', 'music/battle3'];
-      const track = battleTracks[battleTrackIndex.current];
-      playMusic(track);
-      
-      battleTrackIndex.current = (battleTrackIndex.current + 1) % battleTracks.length;
+      const track = battleTracks[enemyIndex % battleTracks.length];
+      playMusic(track, { volume: 0.1 });
     } else {
-      playMusic('music/menu');
+      playMusic('music/menu', { volume: 0.1 });
     }
   }, [gameState, playMusic]);
 
