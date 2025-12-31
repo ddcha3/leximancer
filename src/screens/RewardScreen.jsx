@@ -1,3 +1,5 @@
+import PixelEmoji from '../components/PixelEmoji';
+
 export default function RewardScreen({ enemy, onNext }) {
   return (
     <div className="reward-screen">
@@ -8,7 +10,7 @@ export default function RewardScreen({ enemy, onNext }) {
         <button className="cast-btn" 
           style={{marginTop: '30px', fontSize: '1rem', fontFamily: 'FFFFORWA', background: 'var(--accent-red)'}}
           onClick={onNext}>
-          NEXT ENCOUNTER ➡
+          NEXT ENCOUNTER <PixelEmoji icon="➡" size="0.8rem"/>
         </button>
       </div>
     </div>

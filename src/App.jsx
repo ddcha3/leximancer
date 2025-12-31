@@ -311,6 +311,7 @@ function App() {
      const result = resolveSpell(currentWordStr, playerChar, spellTarget, true);
 
       // Check if Conjurer is summoning a familiar
+      let updatedFamiliars = [...familiars];
       if (playerChar.id === 'conjurer') {
           const familiarData = FAMILIARS.find(f => f.name.toUpperCase() === currentWordStr);
           if (familiarData) {
@@ -321,8 +322,9 @@ function App() {
                   turnsLeft: 3,
                   name: familiarData.name
               };
+              updatedFamiliars.push(newFamiliar);
               setFamiliars(prev => [...prev, newFamiliar]);
-              addLog(`Summoned ${familiarData.name}! ${familiarData.emoji}`);
+              addLog(`Summoned #${familiarData.name}#`);
               setSpellEffect(familiarData.emoji);
               setTimeout(() => setSpellEffect(null), 1000);
           }
@@ -509,13 +511,13 @@ function App() {
 
       // 6. ENEMY TURN
       setTimeout(() => {
-          handleEnemyAttack(nextEnemyState);
+          handleEnemyAttack(nextEnemyState, updatedFamiliars);
       }, 1500);
 
     }, 500);
   };
 
-  const handleEnemyAttack = (enemyEntity) => {
+  const handleEnemyAttack = (enemyEntity, currentFamiliars) => {
     // Process ongoing statusEffects on enemy at start of its turn
     const { totalDamage, newStatusEffects, skipTurnEffect } = processTurnStart(
         enemyEntity.statusEffects, 
@@ -716,8 +718,9 @@ function App() {
         }
 
         // 3. FAMILIAR ATTACKS (if any summoned)
-        if (familiars.length > 0) {
-            familiars.forEach((familiar, index) => {
+        const activeFamiliars = currentFamiliars || familiars;
+        if (activeFamiliars.length > 0) {
+            activeFamiliars.forEach((familiar, index) => {
                 setTimeout(() => {
                     setAnimState(prev => {
                         const newFamiliars = Object.assign({}, prev.familiars);
@@ -732,7 +735,7 @@ function App() {
                         });
                     }, 400);
                     
-                    addLog(`${familiar.emoji} ${familiar.name} attacks with ${familiar.spell}!`);
+                    addLog(`#${familiar.name}# casts ^${familiar.spell}^!`);
                     const familiarResult = resolveSpell(familiar.spell, playerChar, currentEnemy, true);
                     
                     // Apply familiar damage
@@ -774,7 +777,7 @@ function App() {
                     });
                     return updated;
                 });
-            }, 1000 + (familiars.length * 500));
+            }, 1000 + (activeFamiliars.length * 500));
         }
 
         // 4. REFILL HAND

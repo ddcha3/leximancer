@@ -1,471 +1,471 @@
 export const FAMILIARS = [
   { 
-    name: "monkey",
+    name: "Monkey",
     emoji: "🐒",
     vocabulary: ["YELP"] 
   },
   { 
-    name: "gorilla",
+    name: "Gorilla",
     emoji: "🦍",
     vocabulary: ["ROAR"] 
   },
   { 
-    name: "ape",
+    name: "Ape",
     emoji: "🦍",
     vocabulary: ["ROAR"] 
   },
   { 
-    name: "orangutan",
+    name: "Orangutan",
     emoji: "🦧",
     vocabulary: ["GRUNT"] 
   },
   { 
-    name: "dog",
+    name: "Dog",
     emoji: "🐕",
     vocabulary: ["RRR"] 
   },
   { 
-    name: "poodle",
+    name: "Poodle",
     emoji: "🐩",
     vocabulary: ["YIP"] 
   },
   { 
-    name: "wolf",
+    name: "Wolf",
     emoji: "🐺",
     vocabulary: ["AOO"] 
   },
   { 
-    name: "fox",
+    name: "Fox",
     emoji: "🦊",
     vocabulary: ["YIP"] 
   },
   {
-    name: "bear",
+    name: "Bear",
     emoji: "🐻",
     vocabulary: ["ROAR"]
   },
   { 
-    name: "raccoon",
+    name: "Raccoon",
     emoji: "🦝",
     vocabulary: ["OOF"] 
   },
   { 
-    name: "cat",
+    name: "Cat",
     emoji: "🐈",
     vocabulary: ["MEW"] 
   },
   { 
-    name: "tiger",
+    name: "Tiger",
     emoji: "🐅",
     vocabulary: ["ROAR"] 
   },
   {
-    name: "lion",
+    name: "Lion",
     emoji: "🦁",
     vocabulary: ["ROAR"]
   },
   { 
-    name: "leopard",
+    name: "Leopard",
     emoji: "🐆",
     vocabulary: ["GROWL"] 
   },
   { 
-    name: "jaguar",
+    name: "Jaguar",
     emoji: "🐆",
     vocabulary: ["GROWL"] 
   },
  { 
-    name: "panther",
+    name: "Panther",
     emoji: "🐆",
     vocabulary: ["GROWL"] 
   },
   { 
-    name: "horse",
+    name: "Horse",
     emoji: "🐎",
     vocabulary: ["NEIGH"] 
   },
   { 
-    name: "unicorn",
+    name: "Unicorn",
     emoji: "🦄",
     vocabulary: ["WHIN"] 
   },
   { 
-    name: "zebra",
+    name: "Zebra",
     emoji: "🦓",
     vocabulary: ["BRAY"] 
   },
   { 
-    name: "ox",
+    name: "Ox",
     emoji: "🐂",
     vocabulary: ["LOW"] 
   },
   { 
-    name: "buffalo",
+    name: "Buffalo",
     emoji: "🐃",
     vocabulary: ["SNORT"] 
   },
   { 
-    name: "cow",
+    name: "Cow",
     emoji: "🐄",
     vocabulary: ["MOO"] 
   },
   { 
-    name: "bison",
+    name: "Bison",
     emoji: "🦬",
     vocabulary: ["GRUNT"] 
   },
   { 
-    name: "pig",
+    name: "Pig",
     emoji: "🐖",
     vocabulary: ["OINK"] 
   },
   { 
-    name: "boar",
+    name: "Boar",
     emoji: "🐗",
     vocabulary: ["SNORT"] 
   },
   { 
-    name: "sheep",
+    name: "Sheep",
     emoji: "🐑",
     vocabulary: ["BAA"] 
   },
   { 
-    name: "goat",
+    name: "Goat",
     emoji: "🐐",
     vocabulary: ["BLEAT"] 
   },
   { 
-    name: "camel",
+    name: "Camel",
     emoji: "🐪",
     vocabulary: ["GRUNT"] 
   },
   { 
-    name: "llama",
+    name: "Llama",
     emoji: "🦙",
     vocabulary: ["HUM"] 
   },
   { 
-    name: "giraffe",
+    name: "Giraffe",
     emoji: "🦒",
     vocabulary: ["HUM"] 
   },
   { 
-    name: "elephant",
+    name: "Elephant",
     emoji: "🐘",
     vocabulary: ["TRUMP"] 
   },
   { 
-    name: "mammoth",
+    name: "Mammoth",
     emoji: "🦣",
     vocabulary: ["TRUMP"] 
   },
   { 
-    name: "hippo",
+    name: "Hippo",
     emoji: "🦛",
     vocabulary: ["GRUNT"] 
   },
   { 
-    name: "hippopotamus",
+    name: "Hippopotamus",
     emoji: "🦛",
     vocabulary: ["GRUNT"] 
   },
   { 
-    name: "mouse",
+    name: "Mouse",
     emoji: "🐁",
     vocabulary: ["NNN"] 
   },
   { 
-    name: "rat",
+    name: "Rat",
     emoji: "🐀",
     vocabulary: ["SSS"] 
   },
   { 
-    name: "hamster",
+    name: "Hamster",
     emoji: "🐹",
     vocabulary: ["NYUM"] 
   },
   { 
-    name: "rabbit",
+    name: "Rabbit",
     emoji: "🐇",
     vocabulary: ["CHI"] 
   },
   { 
-    name: "bunny",
+    name: "Bunny",
     emoji: "🐇",
     vocabulary: ["CHI"] 
   },
   { 
-    name: "chipmunk",
+    name: "Chipmunk",
     emoji: "🐿️",
     vocabulary: ["CHIP"] 
   },
   { 
-    name: "beaver",
+    name: "Beaver",
     emoji: "🦫",
     vocabulary: ["CHUR"] 
   },
   { 
-    name: "hedgehog",
+    name: "Hedgehog",
     emoji: "🦔",
     vocabulary: ["SNUFF"] 
   },
   { 
-    name: "bat",
+    name: "Bat",
     emoji: "🦇",
     vocabulary: ["SQUEK"] 
   },
   { 
-    name: "sloth",
+    name: "Sloth",
     emoji: "🦥",
     vocabulary: ["SQUEK"] 
   },
   { 
-    name: "otter",
+    name: "Otter",
     emoji: "🦦",
     vocabulary: ["CHIRP"] 
   },
   { 
-    name: "skunk",
+    name: "Skunk",
     emoji: "🦨",
     vocabulary: ["HISS"] 
   },
   { 
-    name: "kangaroo",
+    name: "Kangaroo",
     emoji: "🦘",
     vocabulary: ["CHUFF"] 
   },
   { 
-    name: "badger",
+    name: "Badger",
     emoji: "🦡",
     vocabulary: ["GROWL"] 
   },
   { 
-    name: "turkey",
+    name: "Turkey",
     emoji: "🦃",
     vocabulary: ["GOBBL"] 
   },
   { 
-    name: "chicken",
+    name: "Chicken",
     emoji: "🐔",
     vocabulary: ["CLUCK"] 
   },
   { 
-    name: "rooster",
+    name: "Rooster",
     emoji: "🐓",
     vocabulary: ["CROW"] 
   },
   { 
-    name: "chick",
+    name: "Chick",
     emoji: "🐤",
     vocabulary: ["PEEP"] 
   },
   { 
-    name: "bird",
+    name: "Bird",
     emoji: "🐦",
     vocabulary: ["CHIRP"] 
   },
   { 
-    name: "penguin",
+    name: "Penguin",
     emoji: "🐧",
     vocabulary: ["HONK"] 
   },
   { 
-    name: "dove",
+    name: "Dove",
     emoji: "🕊️",
     vocabulary: ["COO"] 
   },
   { 
-    name: "eagle",
+    name: "Eagle",
     emoji: "🦅",
     vocabulary: ["SCREE"] 
   },
   { 
-    name: "duck",
+    name: "Duck",
     emoji: "🦆",
     vocabulary: ["QUACK"] 
   },
   { 
-    name: "swan",
+    name: "Swan",
     emoji: "🦢",
     vocabulary: ["HISS"] 
   },
   { 
-    name: "owl",
+    name: "Owl",
     emoji: "🦉",
     vocabulary: ["HOOT"] 
   },
   { 
-    name: "flamingo",
+    name: "Flamingo",
     emoji: "🦩",
     vocabulary: ["HONK"] 
   },
   { 
-    name: "peacock",
+    name: "Peacock",
     emoji: "🦚",
     vocabulary: ["SCREM"] 
   },
   { 
-    name: "parrot",
+    name: "Parrot",
     emoji: "🦜",
     vocabulary: ["SQUAK"] 
   },
   { 
-    name: "crocodile",
+    name: "Crocodile",
     emoji: "🐊",
     vocabulary: ["HISS"] 
   },
   { 
-    name: "turtle",
+    name: "Turtle",
     emoji: "🐢",
     vocabulary: ["HISS"] 
   },
   { 
-    name: "lizard",
+    name: "Lizard",
     emoji: "🦎",
     vocabulary: ["HISS"] 
   },
   { 
-    name: "snake",
+    name: "Snake",
     emoji: "🐍",
     vocabulary: ["HISS"] 
   },
   { 
-    name: "dinosaur",
+    name: "Dinosaur",
     emoji: "🦕",
     vocabulary: ["ROAR"] 
   },
   { 
-    name: "dragon",
+    name: "Dragon",
     emoji: "🐉",
     vocabulary: ["ROAR"] 
   },
   { 
-    name: "phoenix",
+    name: "Phoenix",
     emoji: "🐦‍🔥",
     vocabulary: ["CRAW"] 
   },
   { 
-    name: "whale",
+    name: "Whale",
     emoji: "🐳",
     vocabulary: ["SONG"] 
   },
   { 
-    name: "dolphin",
+    name: "Dolphin",
     emoji: "🐬",
     vocabulary: ["CLICK"] 
   },
   { 
-    name: "seal",
+    name: "Seal",
     emoji: "🦭",
     vocabulary: ["BARK"] 
   },
   { 
-    name: "fish",
+    name: "Fish",
     emoji: "🐟",
     vocabulary: ["BLUB"] 
   },
   { 
-    name: "blowfish",
+    name: "Blowfish",
     emoji: "🐡",
     vocabulary: ["PUFF"] 
   },
   { 
-    name: "shark",
+    name: "Shark",
     emoji: "🦈",
     vocabulary: ["CHOMP"] 
   },
   { 
-    name: "octopus",
+    name: "Octopus",
     emoji: "🐙",
     vocabulary: ["SPLSH"] 
   },
   { 
-    name: "snail",
+    name: "Snail",
     emoji: "🐌",
     vocabulary: ["SLIME"] 
   },
   { 
-    name: "butterfly",
+    name: "Butterfly",
     emoji: "🦋",
     vocabulary: ["FLAP"] 
   },
   { 
-    name: "bug",
+    name: "Bug",
     emoji: "🐛",
     vocabulary: ["CRAWL"] 
   },
   { 
-    name: "caterpillar",
+    name: "Caterpillar",
     emoji: "🐛",
     vocabulary: ["MUNCH"] 
   },
   { 
-    name: "ant",
+    name: "Ant",
     emoji: "🐜",
     vocabulary: ["SCRCH"] 
   },
   { 
-    name: "honeybee",
+    name: "Honeybee",
     emoji: "🐝",
     vocabulary: ["BUZZ"] 
   },
   { 
-    name: "bee",
+    name: "Bee",
     emoji: "🐝",
     vocabulary: ["BUZZ"] 
   },
   { 
-    name: "beetle",
+    name: "Beetle",
     emoji: "🪲",
     vocabulary: ["CLICK"] 
   },
   { 
-    name: "ladybug",
+    name: "Ladybug",
     emoji: "🐞",
     vocabulary: ["BUZZ"] 
   },
   { 
-    name: "cricket",
+    name: "Cricket",
     emoji: "🦗",
     vocabulary: ["CHIRP"] 
   },
   { 
-    name: "grasshopper",
+    name: "Grasshopper",
     emoji: "🦗",
     vocabulary: ["CHIRP"] 
   },
   { 
-    name: "roach",
+    name: "Roach",
     emoji: "🪳",
     vocabulary: ["SKTR"] 
   },
   { 
-    name: "cockroach",
+    name: "Cockroach",
     emoji: "🪳",
     vocabulary: ["SKTR"] 
   },
   { 
-    name: "spider",
+    name: "Spider",
     emoji: "🕷️",
     vocabulary: ["HISS"] 
   },
   { 
-    name: "scorpion",
+    name: "Scorpion",
     emoji: "🦂",
     vocabulary: ["HISS"] 
   },
   { 
-    name: "mosquito",
+    name: "Mosquito",
     emoji: "🦟",
     vocabulary: ["BUZZ"] 
   },
   { 
-    name: "fly",
+    name: "Fly",
     emoji: "🪰",
     vocabulary: ["BUZZ"] 
   },
   { 
-    name: "worm",
+    name: "Worm",
     emoji: "🪱",
     vocabulary: ["SQRM"] 
   }

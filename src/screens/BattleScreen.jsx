@@ -61,9 +61,9 @@ export default function BattleScreen({
         return `Confused: 50% chance to attack self for ${eff.ticks || 1} turn(s)`;
       case 'fear':
         return `Fear: +50% damage taken for ${eff.ticks || 1} turn(s)`;
-      case 'power_buff':
+      case 'power buff':
         return `Power: +${eff.damageMult ? `${Math.round((eff.damageMult - 1) * 100)}%` : '50%'} HP damage for ${eff.ticks || 1} turn(s)`;
-      case 'intelligence_buff':
+      case 'intelligence buff':
         return `Intelligence: +${eff.damageMult ? `${Math.round((eff.damageMult - 1) * 100)}%` : '50%'} WP damage for ${eff.ticks || 1} turn(s)`;
       default:
         if (eff.ticks) return `${eff.tag.toUpperCase()}: ${eff.ticks} turn(s)`;
@@ -89,11 +89,11 @@ export default function BattleScreen({
           
           <div className="enemy-bars">
             <div className="bar">
-              <div className="bar-text"><PixelEmoji icon="❤️" size="0.8rem"/> {enemy.hp}</div>
+              <div className="bar-text" style={{ textAlign: 'left', paddingLeft: '5px' }}><PixelEmoji icon="❤️" size="0.8rem"/> {enemy.hp}</div>
               <div className="bar-fill hp-fill" style={{ width: `${enemyHpPct}%` }}></div>
             </div>
             <div className="bar">
-              <div className="bar-text"><PixelEmoji icon="🧠" size="0.8rem"/> {enemy.wp}</div>
+              <div className="bar-text" style={{ textAlign: 'left', paddingLeft: '5px' }}><PixelEmoji icon="🧠" size="0.8rem"/> {enemy.wp}</div>
               <div className="bar-fill wp-fill" style={{ width: `${enemyWpPct}%` }}></div>
             </div>
           </div>
