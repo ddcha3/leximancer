@@ -281,11 +281,5 @@ export function resolveSpell(word, caster, target, isPlayerCasting = true, playS
     result.emoji = TAG_EMOJIS[chosenTag];
   }
 
-  // Default visual feedback by target stat (HP/WP) for both player and enemy if still using the generic emoji
-  // if (result.emoji === '✨') {
-  //   if (result.targetStat === 'hp') result.emoji = '💥';
-  //   else if (result.targetStat === 'wp') result.emoji = '🌀';
-  // }
-
   return result;
 }

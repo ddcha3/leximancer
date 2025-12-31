@@ -2,6 +2,9 @@ import React, { createContext, useContext, useState, useRef, useEffect } from 'r
 
 const SoundContext = createContext();
 
+// ALL MUSIC IS FROM https://www.fesliyanstudios.com/royalty-free-music/downloads-c/8-bit-music/6
+// SOUNDS: https://www.oryxdesignlab.com/products/p/8-bit-sounds
+
 export const useSound = () => {
   const context = useContext(SoundContext);
   if (!context) {

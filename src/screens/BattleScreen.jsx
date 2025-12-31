@@ -1,4 +1,6 @@
 import { useState } from 'react';
+import { DndContext, useDroppable, DragOverlay, useSensor, useSensors, PointerSensor, closestCenter, pointerWithin } from '@dnd-kit/core';
+import { SortableContext, horizontalListSortingStrategy, arrayMove } from '@dnd-kit/sortable';
 import Tile from "../components/Tile";
 import CombatLog from "../components/CombatLog";
 import { TAG_EMOJIS } from "../data/tags"; 
@@ -6,6 +8,23 @@ import { STATUS_PROPERTIES } from "../data/statusEffects";
 import PixelEmoji from '../components/PixelEmoji';
 import HelpModal from '../components/HelpModal';
 import SoundToggle from '../components/SoundToggle';
+
+function Droppable({ id, children, className, style }) {
+  const { isOver, setNodeRef } = useDroppable({ id });
+  const droppableStyle = {
+    ...style,
+    backgroundColor: isOver ? 'rgba(255, 255, 255, 0.1)' : undefined,
+    transition: 'background-color 0.2s ease',
+    borderRadius: '8px'
+  };
+  
+  return (
+    <div ref={setNodeRef} className={className} style={droppableStyle}>
+      {children}
+    </div>
+  );
+}
+
 
 export default function BattleScreen({ 
   playerAvatar, 
@@ -25,8 +44,70 @@ export default function BattleScreen({
   animState, 
   spellEffect 
 }) {
-  const { onMoveTile, onReturnTile, onCast, onClear, onDiscard, onShuffle } = actions;
+  const { onMoveTile, onReturnTile, onCast, onClear, onDiscard, onShuffle, setSpellSlots } = actions;
   const [showHelp, setShowHelp] = useState(false);
+  const [activeId, setActiveId] = useState(null);
+  const [activeTile, setActiveTile] = useState(null);
+
+  const sensors = useSensors(
+    useSensor(PointerSensor, {
+      activationConstraint: {
+        distance: 8,
+      },
+    })
+  );
+
+  // Make the hand droppable respond to pointer position across its whole area
+  const collisionDetection = (args) => {
+    const pointerCollisions = pointerWithin(args);
+    if (pointerCollisions.length) return pointerCollisions;
+    return closestCenter(args);
+  };
+
+  const handleDragStart = (event) => {
+    setActiveId(event.active.id);
+    setActiveTile(event.active.data.current?.tile);
+  };
+
+  const handleDragEnd = (event) => {
+    const { active, over } = event;
+    setActiveId(null);
+    setActiveTile(null);
+
+    if (!over) return;
+
+    const tile = active.data.current?.tile;
+    if (!tile) return;
+
+    // 1. Reordering within Spell Zone
+    if (active.data.current?.sortable?.containerId === 'spell-zone' && over.id !== 'hand-zone') {
+      if (active.id !== over.id) {
+        const oldIndex = spellSlots.findIndex(t => t.id === active.id);
+        const newIndex = spellSlots.findIndex(t => t.id === over.id);
+        if (oldIndex !== -1 && newIndex !== -1) {
+          setSpellSlots(arrayMove(spellSlots, oldIndex, newIndex));
+        }
+      }
+      return;
+    }
+
+    // 2. Dragging from Hand to Spell Zone (Insert at precise position)
+    if (over.data.current?.sortable?.containerId === 'spell-zone' || over.id === 'spell-zone') {
+      const isInHand = hand.find(t => t && t.id === tile.id);
+      if (isInHand) {
+        const pointerPosition = getPointerPosition(event);
+        const insertIndex = computeInsertIndex(over, pointerPosition, spellSlots);
+        onMoveTile(tile, insertIndex);
+      }
+    } 
+    // 3. Dragging from Spell Zone to Hand
+    else if (over.id === 'hand-zone') {
+      const isInSpellSlots = spellSlots.find(t => t.id === tile.id);
+      if (isInSpellSlots) {
+        onReturnTile(tile);
+      }
+    }
+    };
 
   const enemyHpPct = Math.max(0, (enemy.hp / enemy.maxHp) * 100);
   const enemyWpPct = Math.max(0, (enemy.wp / enemy.maxWp) * 100);
@@ -204,21 +285,55 @@ export default function BattleScreen({
 
       <CombatLog logs={logs} />
 
-      <div 
-        className={`spell-slot ${shakeError ? 'shake' : ''}`} 
-        style={{ borderColor: feedbackColor }}
+      <DndContext 
+        sensors={sensors} 
+        collisionDetection={collisionDetection}
+        onDragStart={handleDragStart} 
+        onDragEnd={handleDragEnd}
       >
-        {spellSlots.length === 0 && <span style={{color: 'rgba(139, 115, 91, 0.5)', fontSize: '2rem'}}>?</span>}
-        {spellSlots.map(t => (
-          <Tile key={t.id} tile={t} onClick={onReturnTile} />
-        ))}
-      </div>
+        <SortableContext 
+            id="spell-zone"
+            items={spellSlots.map(t => t.id)}
+            strategy={horizontalListSortingStrategy}
+        >
+            <Droppable 
+            id="spell-zone"
+            className={`spell-slot ${shakeError ? 'shake' : ''}`} 
+            style={{ borderColor: feedbackColor }}
+            >
+            {spellSlots.length === 0 && <span style={{color: 'rgba(139, 115, 91, 0.5)', fontSize: '2rem'}}>?</span>}
+            {spellSlots.map(t => (
+                <Tile 
+                  key={t.id} 
+                  tile={t} 
+                  onClick={onReturnTile} 
+                  sortable 
+                  isActive={activeId === t.id} 
+                />
+            ))}
+            </Droppable>
+        </SortableContext>
 
-      <div className="hand">
-        {hand.map((t, i) => (
-          t ? <Tile key={t.id} tile={t} onClick={onMoveTile} /> : <div key={`empty-${i}`} className="tile empty" />
-        ))}
-      </div>
+        <Droppable id="hand-zone" className="hand">
+          {hand.map((t, i) => (
+            t ? (
+              <Tile 
+                key={t.id} 
+                tile={t} 
+                onClick={onMoveTile} 
+                isActive={activeId === t.id} 
+                showGhostPlaceholder 
+              />
+            ) : (
+              <div key={`empty-${i}`} className="tile empty" />
+            )
+          ))}
+        </Droppable>
+
+        <DragOverlay>
+          {activeTile ? <Tile tile={activeTile} isOverlay /> : null}
+        </DragOverlay>
+      </DndContext>
 
       <div className="controls">
         {/* HELP BUTTON */}
@@ -252,3 +367,52 @@ export default function BattleScreen({
     </div>
   );
 }
+
+const extractClientPoint = (event) => {
+  if (!event) return null;
+  if ('clientX' in event && 'clientY' in event) {
+    return { x: event.clientX, y: event.clientY };
+  }
+  if ('touches' in event && event.touches?.length > 0) {
+    const touch = event.touches[0];
+    return { x: touch.clientX, y: touch.clientY };
+  }
+  if ('changedTouches' in event && event.changedTouches?.length > 0) {
+    const touch = event.changedTouches[0];
+    return { x: touch.clientX, y: touch.clientY };
+  }
+  return null;
+};
+
+const getPointerPosition = (event) => {
+  const basePoint = extractClientPoint(event.activatorEvent);
+  if (!basePoint || !event?.delta) return null;
+  return {
+    x: basePoint.x + event.delta.x,
+    y: basePoint.y + event.delta.y
+  };
+};
+
+const computeInsertIndex = (over, pointerPosition, spellSlots) => {
+  if (!over) return undefined;
+  if (over.id === 'spell-zone') {
+    return spellSlots.length;
+  }
+
+  const overIndex = spellSlots.findIndex(t => t.id === over.id);
+  if (overIndex === -1) {
+    return undefined;
+  }
+
+  if (pointerPosition && over.rect) {
+    const rect = over.rect;
+    const midpoint = rect.left + (rect.width / 2);
+    if (pointerPosition.x > midpoint) {
+      return overIndex + 1;
+    }
+  } else if (overIndex === spellSlots.length - 1) {
+    return spellSlots.length;
+  }
+
+  return overIndex;
+};

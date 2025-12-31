@@ -822,9 +822,17 @@ function App() {
     }, 500);
   };
 
-  const handleMoveTile = (tile) => {
+  const handleMoveTile = (tile, insertIndex = undefined) => {
     setHand(prev => prev.map(h => (h && h.id === tile.id) ? null : h));
-    setSpellSlots(prev => [...prev, tile]);
+    setSpellSlots(prev => {
+        if (insertIndex !== undefined && insertIndex >= 0) {
+            const newSlots = [...prev];
+            const clampedIndex = Math.min(insertIndex, newSlots.length);
+            newSlots.splice(clampedIndex, 0, tile);
+            return newSlots;
+        }
+        return [...prev, tile];
+    });
     playSound('interface/click');
   };
   const handleReturnTile = (tile) => {
@@ -942,7 +950,8 @@ function App() {
         onCast: handleCast,
         onClear: handleClear,
         onDiscard: handleDiscard,
-        onShuffle: handleShuffle
+        onShuffle: handleShuffle,
+        setSpellSlots: setSpellSlots
       }}
     />
   );

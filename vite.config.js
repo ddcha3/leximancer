@@ -16,4 +16,7 @@ export default defineConfig({
     port: 3000,
     host: '127.0.0.1',
   },
+  optimizeDeps: {
+    include: ['@dnd-kit/core', '@dnd-kit/utilities', '@dnd-kit/sortable', 'framer-motion'],
+  },
 })

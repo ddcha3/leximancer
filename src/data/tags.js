@@ -79,7 +79,7 @@ export const TAGS = [
     emoji: '🏹',
     target: 'hp',
     desc: 'Throw, shoot, launch, hurl, toss, catapult, sling, bullet, ball, arrow',
-    sound: 'abilities/impact_b'
+    sound: 'impacts/impact_b'
   },
   {
     id: 'heavy',
