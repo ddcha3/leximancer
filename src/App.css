@@ -16,8 +16,8 @@
 
 @font-face {
   font-family: 'SerenityOS';
-  src: url('./assets/fonts/SerentiyFixed.woff2') format('woff2'), 
-      url('./assets/fonts/SerentiyFixed.ttf') format('truetype');
+  src: 
+      url('./assets/fonts/SerentiyRetina.ttf') format('truetype');
   font-weight: normal;
   font-style: normal;
 }
