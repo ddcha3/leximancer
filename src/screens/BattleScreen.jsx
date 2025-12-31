@@ -1,8 +1,10 @@
+import { useState } from 'react';
 import Tile from "../components/Tile";
 import CombatLog from "../components/CombatLog";
 import { TAG_EMOJIS } from "../data/tags"; 
 import { STATUS_PROPERTIES } from "../data/statusEffects"; 
 import PixelEmoji from '../components/PixelEmoji';
+import HelpModal from '../components/HelpModal';
 
 export default function BattleScreen({ 
   playerAvatar, 
@@ -23,6 +25,7 @@ export default function BattleScreen({
   spellEffect 
 }) {
   const { onMoveTile, onReturnTile, onCast, onClear, onDiscard, onShuffle } = actions;
+  const [showHelp, setShowHelp] = useState(false);
 
   const enemyHpPct = Math.max(0, (enemy.hp / enemy.maxHp) * 100);
   const enemyWpPct = Math.max(0, (enemy.wp / enemy.maxWp) * 100);
@@ -216,9 +219,16 @@ export default function BattleScreen({
       </div>
 
       <div className="controls">
-        {/* SHUFFLE BUTTON */}
-        <button onClick={onShuffle} title="Shuffle tile order in hand"><PixelEmoji icon="🔀" size="1.2rem"/></button>
-        <button onClick={onClear} title="Clear staged tiles"><PixelEmoji icon="❌" size="1.2rem"/></button>
+        {/* HELP BUTTON */}
+        <button  onClick={() => setShowHelp(true)} title="How to Play">
+          <PixelEmoji icon="❓" size="1.2rem"/>
+        </button>
+        <button onClick={onShuffle} title="Shuffle tile order in hand">
+          <PixelEmoji icon="🔀" size="1.2rem"/>
+        </button>
+        <button onClick={onClear} title="Clear staged tiles">
+          <PixelEmoji icon="🗑️" size="1.2rem"/>
+        </button>
         <button onClick={onDiscard} title="Discard hand and skip turn">
           <PixelEmoji icon="♻" size="1.2rem"/>
         </button>
@@ -231,6 +241,12 @@ export default function BattleScreen({
           <PixelEmoji icon="🪄" size="1.2rem"/>
         </button>
       </div>
+
+      {/* --- HELP MODAL --- */}
+      <HelpModal 
+        isOpen={showHelp} 
+        onClose={() => setShowHelp(false)} 
+      />
     </div>
   );
 }
