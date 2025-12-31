@@ -34,7 +34,7 @@ export default function BattleScreen({
   const primaryEmoji = enemy.emoji;
   const secondaryEmoji = enemy.affixEmoji || '';
 
-  const maxArtifacts = 4;
+  const maxArtifacts = 3;
 
   const tooltipFor = (effects, tag) => {
     const eff = effects && effects.find(s => s.tag === tag);
