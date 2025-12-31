@@ -1,10 +1,7 @@
 import React, { useState, useEffect } from 'react';
+import spriteData from '../data/emoji-map.json'; 
 
-const PixelEmoji = ({ icon, size = "1.5rem", className = "" }) => {
-  const [imgSrc, setImgSrc] = useState(null);
-  const [hasError, setHasError] = useState(false);
-
-  // Helper: Convert emoji string to hex sequence (e.g. "1F600" or "1F9D9_200D_2642")
+const PixelEmoji = ({ icon, size = "1.5rem", className = "", style = {} }) => {
   const getHexSequence = (str) => {
     if (!str) return "";
     const hexList = [];
@@ -14,54 +11,42 @@ const PixelEmoji = ({ icon, size = "1.5rem", className = "" }) => {
     return hexList.join('_');
   };
 
-  useEffect(() => {
-    if (!icon) return;
+  const hex = getHexSequence(icon);
+  const coords = spriteData.map[hex];
 
-    const hex = getHexSequence(icon);
-    setImgSrc(`public/emojis/${hex}.png`);
-    setHasError(false);
-  }, [icon]);
-
-  const handleError = () => {
-    if (!imgSrc) return;
-
-
-    if (imgSrc.includes('_FE0F')) {
-      const strippedSrc = imgSrc.replace(/_FE0F/g, '');
-      if (strippedSrc !== imgSrc) {
-        setImgSrc(strippedSrc);
-        return;
-      }
-    }
-    setHasError(true);
-  };
-
-  if (hasError || !icon) {
+  if (!coords) {
     return (
-      <span 
-        style={{ fontSize: size, lineHeight: 1 }} 
-        className={className} 
-        role="img" 
-        aria-label={icon}
-      >
+      <span style={{ fontSize: size, lineHeight: 1, ...style }} className={className}>
         {icon}
       </span>
     );
   }
 
+
+  const bgSize = `${spriteData.cols * 100}%`;
+  const xPos = (coords.x / ( (spriteData.cols * spriteData.spriteSize) - spriteData.spriteSize )) * 100;
+  const yPos = (coords.y / ( (spriteData.rows * spriteData.spriteSize) - spriteData.spriteSize )) * 100;
+
   return (
-    <img 
-      src={imgSrc}
-      alt={icon}
-      onError={handleError}
+    <div 
       className={`pixel-emoji ${className}`}
-      style={{ 
-        width: size, 
-        height: size, 
-        imageRendering: "pixelated", 
-        verticalAlign: "middle",
-        display: "inline-block"
-      }} 
+      style={{
+        display: 'inline-block',
+        width: size,
+        height: size,
+        imageRendering: 'pixelated',
+        
+        backgroundImage: 'url(/leximancer/public/emoji-sheet.png)',
+        backgroundSize: bgSize,
+        backgroundPosition: `${xPos}% ${yPos}%`,
+        backgroundRepeat: 'no-repeat',
+        
+        verticalAlign: 'middle',
+        position: 'relative',
+        ...style
+      }}
+      role="img"
+      aria-label={icon}
     />
   );
 };

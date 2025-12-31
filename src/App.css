@@ -23,12 +23,9 @@
 }
 
 .pixel-emoji {
-  /* Ensure it behaves like text */
   image-rendering: pixelated; /* Chrome/Safari */
   image-rendering: crisp-edges; /* Firefox */
   object-fit: contain;
-  /* Slight adjustment to align with baseline of VT323 font */
-  transform: translateY(-2px); 
 }
 
 :root {
