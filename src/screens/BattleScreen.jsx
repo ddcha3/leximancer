@@ -2,6 +2,7 @@ import Tile from "../components/Tile";
 import CombatLog from "../components/CombatLog";
 import { TAG_EMOJIS } from "../data/tags"; 
 import { STATUS_PROPERTIES } from "../data/statusEffects"; 
+import PixelEmoji from '../components/PixelEmoji';
 
 export default function BattleScreen({ 
   playerAvatar, 
@@ -72,7 +73,7 @@ export default function BattleScreen({
       <div className="arena">
         
         {/* --- SPELL EFFECT OVERLAY --- */}
-        {spellEffect && <div className="spell-overlay">{spellEffect}</div>}
+        {spellEffect && <div className="spell-overlay"><PixelEmoji icon={spellEffect} size="10rem" /></div>}
 
         {/* --- ENEMY SECTION --- */}
         <div className="enemy-position">
@@ -85,11 +86,11 @@ export default function BattleScreen({
           
           <div className="enemy-bars">
             <div className="bar">
-              <div className="bar-text">❤️ {enemy.hp}</div>
+              <div className="bar-text"><PixelEmoji icon="❤️" size="0.8rem"/> {enemy.hp}</div>
               <div className="bar-fill hp-fill" style={{ width: `${enemyHpPct}%` }}></div>
             </div>
             <div className="bar">
-              <div className="bar-text">🧠 {enemy.wp}</div>
+              <div className="bar-text"><PixelEmoji icon="🧠" size="0.8rem"/> {enemy.wp}</div>
               <div className="bar-fill wp-fill" style={{ width: `${enemyWpPct}%` }}></div>
             </div>
           </div>
@@ -98,8 +99,8 @@ export default function BattleScreen({
             className={`enemy-emoji ${animState.enemy}`} 
             style={{ fontSize: enemySize }}
           >
-            <span className="emoji-primary">{primaryEmoji}</span>
-            {secondaryEmoji && <span className="emoji-secondary" aria-hidden>{secondaryEmoji}</span>}
+            <span className="emoji-primary"><PixelEmoji icon={primaryEmoji} size={enemySize}/></span>
+            {secondaryEmoji && <span className="emoji-secondary" aria-hidden><PixelEmoji icon={secondaryEmoji} size={"2rem"}/></span>}
           </div>
 
           {enemy.statusEffects && enemy.statusEffects.length > 0 && (
@@ -109,7 +110,7 @@ export default function BattleScreen({
                 const emoji = STATUS_PROPERTIES[tag]?.emoji || TAG_EMOJIS[tag] || '•';
                 return (
                   <div key={i} className="dot-pill" title={title}>
-                    <span className="dot-emoji">{emoji}</span>
+                    <span className="dot-emoji"><PixelEmoji icon={emoji} size="1.2rem"/></span>
                   </div>
                 );
               })}
@@ -129,7 +130,7 @@ export default function BattleScreen({
                   title={`${familiar.name} - ${familiar.turnsLeft} turns left`}
                   style={{ marginLeft: index > 0 ? '10px' : '0' }}
                 >
-                  {familiar.emoji}
+                  <PixelEmoji icon={familiar.emoji} size="3rem"/>
                 </div>
               );
             })}
@@ -140,7 +141,7 @@ export default function BattleScreen({
         <div className="player-position">
           <div className="player-row">
             <div className={`player-avatar ${animState.player}`}>
-              {playerAvatar}
+              <PixelEmoji icon={playerAvatar} size="6rem"/>
             </div>
             
             <div className="player-stats">
@@ -151,14 +152,14 @@ export default function BattleScreen({
                      const emoji = STATUS_PROPERTIES[tag]?.emoji || TAG_EMOJIS[tag] || '•';
                      return (
                        <div key={i} className="dot-pill" title={title}>
-                         <span className="dot-emoji">{emoji}</span>
+                         <span className="dot-emoji"><PixelEmoji icon={emoji} size="1.2rem"/></span>
                        </div>
                      );
                    })}
                  </div>
                )}
                <div className="bar">
-                 <div className="bar-text" style={{ textAlign: 'left', paddingLeft: '5px' }}>❤️ {playerHp}/{maxPlayerHp}</div>
+                 <div className="bar-text" style={{ textAlign: 'left', paddingLeft: '5px' }}><PixelEmoji icon="❤️" size="0.8rem"/> {playerHp}/{maxPlayerHp}</div>
                  <div className="bar-fill hp-fill" style={{ width: `${playerHpPct}%` }}></div>
                </div>
 
@@ -167,7 +168,7 @@ export default function BattleScreen({
                    const isObj = item && typeof item === 'object';
                    const key = isObj ? item.id : `inv-${i}`;
                    const title = isObj ? `${item.name}: ${item.desc}` : 'Artifact';
-                   const content = isObj ? item.emoji : item;
+                   const content = isObj ? <PixelEmoji icon={item.emoji} size="1rem"/> : item;
                    return (
                      <div key={key} className="artifact" title={title}>{content}</div>
                    );
@@ -183,11 +184,11 @@ export default function BattleScreen({
 
         {revealWeaknesses && enemy && enemy.weaknesses && (
           <div className="enemy-weaknesses">
-            <div className="weakness-crystal" title="Crystal Ball reveals weaknesses">🔮</div>
+            <div className="weakness-crystal" title="Crystal Ball reveals weaknesses"> <PixelEmoji icon={"🔮"} size="0.8rem"/></div>
             <div className="weakness-list">
               {enemy.weaknesses.map((w, i) => (
                 <span key={i} className="weakness-emoji" title={`weak to ${w}`}>
-                  {TAG_EMOJIS[w] || w}
+                  <PixelEmoji icon={TAG_EMOJIS[w] || w} size="1rem"/>
                 </span>
               ))}
             </div>
@@ -216,10 +217,10 @@ export default function BattleScreen({
 
       <div className="controls">
         {/* SHUFFLE BUTTON */}
-        <button onClick={onShuffle} title="Shuffle tile order in hand">🔀</button>
-        <button onClick={onClear} title="Clear staged tiles">❌</button>
+        <button onClick={onShuffle} title="Shuffle tile order in hand"><PixelEmoji icon="🔀" size="1.2rem"/></button>
+        <button onClick={onClear} title="Clear staged tiles"><PixelEmoji icon="❌" size="1.2rem"/></button>
         <button onClick={onDiscard} title="Discard hand and skip turn">
-          ♻
+          <PixelEmoji icon="♻" size="1.2rem"/>
         </button>
         <button 
           className="cast-btn" 
@@ -227,7 +228,7 @@ export default function BattleScreen({
           onClick={onCast}
           title="Cast Spell"
         >
-          🪄
+          <PixelEmoji icon="🪄" size="1.2rem"/>
         </button>
       </div>
     </div>

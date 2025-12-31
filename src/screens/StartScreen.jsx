@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { CHARACTERS } from '../data/player';
 import Title from '../components/Title';
 import Modal from '../components/Modal'; // Import the new component
+import PixelEmoji from '../components/PixelEmoji';
 
 export default function StartScreen({ onStart, isLoading }) {
   const [selectedCharId, setSelectedCharId] = useState(CHARACTERS[0].id);
@@ -41,7 +42,7 @@ export default function StartScreen({ onStart, isLoading }) {
             className={`char-card ${selectedCharId === char.id ? 'selected' : ''}`}
             onClick={() => setSelectedCharId(char.id)}
           >
-            <div className="char-avatar">{char.avatar}</div>
+            <div className="char-avatar"><PixelEmoji icon={char.avatar} size="4rem" /> </div>
             <h3>{char.name}</h3>
             <p>{char.desc}</p>
           </div>
