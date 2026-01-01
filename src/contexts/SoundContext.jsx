@@ -149,6 +149,18 @@ export const SoundProvider = ({ children }) => {
     };
   }, [isMuted, isTabVisible]);
 
+  // Ensure stray audio doesn't survive provider unmount
+  useEffect(() => {
+    return () => {
+      if (currentMusicRef.current) {
+        currentMusicRef.current.pause();
+        currentMusicRef.current.src = '';
+        currentMusicRef.current = null;
+        currentMusicPathRef.current = null;
+      }
+    };
+  }, []);
+
   const value = {
     playSound,
     playMusic,
