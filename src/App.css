@@ -578,7 +578,8 @@ h1 {
 
 /* --- LOG --- */
 .log {
-  height: 90px;
+  height: 85px;
+  width: 55%;
   overflow-y: auto;
   background: rgba(255, 255, 255, 0.3);
   border: 2px solid var(--ink-secondary);
@@ -607,6 +608,48 @@ h1 {
   color: #9b59b6;
   font-weight: bold;
   letter-spacing: 1px;
+}
+
+.log-controls-row {
+  display: flex;
+  gap: 12px;
+  align-items: stretch;
+  margin-bottom: 10px;
+  flex-wrap: wrap;
+}
+
+.controls-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  flex: 0 0 210px;
+  min-width: 200px;
+}
+
+.controls-row {
+  display: grid;
+  gap: 10px;
+}
+
+.controls-row button {
+  width: 100%;
+}
+
+.controls-small {
+  grid-template-columns: repeat(3, minmax(60px, 1fr));
+}
+
+.controls-small button {
+  padding: 8px 8px;
+  font-size: 0.9rem;
+}
+
+.controls-primary {
+  grid-template-columns: repeat(2, minmax(90px, 1fr));
+}
+
+.controls-primary button {
+  padding: 15px 12px;
 }
 
 /* --- TILES (Wooden Blocks / Ivory) --- */
@@ -742,6 +785,15 @@ button:active {
   background: #7b19a1;
   color: #fff;
   padding: 10px 20px;
+}
+
+.clear-btn {
+  background: rgba(49, 59, 6, 0.7);
+}
+
+.clear-btn:hover {
+  background: rgba(42, 51, 4, 0.7);
+  transform: translateY(-1px);
 }
 
 .enemy-emoji, .header div:first-child {
