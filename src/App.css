@@ -375,8 +375,8 @@ h1 {
 
 .player-buff-preview {
   position: absolute;
-  bottom: 10%;
-  left: 190px;
+  bottom: 85px;
+  left: 10px;
 
   display: flex;
   flex-direction: column;
@@ -395,7 +395,7 @@ h1 {
 .familiar-position {
   position: absolute;
   left: 10px;
-  top: 35%;
+  top: 20%;
   transform: translateY(-50%);
   z-index: 3;
   display: flex;
