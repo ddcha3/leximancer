@@ -77,8 +77,8 @@ export function resolveSpell(word, caster, target, isPlayerCasting = true, playS
   };
 
   let isAttack = true;
-  if (caster.id === 'conjurer') {
-    // If conjurer is summoning a familiar, don't attack
+  if (caster.id === 'summoner') {
+    // If summoner is summoning a familiar, don't attack
     const familiarData = FAMILIARS.find(f => f.name.toUpperCase() === word);
     if (familiarData) {
       isAttack = false;
@@ -180,7 +180,7 @@ export function resolveSpell(word, caster, target, isPlayerCasting = true, playS
   // 6. FINAL DAMAGE CALCULATION
   if (isAttack) {
     let finalMult = stats.multiplier; // Start with Class Multiplier
-    let seerTriggered = false;
+    let knowerTriggered = false;
 
     // Target Weakness/Resistance (using standardized multipliers and immunities)
     tags.forEach(tag => {
@@ -194,8 +194,8 @@ export function resolveSpell(word, caster, target, isPlayerCasting = true, playS
       if (Array.isArray(target.weaknesses) && target.weaknesses.includes(tag)) {
         finalMult *= WEAKNESS_MULT;
         result.logs.push(`> Weak to ${tag}! (x${WEAKNESS_MULT})`);
-        // Seer bonus: +3 flat damage if the caster is the Seer and a weakness matched
-        if (caster && caster.id === 'seer') seerTriggered = true;
+        // Knower bonus: +3 flat damage if the caster is the Knower and a weakness matched
+        if (caster && caster.id === 'knower') knowerTriggered = true;
       } else if (Array.isArray(target.resistances) && target.resistances.includes(tag)) {
         finalMult *= RESISTANCE_MULT;
         result.logs.push(`> Resistant to ${tag}! (x${RESISTANCE_MULT})`);
@@ -205,9 +205,9 @@ export function resolveSpell(word, caster, target, isPlayerCasting = true, playS
     // Formula: (Base + FlatBonus) * Multiplier
     result.damage = Math.floor((basePower + stats.flatBonus) * finalMult);
 
-    if (seerTriggered) {
+    if (knowerTriggered) {
       result.damage += 3;
-      result.logs.push(`> (Seer) Weakness Bonus +3`);
+      result.logs.push(`> (Knower) Weakness Bonus +3`);
     }
   }
 

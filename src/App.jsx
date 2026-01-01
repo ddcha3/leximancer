@@ -447,9 +447,9 @@ function App() {
         playSound('abilities/woosh_b', { volume: 0.5 });
       }
 
-      // Check if Conjurer is summoning a familiar
+      // Check if Summoner is summoning a familiar
       let updatedFamiliars = [...familiars];
-      if (playerChar.id === 'conjurer') {
+      if (playerChar.id === 'summoner') {
           const familiarData = FAMILIARS.find(f => f.name.toUpperCase() === currentWordStr);
           if (familiarData) {
               const newFamiliar = {

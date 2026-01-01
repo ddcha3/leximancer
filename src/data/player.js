@@ -14,15 +14,15 @@ export const LETTER_SCORES = {
 
 export const CHARACTERS = [
   {
-    id: 'seer',
-    name: 'Seer',
+    id: 'knower',
+    name: 'Knower',
     avatar: '🧙‍♀️',
     desc: 'Knows and exploits enemy weaknesses.',
     starting_items: ['crystal_ball'],
   },
   {
-    id: 'conjurer',
-    name: 'Conjurer',
+    id: 'summoner',
+    name: 'Summoner',
     avatar: '🧞',
     desc: 'Summons familiars to aid in battle.',
     starting_items: []
