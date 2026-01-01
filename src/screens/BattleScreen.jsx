@@ -473,17 +473,17 @@ export default function BattleScreen({
           }}>
           <PixelEmoji icon="❓" size="1.2rem"/>
         </button>
-        <button onClick={onDiscard} title="Discard hand and skip turn">
+        <button onClick={onDiscard} title="Discard hand and skip turn" style={{ padding: '10px 10px' }}>
           <PixelEmoji icon="♻" size="1.2rem"/>
         </button>
-        <button onClick={onShuffle} title="Shuffle tile order in hand">
+        <button onClick={onShuffle} title="Shuffle tile order in hand" style={{ padding: '10px 10px' }}>
           <PixelEmoji icon="🔀" size="1.2rem"/>
         </button>
-        <button onClick={onSort} title="Sort hand alphabetically">
-          <PixelEmoji icon="🔡" size="1.2rem"/>
-        </button>
-        <button onClick={onClear} title="Clear staged tiles">
+        <button onClick={onClear} title="Clear staged tiles" style={{ padding: '10px 25px' }}>
           <PixelEmoji icon="🗑️" size="1.2rem"/>
+        </button>
+        <button onClick={onSort} title="Sort hand alphabetically" style={{ padding: '10px 10px' }}>
+          <PixelEmoji icon="🔡" size="1.2rem"/>
         </button>
         <button 
           className="cast-btn" 

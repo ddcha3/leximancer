@@ -719,6 +719,7 @@ button:active {
 .cast-btn {
   background: #7b19a1;
   color: #fff;
+  padding: 10px 20px;
 }
 
 .enemy-emoji, .header div:first-child {
