@@ -1074,7 +1074,7 @@ function App() {
     const enemiesText = runHistory.map((r, idx) => {
       const isLastEnemy = idx === runHistory.length - 1;
       const statusEmoji = (isLastEnemy && !isVictory) ? '❌' : '✅';
-      return `${r.emoji} ${statusEmoji}`;
+      return `${r.affixEmoji || '🍦'}${r.emoji} ${statusEmoji}`;
     }).join('\n');
     const header = dailyMode ? `📅 LEXIMANCER\n${dailySeed}` : 'LEXIMANCER';
     const maxHitLine = maxSpellHit ? `${maxSpellHit.word} 🪄 ${maxSpellHit.damage}💥` : null;
