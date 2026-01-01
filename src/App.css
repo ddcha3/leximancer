@@ -456,8 +456,8 @@ h1 {
 /* Enemy weaknesses reveal (single bar, bottom-right of arena) */
 .enemy-weaknesses {
   position: absolute;
-  bottom: 8px;
-  right: 8px;
+  bottom: 1px;
+  right: 3px;
   left: auto;
   transform: none;
   z-index: 4;
