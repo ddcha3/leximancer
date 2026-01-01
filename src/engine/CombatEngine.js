@@ -83,6 +83,7 @@ export function resolveSpell(word, caster, target, isPlayerCasting = true, playS
     if (familiarData) {
       isAttack = false;
       result.emoji = familiarData.emoji;
+      result.isSummon = true;
     }
   }
 

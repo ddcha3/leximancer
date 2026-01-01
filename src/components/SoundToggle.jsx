@@ -23,7 +23,7 @@ export default function SoundToggle() {
       }}
       title={isMuted ? "Unmute" : "Mute"}
     >
-      {isMuted ? <PixelEmoji icon="🔇" size="1rem" /> : <PixelEmoji icon="🔊" size="1rem" />}
+      {isMuted ? <PixelEmoji icon="🔇"/> : <PixelEmoji icon="🔊"/>}
     </button>
   );
 }

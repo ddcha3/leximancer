@@ -10,7 +10,7 @@ export default function RewardScreen({ enemy, onNext }) {
         <button className="cast-btn" 
           style={{marginTop: '30px', fontSize: '1rem', fontFamily: 'FFFFORWA', background: 'var(--accent-red)'}}
           onClick={onNext}>
-          NEXT ENCOUNTER <PixelEmoji icon="➡" size="0.8rem"/>
+          NEXT ENCOUNTER <PixelEmoji icon="➡"/>
         </button>
       </div>
     </div>

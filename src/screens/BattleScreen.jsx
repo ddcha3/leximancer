@@ -4,7 +4,7 @@ import { SortableContext, horizontalListSortingStrategy, arrayMove } from '@dnd-
 import Tile from "../components/Tile";
 import CombatLog from "../components/CombatLog";
 import { TAG_EMOJIS } from "../data/tags"; 
-import { STATUS_PROPERTIES } from "../data/statusEffects"; 
+import { STATUS_PROPERTIES, STATUS_EFFECTS } from "../data/statusEffects"; 
 import PixelEmoji from '../components/PixelEmoji';
 import HelpModal from '../components/HelpModal';
 import SoundToggle from '../components/SoundToggle';
@@ -137,6 +137,9 @@ export default function BattleScreen({
 
   const maxArtifacts = 3;
 
+  const tagsToIgnoreInPreview = ['concrete', 'abstract'];
+  const unfriendlyStatusEffects = [STATUS_EFFECTS.POISON, STATUS_EFFECTS.BLEED, STATUS_EFFECTS.STUN, STATUS_EFFECTS.CHARM, STATUS_EFFECTS.FREEZE, STATUS_EFFECTS.SILENCE, STATUS_EFFECTS.CONFUSION, STATUS_EFFECTS.FEAR];
+  const friendlyStatusEffects = [STATUS_EFFECTS.POWER_BUFF, STATUS_EFFECTS.INTELLIGENCE_BUFF, STATUS_EFFECTS.SHIELD];
   const tooltipFor = (effects, tag) => {
     const eff = effects && effects.find(s => s.tag === tag);
     if (!eff) return tag.toUpperCase();
@@ -184,6 +187,62 @@ export default function BattleScreen({
             </span> 
             {enemy.name}
           </h3>
+        {/* TODO: REFACTOR STATUS EFFECTS THEY ARE A COMPLETE MESS OMG */}
+        {/* --- DAMAGE PREVIEW --- */}
+        {
+          resolvedSpell && 
+          resolvedSpell.isValid && (
+            resolvedSpell.damage > 0 || (
+              resolvedSpell.status && unfriendlyStatusEffects.includes(resolvedSpell.status)
+            ) || 
+            resolvedSpell.dot || (
+              resolvedSpell.statusEffect && unfriendlyStatusEffects.includes(resolvedSpell.statusEffect.tag)
+            )
+          ) && 
+          (
+            <div className="enemy-damage-preview">
+              {resolvedSpell.tags && resolvedSpell.tags.length > 0 && (
+                <div title={`Tags: ${resolvedSpell.tags.join(', ')}`}>
+                  {resolvedSpell.tags.filter(t => TAG_EMOJIS[t]).slice(0, 3).map((tag, i) => (
+                    !tagsToIgnoreInPreview.includes(tag) && (<PixelEmoji key={i} icon={TAG_EMOJIS[tag]} title={tag}/>)
+                  ))}
+                </div>
+              )}
+              {resolvedSpell.damage > 0 && (
+                <div 
+                  title={`Deals ${resolvedSpell.damage} ${resolvedSpell.targetStat === 'hp' ? 'HP' : 'WP'} damage`}
+                  style={{ display: 'flex', alignItems: 'center', gap: '4px', padding: '2px 2px',}}
+                >
+                  <PixelEmoji icon={resolvedSpell.targetStat === 'hp' ? '❤️' : '🧠'}/>
+                  <span style={{fontWeight: 'bold', color: resolvedSpell.targetStat === 'hp' ? '#ff6b6b' : '#4949f3ff'}}>-{resolvedSpell.damage}</span>
+                </div>
+              )}
+              {resolvedSpell.status && unfriendlyStatusEffects.includes(resolvedSpell.status) && (
+                <div
+                  title={`Status: ${resolvedSpell.status}`}
+                  style={{ display: 'flex', alignItems: 'center', gap: '4px', padding: '2px 2px',}}
+                >
+                  {/* <PixelEmoji icon={STATUS_PROPERTIES[resolvedSpell.status]?.emoji || '😵‍💫'}/> */}
+                  <span style={{color:'white'}}> {resolvedSpell.status}</span>
+                </div>
+              )}
+              {resolvedSpell.statusEffect && unfriendlyStatusEffects.includes(resolvedSpell.statusEffect.tag) && (
+                <div 
+                  title={`Status: ${resolvedSpell.statusEffect.tag}${resolvedSpell.statusEffect.ticks ? ` (${resolvedSpell.statusEffect.ticks} turn${resolvedSpell.statusEffect.ticks > 1 ? 's' : ''})` : ''}${resolvedSpell.statusEffect.block ? `, blocks ${resolvedSpell.statusEffect.block}` : ''}`}
+                  style={{ display: 'flex', alignItems: 'center', gap: '4px', padding: '2px 2px',}}
+                >
+                  {/* <PixelEmoji icon={STATUS_PROPERTIES[resolvedSpell.statusEffect.tag]?.emoji || '✨'}/> */}
+                  <span style={{color:'white'}}>{resolvedSpell.statusEffect.tag} {resolvedSpell.statusEffect.block}</span>
+                </div>
+              )}
+              {resolvedSpell.dot && (
+                <div title={`${resolvedSpell.dot.tag}: ${resolvedSpell.dot.damagePerTick} dmg/turn for ${resolvedSpell.dot.ticks} turns`}>
+                  <PixelEmoji icon={STATUS_PROPERTIES[resolvedSpell.dot.tag]?.emoji || '🩸'}/>
+                  <span style={{color:'white'}}> {resolvedSpell.dot.damagePerTick}×{resolvedSpell.dot.ticks}</span>
+                </div>
+              )}
+            </div>
+        )}
           
           <div className="enemy-bars">
             <div className="bar">
@@ -240,6 +299,54 @@ export default function BattleScreen({
 
         {/* --- PLAYER SECTION --- */}
         <div className="player-position">
+          {
+            resolvedSpell && 
+            resolvedSpell.isValid && (
+              resolvedSpell.heal > 0 ||
+              resolvedSpell.cleanse || 
+              resolvedSpell.isSummon || (
+                resolvedSpell.status && friendlyStatusEffects.includes(resolvedSpell.status)
+              ) || (
+                resolvedSpell.statusEffect && friendlyStatusEffects.includes(resolvedSpell.statusEffect.tag)
+              )
+            ) && (
+              <div className="player-buff-preview">
+                  {resolvedSpell.tags && resolvedSpell.tags.length > 0 && (
+                    <div title={`Tags: ${resolvedSpell.tags.join(', ')}`}>
+                      {resolvedSpell.tags.filter(t => TAG_EMOJIS[t]).slice(0, 3).map((tag, i) => (
+                        !tagsToIgnoreInPreview.includes(tag) && (<PixelEmoji key={i} icon={TAG_EMOJIS[tag]} title={tag}/>)
+                      ))}
+                    </div>
+                  )}
+                  {resolvedSpell.heal > 0 && (
+                    <div title={`Heals ${resolvedSpell.heal} HP`}>
+                      <PixelEmoji icon="❤️"/>
+                      <span style={{fontWeight: 'bold', color: '#82e9a8ff'}}> +{resolvedSpell.heal}</span>
+                    </div>
+                  )}
+                  {resolvedSpell.cleanse && (
+                    <div title="Cleanses negative effects on player">
+                      <span style={{color:'#ffffffff'}}>cleanse</span>
+                    </div>
+                  )}
+                  {resolvedSpell.isSummon && (
+                    <div title="Summons a familiar">
+                      <span style={{color:'black', fontSize:'1.7rem'}}>+</span>
+                      <PixelEmoji icon={resolvedSpell.emoji || '✨'} size='1.5rem'/>
+                    </div>
+                  )}
+                  {resolvedSpell.statusEffect && friendlyStatusEffects.includes(resolvedSpell.statusEffect.tag) && (
+                    <div 
+                      title={`Status: ${resolvedSpell.statusEffect.tag}${resolvedSpell.statusEffect.ticks ? ` (${resolvedSpell.statusEffect.ticks} turn${resolvedSpell.statusEffect.ticks > 1 ? 's' : ''})` : ''}${resolvedSpell.statusEffect.block ? `, blocks ${resolvedSpell.statusEffect.block}` : ''}`}
+                      style={{ display: 'flex', alignItems: 'center', gap: '4px', padding: '2px 2px',}}
+                    >
+                      {/* <PixelEmoji icon={STATUS_PROPERTIES[resolvedSpell.statusEffect.tag]?.emoji || '✨'}/> */}
+                      <span style={{color:'white'}}>{resolvedSpell.statusEffect.block}</span>
+                      <PixelEmoji icon={'⬆️'}/>
+                    </div>
+                  )}
+              </div>
+          )}
           <div className="player-row">
             <div className={`player-avatar ${animState.player}`}>
               <PixelEmoji icon={playerAvatar} size="4.5rem"/>
@@ -295,163 +402,9 @@ export default function BattleScreen({
             </div>
           </div>
         )}
-
       </div>
-
       <CombatLog logs={logs} />
 
-       {/* --- SPELL PREVIEW INFO --- */}
-        {resolvedSpell && spellSlots.length > 0 && resolvedSpell.isValid && (
-          <div className="spell-preview" style={{
-            display: 'flex',
-            flexWrap: 'wrap',
-            gap: '8px',
-            marginTop: '8px',
-            padding: '8px',
-            // backgroundColor: 'rgba(0, 0, 0, 0.3)',
-            borderRadius: '8px',
-            fontSize: '0.9rem',
-            color: '#c9ad8a',
-            justifyContent: 'center',
-            alignItems: 'center'
-          }}>
-            {resolvedSpell.isConfused && (
-              <div title="Confused: 50% chance to hit self" style={{
-                padding: '4px 8px',
-                backgroundColor: 'rgba(147, 51, 234, 0.5)',
-                borderRadius: '4px',
-                fontSize: '0.8rem',
-                fontWeight: 'bold',
-                color: '#e9d5ff'
-              }}>
-                CONFUSED
-              </div>
-            )}
-            {resolvedSpell.damage > 0 && (
-              <div title={`Deals ${resolvedSpell.damage} ${resolvedSpell.targetStat === 'hp' ? 'HP' : 'WP'} damage`}
-                style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: '4px',
-                padding: '4px 8px',
-                backgroundColor: 'rgba(90, 75, 73, 0.3)',
-                borderRadius: '4px'
-              }}>
-                <PixelEmoji icon={resolvedSpell.targetStat === 'hp' ? '❤️' : '🧠'} size="1rem"/>
-                <span style={{fontWeight: 'bold', color: resolvedSpell.targetStat === 'hp' ? '#ff6b6b' : '#4949f3ff'}}>{resolvedSpell.damage}</span>
-              </div>
-            )}
-            {resolvedSpell.heal > 0 && (
-              <div title={`Heals ${resolvedSpell.heal} HP`}
-                style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: '4px',
-                padding: '4px 8px',
-                backgroundColor: 'rgba(78, 109, 70, 0.3)',
-                borderRadius: '4px'
-              }}>
-                <PixelEmoji icon="💚" size="1rem"/>
-                <span style={{fontWeight: 'bold', color: '#4ade80'}}>+{resolvedSpell.heal}</span>
-              </div>
-            )}
-            {resolvedSpell.tags && resolvedSpell.tags.length > 0 && (
-              <div title={`Tags: ${resolvedSpell.tags.join(', ')}`}
-                style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: '4px',
-                padding: '4px 8px',
-                backgroundColor: 'rgba(139, 115, 91, 0.3)',
-                borderRadius: '4px'
-              }}>
-                {resolvedSpell.tags.filter(t => TAG_EMOJIS[t]).slice(0, 3).map((tag, i) => (
-                  <PixelEmoji key={i} icon={TAG_EMOJIS[tag]} size="1rem" title={tag}/>
-                ))}
-              </div>
-            )}
-            {resolvedSpell.statusEffect && (
-              <div title={`Status: ${resolvedSpell.statusEffect.tag}${resolvedSpell.statusEffect.ticks ? ` (${resolvedSpell.statusEffect.ticks} turn${resolvedSpell.statusEffect.ticks > 1 ? 's' : ''})` : ''}${resolvedSpell.statusEffect.block ? `, blocks ${resolvedSpell.statusEffect.block}` : ''}`}
-                style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: '4px',
-                padding: '4px 8px',
-                backgroundColor: 'rgba(147, 51, 234, 0.3)',
-                borderRadius: '4px'
-              }}>
-                <PixelEmoji icon={STATUS_PROPERTIES[resolvedSpell.statusEffect.tag]?.emoji || '✨'} size="1rem"/>
-                <span style={{fontSize: '0.8rem', color:'white'}}>{resolvedSpell.statusEffect.tag} {resolvedSpell.statusEffect.block}</span>
-              </div>
-            )}
-            {resolvedSpell.dot && (
-              <div title={`${resolvedSpell.dot.tag}: ${resolvedSpell.dot.damagePerTick} dmg/turn for ${resolvedSpell.dot.ticks} turns`}
-                style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: '4px',
-                padding: '4px 8px',
-                backgroundColor: 'rgba(147, 51, 234, 0.3)',
-                borderRadius: '4px'
-              }}>
-                <PixelEmoji icon={STATUS_PROPERTIES[resolvedSpell.dot.tag]?.emoji || '🩸'} size="1rem"/>
-                <span style={{fontSize: '0.8rem', color:'white'}}>{resolvedSpell.dot.damagePerTick}×{resolvedSpell.dot.ticks}</span>
-              </div>
-            )}
-            {resolvedSpell.status && (
-              <div title={`Status: ${resolvedSpell.status}`}
-                style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: '4px',
-                padding: '4px 8px',
-                backgroundColor: 'rgba(147, 51, 234, 0.3)',
-                borderRadius: '4px'
-              }}>
-                <PixelEmoji icon={STATUS_PROPERTIES[resolvedSpell.status]?.emoji || '😵‍💫'} size="1rem"/>
-                <span style={{fontSize: '0.8rem', color:'white'}}>{resolvedSpell.status}</span>
-              </div>
-            )}
-            {resolvedSpell.cleanse && (
-              <div title="Cleanses negative effects"
-                style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: '4px',
-                padding: '4px 8px',
-                backgroundColor: 'rgba(250, 204, 21, 0.3)',
-                borderRadius: '4px'
-              }}>
-                <PixelEmoji icon="✨" size="1rem"/>
-                <span style={{fontSize: '0.8rem', color:'white'}}>cleanse</span>
-              </div>
-            )}
-            {/* {resolvedSpell.instantKill && (
-              <div style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: '4px',
-                padding: '4px 8px',
-                backgroundColor: 'rgba(250, 204, 21, 0.3)',
-                borderRadius: '4px'
-              }}>
-                <PixelEmoji icon="💀" size="1rem"/>
-                <span style={{fontSize: '0.8rem', fontWeight: 'bold'}}>INSTANT KILL</span>
-              </div>
-            )} */}
-            {/* {!resolvedSpell.isValid && (
-              <div style={{
-                padding: '4px 8px',
-                backgroundColor: 'rgba(184, 92, 80, 0.3)',
-                borderRadius: '4px',
-                fontSize: '0.8rem',
-                color: '#ff6b6b'
-              }}>
-                Invalid word - will fizzle!
-              </div>
-            )} */}
-          </div>
-        )}
 
       <DndContext 
         sensors={sensors} 

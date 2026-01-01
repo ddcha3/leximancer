@@ -1,7 +1,7 @@
 import React from 'react';
 import spriteData from '../data/emoji-map.json'; 
 
-const PixelEmoji = ({ icon, size = "1.5rem", className = "", style = {} }) => {
+const PixelEmoji = ({ icon, size = "1rem", className = "", style = {} }) => {
   
   const getHexSequence = (str) => {
     if (!str) return "";
