@@ -215,6 +215,7 @@ function App() {
   const [dailyMode, setDailyMode] = useState(false);
   const [dailySeed, setDailySeed] = useState(null);
   const [runHistory, setRunHistory] = useState([]); // { stage, name }
+  const [maxSpellHit, setMaxSpellHit] = useState(null); // { word, damage, targetStat }
 
   const [currentEnemy, setCurrentEnemy] = useState(null);
   const [enemyIndex, setEnemyIndex] = useState(0);
@@ -400,6 +401,7 @@ function App() {
     setDailyMode(isDaily);
     setDailySeed(isDaily ? chosenSeed : null);
     setRunHistory([]);
+    setMaxSpellHit(null);
 
     setPlayerChar(character);
     const initialDeck = shuffle(STARTING_DECK, rngRef.current);
@@ -468,6 +470,7 @@ function App() {
   };
 
   const handleCast = () => {
+    const spellWord = currentWordStr;
     // Apply ongoing effects on player at start of player's turn
     const { totalDamage, newStatusEffects } = processTurnStart(playerStatusEffects, (msg) => addLog(`You: ${msg}`));
     
@@ -485,7 +488,7 @@ function App() {
 
     if (!isValidWord) {
       playSound('abilities/summon')
-      addLog(`"${currentWordStr}" fizzles!`);
+      addLog(`"${spellWord}" fizzles!`);
       setShakeError(true);
       setTimeout(() => setShakeError(false), 400);
       return;
@@ -526,8 +529,8 @@ function App() {
 
       // Check if Summoner is summoning a familiar
       let updatedFamiliars = [...familiars];
-      if (playerChar.id === 'summoner') {
-          const familiarData = FAMILIARS.find(f => f.name.toUpperCase() === currentWordStr);
+        if (playerChar.id === 'summoner') {
+          const familiarData = FAMILIARS.find(f => f.name.toUpperCase() === spellWord);
           if (familiarData) {
               const newFamiliar = {
                   id: Date.now(),
@@ -556,7 +559,7 @@ function App() {
       console.log("Spell Result:", result);
       
       // Logging
-      addLog(`You cast ^${currentWordStr}^!`);
+      addLog(`You cast ^${spellWord}^!`);
       if (result.tags.length > 0) {
           const meaningfulTags = result.tags.filter(t => !['concrete', 'abstract', 'noun', 'verb', 'adjective', 'adverb'].includes(t));
           if (meaningfulTags.length > 0) {
@@ -672,6 +675,13 @@ function App() {
                   if (result.targetStat === 'hp') nextEnemyState.hp -= damageToApply;
                   else nextEnemyState.wp -= damageToApply;
                   addLog(`Dealt *${damageToApply}* ${result.targetStat.toUpperCase()} damage!`);
+
+                  setMaxSpellHit(prev => {
+                    if (!prev || damageToApply > prev.damage) {
+                      return { word: spellWord, damage: damageToApply, targetStat: result.targetStat };
+                    }
+                    return prev;
+                  });
 
                   // LIFESTEAL: heal caster for the amount of damage actually dealt
                   if (result.tags.includes('lifesteal') && damageToApply > 0) {
@@ -1067,7 +1077,14 @@ function App() {
       return `${r.emoji} ${statusEmoji}`;
     }).join('\n');
     const header = dailyMode ? `📅 LEXIMANCER\n${dailySeed}` : 'LEXIMANCER';
-    const body = `${header}\n${playerEmoji} ${outcomeEmoji}\n${enemiesText || 'None'}\nhttps://vsporeddy.github.io/leximancer/`;
+    const maxHitLine = maxSpellHit ? `${maxSpellHit.word} 🪄 ${maxSpellHit.damage}💥` : null;
+    const body = [
+      header,
+      `${playerEmoji} ${outcomeEmoji}`,
+      maxHitLine,
+      enemiesText || 'None',
+      'https://vsporeddy.github.io/leximancer/'
+    ].filter(Boolean).join('\n');
     if (navigator && navigator.clipboard && navigator.clipboard.writeText) {
       navigator.clipboard.writeText(body).then(() => addLog('Run summary copied to clipboard.'));
     }
