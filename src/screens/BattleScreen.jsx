@@ -182,10 +182,10 @@ export default function BattleScreen({
         {/* --- ENEMY SECTION --- */}
         <div className="enemy-position">
           <h3>
-            <span style={{fontSize: '0.7em', color: '#8b735b', marginRight: '6px'}}>
+            <span style={{fontSize: '0.5rem', color: '#8b735b', marginRight: '6px'}}>
               LV.{enemy.level || 1}
             </span> 
-            {enemy.name}
+            <span style={{fontSize: '0.7rem'}}>{enemy.name}</span>
           </h3>
         {/* TODO: REFACTOR STATUS EFFECTS THEY ARE A COMPLETE MESS OMG */}
         {/* --- DAMAGE PREVIEW --- */}
@@ -406,7 +406,7 @@ export default function BattleScreen({
       <div className="log-controls-row">
         <CombatLog logs={logs} />
         <div className="controls-stack">
-          <div className="controls-row controls-small">
+          <div className="controls-row">
             <button onClick={onDiscard} title="Discard hand and skip turn">
               <PixelEmoji icon="♻" size="1.2rem"/>
             </button>
@@ -417,7 +417,7 @@ export default function BattleScreen({
               <PixelEmoji icon="🔡" size="1.2rem"/>
             </button>
           </div>
-          <div className="controls-row controls-primary">
+          <div className="controls-row">
             <button className="clear-btn"onClick={onClear} title="Clear staged tiles">
               <PixelEmoji icon="🗑️" size="1.2rem"/>
             </button>
