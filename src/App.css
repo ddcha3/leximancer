@@ -579,7 +579,8 @@ h1 {
 /* --- LOG --- */
 .log {
   height: 85px;
-  width: 50%;
+  flex: 0 1 50%;
+  min-width: 0;
   overflow-y: auto;
   background: rgba(255, 255, 255, 0.3);
   border: 2px solid var(--ink-secondary);
@@ -612,26 +613,23 @@ h1 {
 
 .log-controls-row {
   display: flex;
-  gap: 8px;
+  gap: 4%;
   align-items: stretch;
   margin-bottom: 10px;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
 }
 
 .controls-stack {
-  position: relative;
-  top: 5px;
-  left: 10%;
   display: flex;
   flex-direction: column;
   gap: 8px;
-  flex: 0 0 10px;
-  width: 50%;
+  flex: 0 1 40%;
+  min-width: 40px;
 }
 
 .controls-row {
   display: flex;
-  gap: 10px;
+  gap: 6px;
 }
 
 .controls-row button {
