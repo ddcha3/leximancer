@@ -1,5 +1,5 @@
 // Common elemental tags for the Elementalist
-const ELEMENTAL_TAGS = ['fire', 'water', 'ice', 'earth', 'air', 'lightning'];
+const ELEMENTAL_TAGS = ['fire', 'water', 'ice', 'earth', 'air', 'electric'];
 
 export const LETTER_SCORES = {
   // Common (1 pt)
@@ -33,7 +33,6 @@ export const CHARACTERS = [
     avatar: '🧝‍♂️',
     desc: 'Deals double damage with elemental spells.',
     onCast: (stats, tags, word) => {
-      // Check if any tag on the word matches the elemental list
       const isElemental = tags.some(t => ELEMENTAL_TAGS.includes(t));
       if (isElemental) {
         stats.multiplier *= 2;
@@ -45,6 +44,7 @@ export const CHARACTERS = [
   }
 ];
 
+// Placeholder for resolving enemy spell, TODO make this per-class
 export const PLAYER_DEFENSE = {
   weaknesses: [],
   resistances: []
