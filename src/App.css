@@ -622,9 +622,9 @@ h1 {
 .controls-stack {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 5px;
   flex: 0 1 40%;
-  min-width: 40px;
+  min-width: 20px;
 }
 
 .controls-row {
@@ -634,6 +634,23 @@ h1 {
 
 .controls-row button {
   width: 50%;
+}
+
+.controls-small {
+  grid-template-columns: repeat(3, minmax(50px, 50px));
+}
+
+.controls-small button {
+  padding: 8px 4px;
+  font-size: 0.8rem;
+}
+
+.controls-primary {
+  grid-template-columns: repeat(2, minmax(80px, 80px));
+}
+
+.controls-primary button {
+  padding: 15px 10px;
 }
 
 /* --- TILES (Wooden Blocks / Ivory) --- */

@@ -406,7 +406,7 @@ export default function BattleScreen({
       <div className="log-controls-row">
         <CombatLog logs={logs} />
         <div className="controls-stack">
-          <div className="controls-row">
+          <div className="controls-row controls-small">
             <button onClick={onDiscard} title="Discard hand and skip turn">
               <PixelEmoji icon="♻" size="1.2rem"/>
             </button>
@@ -417,7 +417,7 @@ export default function BattleScreen({
               <PixelEmoji icon="🔡" size="1.2rem"/>
             </button>
           </div>
-          <div className="controls-row">
+          <div className="controls-row controls-primary">
             <button className="clear-btn"onClick={onClear} title="Clear staged tiles">
               <PixelEmoji icon="🗑️" size="1.2rem"/>
             </button>
