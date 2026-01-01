@@ -312,10 +312,18 @@ h1 {
   padding: 8px 8px;
   gap: 2px;
   border-radius: 20px;
-  animation: preview-breathe 5s ease-in-out infinite;
+  animation: preview-breathe 4s ease-in-out infinite;
   box-shadow: 0 0 10px rgba(158, 34, 18, 0.25);
   isolation: isolate;
 }
+
+.enemy-damage-preview > * {
+  animation: preview-rotate 3s ease-in-out infinite;
+  transform-origin: center;
+}
+
+.enemy-damage-preview > *:nth-child(2n) { animation-delay: 0.3s; }
+.enemy-damage-preview > *:nth-child(3n) { animation-delay: 0.6s; }
 
 .enemy-position h3 {
   margin: 0 0 5px 0;
@@ -392,10 +400,18 @@ h1 {
   padding: 8px 8px;
   gap: 2px;
   border-radius: 20px;
-  animation: preview-breathe 5s ease-in-out infinite;
+  animation: preview-breathe 4s ease-in-out infinite;
   box-shadow: 0 0 10px rgba(6, 107, 6, 0.25);
   isolation: isolate;
 }
+
+.player-buff-preview > * {
+  animation: preview-rotate 3s ease-in-out infinite;
+  transform-origin: center;
+}
+
+.player-buff-preview > *:nth-child(2n) { animation-delay: 0.35s; }
+.player-buff-preview > *:nth-child(3n) { animation-delay: 0.7s; }
 
 /* Left Side: Familiar */
 .familiar-position {
@@ -761,11 +777,17 @@ button:active {
 }
 
 @keyframes preview-breathe {
-  0% { transform: scale(1) rotate(0deg); }
-  20% { transform: scale(1.05) rotate(-3deg); }
-  60% { transform: scale(1.1) rotate(3deg); }
-  80% { transform: scale(1.05) rotate(-3deg); }
-  100% { transform: scale(1) rotate(0deg); }
+  0% { transform: scale(1) }
+  20% { transform: scale(1.05) }
+  60% { transform: scale(1.1) }
+  80% { transform: scale(1.05) }
+  100% { transform: scale(1) }
+}
+
+@keyframes preview-rotate {
+  0% { transform: rotate(-5deg); }
+  50% { transform: rotate(5deg); }
+  100% { transform: rotate(-5deg); }
 }
 
 /* 2. Damage (Getting Hit) - Fast vertical jitter + Red Flash */
