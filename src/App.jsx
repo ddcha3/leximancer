@@ -8,7 +8,7 @@ import { SPELLBOOK, loadSpellbook } from './data/spells';
 import { TAG_EMOJIS, TAG_SOUNDS } from './data/tags';
 import { ARTIFACTS } from './data/artifacts';
 import { FAMILIARS } from './data/familiars';
-import { PLAYER_DEFENSE, STARTING_DECK } from './data/player';
+import { PLAYER_DEFENSE, STARTING_DECK, CHARACTERS } from './data/player';
 
 import { resolveSpell } from './engine/CombatEngine'
 import { STATUS_EFFECTS, STATUS_PROPERTIES } from './data/statusEffects';
@@ -26,6 +26,7 @@ const POS_TAG_MAP = {
 
 const HAND_SIZE = 18;
 const MAX_PLAYER_HP = 100;
+const SAVE_KEY = 'leximancer-progress-v1';
 
 const mulberry32 = (a) => {
   return function() {
@@ -230,6 +231,50 @@ function App() {
 
   let effectiveMaxHp = MAX_PLAYER_HP;
 
+  // Restore any saved run on first load (class, artifacts, encounter, hp, statuses, familiars, enemy state)
+  useEffect(() => {
+    if (gameState !== 'START') return;
+    if (typeof window === 'undefined') return;
+
+    try {
+      const raw = localStorage.getItem(SAVE_KEY);
+      if (!raw) return;
+      const saved = JSON.parse(raw);
+      if (!saved || !saved.playerCharId) return;
+
+      const savedChar = CHARACTERS.find(c => c.id === saved.playerCharId);
+      if (!savedChar) return;
+
+      const savedArtifacts = (saved.artifactIds || [])
+        .map(id => ARTIFACTS.find(a => a.id === id))
+        .filter(Boolean);
+
+      const savedEnemy = saved.currentEnemy;
+
+      rngRef.current = () => Math.random();
+      setDailyMode(false);
+      setDailySeed(null);
+      setRunHistory([]);
+      setPlayerChar(savedChar);
+      setInventory(savedArtifacts);
+      const maxHpWithArtifacts = MAX_PLAYER_HP + savedArtifacts.reduce((s, a) => s + (a.maxHpBonus || 0), 0);
+      const restoredPlayerHp = Math.min(maxHpWithArtifacts, saved.playerHp || maxHpWithArtifacts);
+      setPlayerHp(restoredPlayerHp);
+      setPlayerStatusEffects(saved.playerStatusEffects || []);
+      setFamiliars(saved.familiars || []);
+      setLogs([`Resuming at stage ${Math.min((saved.enemyIndex || 0) + 1, MAX_STAGE)}.`]);
+
+      const clampedIndex = Math.min(Math.max(saved.enemyIndex || 0, 0), MAX_STAGE - 1);
+      startEncounter(clampedIndex, shuffle(STARTING_DECK, rngRef.current), savedEnemy || null);
+
+      setPlayerHp(restoredPlayerHp);
+      setPlayerStatusEffects(saved.playerStatusEffects || []);
+      setFamiliars(saved.familiars || []);
+    } catch (err) {
+      console.warn('Failed to restore saved run', err);
+    }
+  }, [gameState]);
+
   useEffect(() => {
       const loadDictionary = async () => {
         try {
@@ -244,6 +289,35 @@ function App() {
       };
       loadDictionary();
   }, []);
+
+    // Save progress to local storage
+    useEffect(() => {
+      if (typeof window === 'undefined') return;
+      if (!playerChar) return;
+
+      if (gameState === 'VICTORY' || gameState === 'GAMEOVER') {
+        localStorage.removeItem(SAVE_KEY);
+        return;
+      }
+
+      if (gameState === 'START') return;
+
+      const payload = {
+        playerCharId: playerChar.id,
+        artifactIds: (inventory || []).map(a => a.id),
+        enemyIndex,
+        playerHp,
+        playerStatusEffects,
+        familiars,
+        currentEnemy
+      };
+
+      try {
+        localStorage.setItem(SAVE_KEY, JSON.stringify(payload));
+      } catch (err) {
+        console.warn('Failed to save progress', err);
+      }
+    }, [playerChar, inventory, enemyIndex, gameState, playerHp, playerStatusEffects, familiars, currentEnemy]);
 
   // Check for enemy death (from any source: player, familiar, DOTs)
   useEffect(() => {
@@ -341,7 +415,7 @@ function App() {
 
   const startDailyGame = (character) => startGame(character, { isDaily: true, seed: getEasternDateString() });
 
-  const startEncounter = (index, startingDeck = null) => {
+  const startEncounter = (index, startingDeck = null, existingEnemy = null) => {
     isProcessingDeath.current = false;
     setEnemyIndex(index);
     if (index >= MAX_STAGE) {
@@ -349,10 +423,13 @@ function App() {
       return;
     }
 
-    const enemyData = createEnemy(index, rngRef.current);
-    enemyData.maxHp = enemyData.hp;
-    enemyData.maxWp = enemyData.wp;
-    enemyData.statusEffects = [];
+    const baseEnemy = existingEnemy || createEnemy(index, rngRef.current);
+    const enemyData = {
+      ...baseEnemy,
+      maxHp: baseEnemy.maxHp || baseEnemy.hp,
+      maxWp: baseEnemy.maxWp || baseEnemy.wp,
+      statusEffects: baseEnemy.statusEffects || []
+    };
 
     setRunHistory(prev => [...prev, { 
       stage: index + 1, 
@@ -369,7 +446,7 @@ function App() {
     setFamiliars([]);
     setPlayerStatusEffects([]);
     setAnimState({ player: '', enemy: '', familiars: {} });
-    addLog(`A wild #${enemyData.name}# appears!`);
+    addLog(existingEnemy ? `Resuming battle with #${enemyData.name}#...` : `A wild #${enemyData.name}# appears!`);
   };
 
   const drawHand = (count, currentDeck, currentHand) => {
