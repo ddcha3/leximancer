@@ -22,6 +22,9 @@ function TileVisual({
   const isHidden = (isDragging || isActive) && !isOverlay;
   const isGhost = showGhostPlaceholder && isHidden;
   const enableLayoutAnimation = layoutEnabled && !isDragging && !isOverlay;
+  const interactive = !isOverlay && !isDragging && !isHidden && !isActive;
+  const hoverMotion = interactive ? { y: -4, scale: 1.05 } : undefined;
+  const tapMotion = interactive ? { scale: 0.95, y: 0 } : undefined;
   const style = {
     transform: transform ? CSS.Translate.toString(transform) : undefined,
     transition,
@@ -45,9 +48,10 @@ function TileVisual({
       style={style}
       {...listeners}
       {...attributes}
+      animate={{ y: 0, scale: 1 }}
       transition={{ type: 'spring', stiffness: 400, damping: 25 }}
-      whileHover={!isOverlay && !isDragging ? { y: -4, scale: 1.05 } : undefined}
-      whileTap={!isOverlay && !isDragging ? { scale: 0.95, y: 0 } : undefined}
+      whileHover={hoverMotion}
+      whileTap={tapMotion}
     >
       {!isGhost && (
         <>

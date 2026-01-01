@@ -86,17 +86,23 @@ export default function BattleScreen({
 
     // 1. Reordering within Spell Zone
     if (active.data.current?.sortable?.containerId === 'spell-zone' && over.id !== 'hand-zone') {
-      if (active.id !== over.id) {
-        const oldIndex = spellSlots.findIndex(t => t.id === active.id);
-        const newIndex = spellSlots.findIndex(t => t.id === over.id);
-        if (oldIndex !== -1 && newIndex !== -1) {
-          setSpellSlots(arrayMove(spellSlots, oldIndex, newIndex));
-        }
+      const oldIndex = spellSlots.findIndex(t => t.id === active.id);
+      const pointerPosition = getPointerPosition(event);
+      let newIndex;
+
+      if (over.id === 'spell-zone') {
+        newIndex = computeInsertIndex(over, pointerPosition, spellSlots);
+      } else {
+        newIndex = spellSlots.findIndex(t => t.id === over.id);
+      }
+
+      if (oldIndex !== -1 && newIndex !== undefined && newIndex !== -1 && newIndex !== oldIndex) {
+        setSpellSlots(arrayMove(spellSlots, oldIndex, newIndex));
       }
       return;
     }
 
-    // 2. Dragging from Hand to Spell Zone (Insert at precise position)
+    // 2. Dragging from Hand to Spell Zone
     if (over.data.current?.sortable?.containerId === 'spell-zone' || over.id === 'spell-zone') {
       const isInHand = hand.find(t => t && t.id === tile.id);
       if (isInHand) {
@@ -563,17 +569,35 @@ const extractClientPoint = (event) => {
 
 const getPointerPosition = (event) => {
   const basePoint = extractClientPoint(event.activatorEvent);
-  if (!basePoint || !event?.delta) return null;
-  return {
-    x: basePoint.x + event.delta.x,
-    y: basePoint.y + event.delta.y
-  };
+  if (basePoint && event?.delta) {
+    return {
+      x: basePoint.x + event.delta.x,
+      y: basePoint.y + event.delta.y
+    };
+  }
+
+  // Fallback: use the current center of the dragged element
+  const activeRect = event?.active?.rect?.current?.translated || event?.active?.rect?.current?.initial;
+  if (activeRect) {
+    return {
+      x: activeRect.left + (activeRect.width / 2),
+      y: activeRect.top + (activeRect.height / 2)
+    };
+  }
+
+  return null;
 };
 
 const computeInsertIndex = (over, pointerPosition, spellSlots) => {
   if (!over) return undefined;
   if (over.id === 'spell-zone') {
-    return spellSlots.length;
+    if (spellSlots.length === 0) return 0;
+    if (pointerPosition && over.rect) {
+      const midpoint = over.rect.left + (over.rect.width / 2);
+      return pointerPosition.x < midpoint ? 0 : spellSlots.length;
+    }
+    // Default to start to avoid failing to move when dropping on empty area
+    return 0;
   }
 
   const overIndex = spellSlots.findIndex(t => t.id === over.id);
