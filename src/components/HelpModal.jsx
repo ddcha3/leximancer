@@ -22,10 +22,10 @@ export default function HelpModal({ isOpen, onClose }) {
 
         <h4>CONTROLS</h4>
         <ul>
+          <li><strong><PixelEmoji icon="♻" size="0.8rem"/> Mulligan:</strong> Discard your entire hand and redraw from your tile bag (skips your turn).</li>
           <li><strong><PixelEmoji icon="🔀" size="0.8rem"/> Shuffle:</strong> Randomly rearrange the order of your tiles for a fresh perspective.</li>
           <li><strong><PixelEmoji icon="🔡" size="0.8rem"/> Alphabetize: </strong> Sort your tiles alphabetically.</li>
           <li><strong><PixelEmoji icon="🗑️" size="0.8rem"/> Clear:</strong> Remove all staged tiles to start forming a new word.</li>
-          <li><strong><PixelEmoji icon="♻" size="0.8rem"/> Mulligan:</strong> Discard your entire hand and redraw from your tile bag (skips your turn).</li>
           <li><strong><PixelEmoji icon="🪄" size="0.8rem"/> Cast:</strong> Complete your staged word and cast a spell.</li>
         </ul>
       </div>
