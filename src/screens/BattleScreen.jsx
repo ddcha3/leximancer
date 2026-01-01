@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { DndContext, useDroppable, DragOverlay, useSensor, useSensors, PointerSensor, closestCenter, pointerWithin } from '@dnd-kit/core';
 import { SortableContext, horizontalListSortingStrategy, arrayMove } from '@dnd-kit/sortable';
 import Tile from "../components/Tile";
@@ -8,6 +8,7 @@ import { STATUS_PROPERTIES, STATUS_EFFECTS } from "../data/statusEffects";
 import PixelEmoji from '../components/PixelEmoji';
 import HelpModal from '../components/HelpModal';
 import SoundToggle from '../components/SoundToggle';
+import Modal from '../components/Modal';
 
 function Droppable({ id, children, className, style }) {
   const { isOver, setNodeRef } = useDroppable({ id });
@@ -49,6 +50,17 @@ export default function BattleScreen({
   const [showHelp, setShowHelp] = useState(false);
   const [activeId, setActiveId] = useState(null);
   const [activeTile, setActiveTile] = useState(null);
+  const [showMulliganConfirm, setShowMulliganConfirm] = useState(false);
+  const [skipMulliganWarning, setSkipMulliganWarning] = useState(false);
+  const [persistSkip, setPersistSkip] = useState(false);
+
+  useEffect(() => {
+    const stored = typeof window !== 'undefined' ? window.localStorage.getItem('leximancer-skip-mulligan-warning') : null;
+    if (stored === '1') {
+      setSkipMulliganWarning(true);
+      setPersistSkip(true);
+    }
+  }, []);
 
   const sensors = useSensors(
     useSensor(PointerSensor, {
@@ -124,6 +136,31 @@ export default function BattleScreen({
     clearActiveDrag();
   };
 
+  const handleMulliganClick = () => {
+    if (skipMulliganWarning) {
+      onDiscard();
+      return;
+    }
+    setShowMulliganConfirm(true);
+  };
+
+  const confirmMulligan = () => {
+    if (persistSkip) {
+      window.localStorage.setItem('leximancer-skip-mulligan-warning', '1');
+      setSkipMulliganWarning(true);
+    }
+    setShowMulliganConfirm(false);
+    onDiscard();
+  };
+
+  const cancelMulligan = () => {
+    if (persistSkip) {
+      window.localStorage.setItem('leximancer-skip-mulligan-warning', '1');
+      setSkipMulliganWarning(true);
+    }
+    setShowMulliganConfirm(false);
+  };
+
   const enemyHpPct = Math.max(0, (enemy.hp / enemy.maxHp) * 100);
   const enemyWpPct = Math.max(0, (enemy.wp / enemy.maxWp) * 100);
   const playerHpPct = Math.max(0, (playerHp / maxPlayerHp) * 100);
@@ -174,6 +211,25 @@ export default function BattleScreen({
   return (
     <div className="app">
       <SoundToggle />
+      <Modal 
+        isOpen={showMulliganConfirm} 
+        onClose={cancelMulligan} 
+        title="Are you sure?"
+      >
+        <p style={{ marginTop: 0 }}>Mulligan discards your hand and SKIPS YOUR TURN. Proceed?</p>
+        <label style={{ display: 'flex', alignItems: 'center', gap: '8px', userSelect: 'none' }}>
+          <input
+            type="checkbox"
+            checked={persistSkip}
+            onChange={(e) => setPersistSkip(e.target.checked)}
+          />
+          OK yeah I KNOW
+        </label>
+        <div className="modal-actions">
+          <button onClick={cancelMulligan} style={{ backgroundColor: '#917976ff', color: '#fff', fontFamily: "ari-bold, monospace" }}>CANCEL</button>
+          <button onClick={confirmMulligan} style={{ color: '#fff', fontFamily: "ari-bold, monospace" }}>MULLIGAN</button>
+        </div>
+      </Modal>
       <div className="arena">
         
         {/* --- SPELL EFFECT OVERLAY --- */}
@@ -407,7 +463,7 @@ export default function BattleScreen({
         <CombatLog logs={logs} />
         <div className="controls-stack">
           <div className="controls-row controls-small">
-            <button onClick={onDiscard} title="Discard hand and skip turn">
+            <button onClick={handleMulliganClick} title="Discard hand and skip turn">
               <PixelEmoji icon="♻" size="1.2rem"/>
             </button>
             <button onClick={onShuffle} title="Shuffle tile order in hand">
