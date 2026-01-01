@@ -455,14 +455,14 @@ const AFFIXES = [
 export const MAX_STAGE = 7;
 
 // Create a new enemy instance by combining a base (by level) and a random affix
-export function createEnemy(stageIndex) {
+export function createEnemy(stageIndex, rand = Math.random) {
   const level = Math.min(7, stageIndex + 1);
   const bases = BASES[level] || BASES[7];
-  const base = bases[Math.floor(Math.random() * bases.length)];
+  const base = bases[Math.floor(rand() * bases.length)];
 
   // 25% chance to spawn without an affix
-  const useAffix = Math.random() >= 0.25;
-  const affix = useAffix ? AFFIXES[Math.floor(Math.random() * AFFIXES.length)] : null;
+  const useAffix = rand() >= 0.25;
+  const affix = useAffix ? AFFIXES[Math.floor(rand() * AFFIXES.length)] : null;
 
   const capitalize = s => s.charAt(0).toUpperCase() + s.slice(1);
   const id = affix ? `${base.id}_${affix.id}` : base.id;

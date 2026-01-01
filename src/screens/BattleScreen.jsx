@@ -491,8 +491,22 @@ export default function BattleScreen({
 
       <div className="controls">
         {/* HELP BUTTON */}
-        <button  onClick={() => setShowHelp(true)} title="How to Play">
+        <button  
+          className="help-btn" 
+          onClick={() => setShowHelp(true)} title="How to Play"
+          style={{
+            position: 'absolute',
+            top: '10px',
+            right: '10px',
+            fontSize: '1.2rem',
+            cursor: 'pointer',
+            zIndex: 1000,
+            padding: '5px'
+          }}>
           <PixelEmoji icon="❓" size="1.2rem"/>
+        </button>
+        <button onClick={onDiscard} title="Discard hand and skip turn">
+          <PixelEmoji icon="♻" size="1.2rem"/>
         </button>
         <button onClick={onShuffle} title="Shuffle tile order in hand">
           <PixelEmoji icon="🔀" size="1.2rem"/>
@@ -502,9 +516,6 @@ export default function BattleScreen({
         </button>
         <button onClick={onClear} title="Clear staged tiles">
           <PixelEmoji icon="🗑️" size="1.2rem"/>
-        </button>
-        <button onClick={onDiscard} title="Discard hand and skip turn">
-          <PixelEmoji icon="♻" size="1.2rem"/>
         </button>
         <button 
           className="cast-btn" 

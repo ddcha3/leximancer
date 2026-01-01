@@ -6,15 +6,16 @@ import PixelEmoji from '../components/PixelEmoji';
 import { useSound } from '../contexts/SoundContext';
 import SoundToggle from '../components/SoundToggle';
 
-export default function StartScreen({ onStart, isLoading }) {
+export default function StartScreen({ onStart, onStartDaily, isLoading }) {
   const [selectedCharId, setSelectedCharId] = useState(CHARACTERS[0].id);
   const [showHelp, setShowHelp] = useState(false);
   const { playSound } = useSound();
 
-  const handleStart = () => {
+  const handleStart = (isDaily = false) => {
     playSound('interface/bonus');
     const char = CHARACTERS.find(c => c.id === selectedCharId);
-    onStart(char);
+    if (isDaily && onStartDaily) onStartDaily(char);
+    else onStart(char);
   };
 
   return (
@@ -59,14 +60,24 @@ export default function StartScreen({ onStart, isLoading }) {
         ))}
       </div>
 
-      <button 
-        className="cast-btn" 
-        onClick={handleStart} 
-        disabled={isLoading}
-        style={{marginTop: '30px', fontSize: '1rem', fontFamily: 'FFFFORWA', background: 'var(--accent-red)'}}
-      >
-        {isLoading ? "Loading..." : "START"}
-      </button>
+      <div style={{display: 'flex', gap: '10px', marginTop: '30px'}}>
+        <button 
+          className="cast-btn" 
+          onClick={() => handleStart(false)} 
+          disabled={isLoading}
+          style={{flex: 1, fontSize: '1rem', fontFamily: 'FFFFORWA', background: 'var(--accent-red)'}}
+        >
+          {isLoading ? "Loading..." : "CLASSIC"}
+        </button>
+        <button 
+          className="cast-btn" 
+          onClick={() => handleStart(true)} 
+          disabled={isLoading}
+          style={{flex: 1, fontSize: '1rem', fontFamily: 'FFFFORWA', background: '#4e6d46'}}
+        >
+          DAILY RUN
+        </button>
+      </div>
 
       {/* --- THE MODAL --- */}
       <HelpModal 

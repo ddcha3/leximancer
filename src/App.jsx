@@ -27,10 +27,40 @@ const POS_TAG_MAP = {
 const HAND_SIZE = 18;
 const MAX_PLAYER_HP = 100;
 
-const shuffle = (array) => {
+const mulberry32 = (a) => {
+  return function() {
+    let t = a += 0x6D2B79F5;
+    t = Math.imul(t ^ t >>> 15, t | 1);
+    t ^= t + Math.imul(t ^ t >>> 7, t | 61);
+    return ((t ^ t >>> 14) >>> 0) / 4294967296;
+  };
+};
+
+const seedFromString = (str) => {
+  let h = 2166136261 >>> 0;
+  for (let i = 0; i < str.length; i++) {
+    h ^= str.charCodeAt(i);
+    h = Math.imul(h, 16777619);
+  }
+  return h >>> 0;
+};
+
+const makeSeededRng = (seedStr) => mulberry32(seedFromString(seedStr));
+
+const getEasternDateString = () => {
+  const formatter = new Intl.DateTimeFormat('en-CA', {
+    timeZone: 'America/New_York',
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+  });
+  return formatter.format(new Date());
+};
+
+const shuffle = (array, randFn = Math.random) => {
   const newArray = [...array];
   for (let i = newArray.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
+    const j = Math.floor(randFn() * (i + 1));
     [newArray[i], newArray[j]] = [newArray[j], newArray[i]];
   }
   return newArray;
@@ -181,6 +211,9 @@ function App() {
   const [hand, setHand] = useState([]);
   const [spellSlots, setSpellSlots] = useState([]);
   const [resolvedSpell, setResolvedSpell] = useState(null);
+  const [dailyMode, setDailyMode] = useState(false);
+  const [dailySeed, setDailySeed] = useState(null);
+  const [runHistory, setRunHistory] = useState([]); // { stage, name }
 
   const [currentEnemy, setCurrentEnemy] = useState(null);
   const [enemyIndex, setEnemyIndex] = useState(0);
@@ -193,6 +226,7 @@ function App() {
   const [spellEffect, setSpellEffect] = useState(null);
   
   const isProcessingDeath = useRef(false);
+  const rngRef = useRef(() => Math.random());
 
   let effectiveMaxHp = MAX_PLAYER_HP;
 
@@ -285,19 +319,29 @@ function App() {
     setResolvedSpell({ ...result, isConfused, isValid: isValidWord });
   }, [spellSlots, currentEnemy, playerChar, playerStatusEffects, inventory, currentWordStr, isValidWord]);
 
-  const startGame = (character) => {
+  const startGame = (character, { isDaily = false, seed = null } = {}) => {
+    const chosenSeed = seed || getEasternDateString();
+    rngRef.current = isDaily ? makeSeededRng(chosenSeed) : () => Math.random();
+
+    setDailyMode(isDaily);
+    setDailySeed(isDaily ? chosenSeed : null);
+    setRunHistory([]);
+
     setPlayerChar(character);
-    setDeck(shuffle(STARTING_DECK));
-    setLogs(["Entering the archives..."]);
+    const initialDeck = shuffle(STARTING_DECK, rngRef.current);
+    setDeck(initialDeck);
+    setLogs([isDaily ? `Daily run ${chosenSeed}` : "Entering the archives..."]);
     setInventory(character.starting_items.map(itemId => ARTIFACTS.find(a => a.id === itemId)));
     effectiveMaxHp = MAX_PLAYER_HP + inventory.reduce((s,a)=> s + (a.maxHpBonus || 0), 0);
     setPlayerHp(effectiveMaxHp);
     setPlayerStatusEffects([]);
     setFamiliars([]);
-    startEncounter(0);
+    startEncounter(0, initialDeck);
   };
 
-  const startEncounter = (index) => {
+  const startDailyGame = (character) => startGame(character, { isDaily: true, seed: getEasternDateString() });
+
+  const startEncounter = (index, startingDeck = null) => {
     isProcessingDeath.current = false;
     setEnemyIndex(index);
     if (index >= MAX_STAGE) {
@@ -305,14 +349,22 @@ function App() {
       return;
     }
 
-    const enemyData = createEnemy(index);
+    const enemyData = createEnemy(index, rngRef.current);
     enemyData.maxHp = enemyData.hp;
     enemyData.maxWp = enemyData.wp;
     enemyData.statusEffects = [];
 
+    setRunHistory(prev => [...prev, { 
+      stage: index + 1, 
+      name: enemyData.name, 
+      emoji: enemyData.emoji,
+      affixEmoji: enemyData.affixEmoji 
+    }]);
+
     setCurrentEnemy(enemyData);
     setGameState('BATTLE');
-    drawHand(HAND_SIZE, shuffle(STARTING_DECK), []);
+    const deckSource = startingDeck || shuffle(STARTING_DECK, rngRef.current);
+    drawHand(HAND_SIZE, deckSource, []);
     setSpellSlots([]);
     setFamiliars([]);
     setPlayerStatusEffects([]);
@@ -327,22 +379,15 @@ function App() {
     for (let i = 0; i < count; i++) {
       if (deckCopy.length === 0) {
         addLog("Deck empty. Reshuffling...");
-        deckCopy = shuffle(STARTING_DECK);
+        deckCopy = shuffle(STARTING_DECK, rngRef.current);
       }
-      const tile = { id: Math.random(), char: deckCopy.pop() };
+      const tile = { id: rngRef.current(), char: deckCopy.pop() };
       const nullIndex = newHand.findIndex(s => !s);
       if (nullIndex >= 0) newHand[nullIndex] = tile;
       else newHand.push(tile);
     }
     setDeck(deckCopy);
     setHand(newHand);
-
-    // Play shuffle sound effect
-    // playSound('interface/paper', { volume: 0.8 });
-    // setTimeout(() => playSound('interface/paper', { volume: 0.8 }), 100);
-    // setTimeout(() => playSound('interface/paper', { volume: 0.8 }), 200);
-    // setTimeout(() => playSound('interface/paper', { volume: 0.8 }), 300);
-    // setTimeout(() => playSound('interface/paper', { volume: 0.8 }), 400);
   };
 
   const handleCast = () => {
@@ -359,14 +404,6 @@ function App() {
             });
             addLog(`You take *${totalDamage}* damage from ongoing effects.`);
         }
-  const handleSort = () => {
-    setHand(prev => {
-      const slots = [...prev];
-      const tiles = slots.filter(Boolean).sort((a, b) => a.char.localeCompare(b.char));
-      return slots.map(s => s ? tiles.shift() : null);
-    });
-    playSound('interface/paper', { volume: 0.8 });
-  };
     }
 
     if (!isValidWord) {
@@ -393,7 +430,7 @@ function App() {
       let isSelfHit = false;
 
       if (isConfused) {
-          if (Math.random() < 0.5) {
+          if (rngRef.current() < 0.5) {
               isSelfHit = true;
               addLog("You are confused and attack yourself!");
           }
@@ -641,7 +678,7 @@ function App() {
         setAnimState(prev => ({ ...prev, enemy: '' }));
         
         const vocab = enemyEntity.vocabulary || ["HIT"];
-        const word = vocab[Math.floor(Math.random() * vocab.length)];
+        const word = vocab[Math.floor(rngRef.current() * vocab.length)];
         
         // Check confusion
         const isConfused = enemyEntity.statusEffects && enemyEntity.statusEffects.some(e => e.tag === STATUS_EFFECTS.CONFUSION);
@@ -649,7 +686,7 @@ function App() {
         let isSelfHit = false;
 
         if (isConfused) {
-            if (Math.random() < 0.5) {
+          if (rngRef.current() < 0.5) {
                 spellTarget = enemyEntity;
                 isSelfHit = true;
                 addLog(`#${enemyEntity.name}# is confused and attacks itself!`);
@@ -851,7 +888,7 @@ function App() {
                         turnsLeft: f.turnsLeft - 1
                     })).filter(f => {
                         if (f.turnsLeft <= 0) {
-                            addLog(`${f.emoji} ${f.name} vanishes...`);
+                            addLog(`${f.name} vanishes...`);
                             return false;
                         }
                         return true;
@@ -909,10 +946,10 @@ function App() {
     setHand(prev => {
       const slots = [...prev];
       const tiles = slots.filter(Boolean);
-      const shuffled = shuffle(tiles);
+      const shuffled = shuffle(tiles, rngRef.current);
       return slots.map(s => s ? shuffled.shift() : null);
     });
-    setHand(prev => shuffle([...prev]));
+    setHand(prev => shuffle([...prev], rngRef.current));
 
     // Play the paper sound three times
     playSound('interface/paper', { volume: 0.8 });
@@ -943,11 +980,26 @@ function App() {
     setTimeout(() => playSound('interface/paper', { volume: 0.8 }), 600);
     setTimeout(() => playSound('interface/paper', { volume: 0.8 }), 700);
   };
+  const copyRunSummary = (outcomeLabel) => {
+    const playerEmoji = playerChar?.avatar || '🧙‍♂️';
+    const isVictory = outcomeLabel === 'Victory';
+    const outcomeEmoji = isVictory ? '🏆' : '💀';
+    const enemiesText = runHistory.map((r, idx) => {
+      const isLastEnemy = idx === runHistory.length - 1;
+      const statusEmoji = (isLastEnemy && !isVictory) ? '❌' : '✅';
+      return `${r.emoji} ${statusEmoji}`;
+    }).join('\n');
+    const header = dailyMode ? `📅 LEXIMANCER\n${dailySeed}` : 'LEXIMANCER';
+    const body = `${header}\n${playerEmoji} ${outcomeEmoji}\n${enemiesText || 'None'}\nhttps://vsporeddy.github.io/leximancer/`;
+    if (navigator && navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(body).then(() => addLog('Run summary copied to clipboard.'));
+    }
+  };
   const addLog = (...messages) => setLogs(prev => [...prev, ...messages]);
 
   // ... render ...
   if (gameState === 'START') {
-     return <StartScreen onStart={startGame} isLoading={isDictLoading} />;
+      return <StartScreen onStart={startGame} onStartDaily={startDailyGame} isLoading={isDictLoading} />;
   }
   
   if (gameState === 'GAMEOVER') {
@@ -955,9 +1007,15 @@ function App() {
         <div className="reward-screen">
             <h1>DEFEAT</h1>
             <p>Your journey ends here.</p>
+        {dailyMode && (
+          <button 
+            className="cast-btn" 
+            style={{marginRight: '10px', fontSize: '1.2rem', fontFamily: 'FFFFORWA'}}
+            onClick={() => copyRunSummary('Defeat')}>SHARE</button>
+        )}
             <button 
                 className="cast-btn" 
-                style={{marginTop: '30px', fontSize: '1.2rem', fontFamily: 'FFFFORWA', background: 'var(--accent-red)'}}
+                style={{fontSize: '1.2rem', fontFamily: 'FFFFORWA', background: 'var(--accent-red)'}}
                 onClick={() => setGameState('START')}>TRY AGAIN</button>
         </div>
     );
@@ -980,9 +1038,15 @@ function App() {
       <div className="reward-screen">
         <h1>LEGENDARY!</h1>
         <p>You have cleared the archives.</p>
+        {dailyMode && (
+          <button 
+            className="cast-btn" 
+            style={{marginRight: '10px', fontSize: '1.2rem', fontFamily: 'FFFFORWA'}}
+            onClick={() => copyRunSummary('Victory')}>SHARE</button>
+        )}
         <button 
             className="cast-btn" 
-            style={{marginTop: '30px', fontSize: '1rem', fontFamily: 'FFFFORWA', background: 'var(--accent-red)'}}
+            style={{fontSize: '1.2rem', fontFamily: 'FFFFORWA', background: 'var(--accent-red)'}}
             onClick={() => setGameState('START')}>NEW RUN</button>
       </div>
     );
