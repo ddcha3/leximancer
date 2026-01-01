@@ -2,14 +2,15 @@ export const STATUS_EFFECTS = {
     POISON: 'poison',
     BLEED: 'bleed',
     STUN: 'stun',
-    SHIELD: 'shield',
     CHARM: 'charm',
     FREEZE: 'freeze',
     SILENCE: 'silence',
     CONFUSION: 'confusion',
     FEAR: 'fear',
+    // TODO make buffs separate enum
     POWER_BUFF: 'power buff',
     INTELLIGENCE_BUFF: 'intelligence buff',
+    SHIELD: 'shield',
 };
 
 export const STATUS_PROPERTIES = {

@@ -65,8 +65,8 @@ const BASES = {
       name: 'snek',
       emoji: '🐍',
       level: 2,
-      hp: 24,
-      wp: 16,
+      hp: 16,
+      wp: 24,
       vocabulary: ['BITE', 'HISS', 'SNEK', 'COIL', 'STRIKE'],
       weaknesses: [],
       resistances: ['poison']
@@ -195,8 +195,8 @@ const BASES = {
       name: 'camel',
       emoji: '🐫',
       level: 5,
-      hp: 90,
-      wp: 80,
+      hp: 70,
+      wp: 90,
       vocabulary: ['MASTICATE', 'TRUDGING', 'REGURGITATE', 'MIRAGE', 'HUMP', 'CARAVAN'],
       weaknesses: ['ice', 'sharp'],
       resistances: ['earth']
@@ -231,8 +231,8 @@ const BASES = {
       name: 'vampire',
       emoji: '🧑‍⚖️',
       level: 6,
-      hp: 160,
-      wp: 140,
+      hp: 100,
+      wp: 200,
       vocabulary: ['BLOOD', 'NIGHT', 'SIP', 'TRANSFORM', 'HYPNOTIZE', 'UNDEAD', 'ETERNAL'],
       weaknesses: ['sharp','holy','negotiate'],
       resistances: ['dark','charm']
@@ -242,8 +242,8 @@ const BASES = {
       name: 'phoenix',
       emoji: '🦚',
       level: 6,
-      hp: 180,
-      wp: 120,
+      hp: 150,
+      wp: 150,
       vocabulary: ['REBIRTH', 'FLAME', 'SOAR', 'BURST', 'IMMORTAL', 'INFERNO', 'MYTHICAL'],
       weaknesses: ['water','electric','dark'],
       resistances: ['air']
@@ -256,10 +256,10 @@ const BASES = {
       name: 'leximancer',
       emoji: '🧙‍♂️',
       level: 7,
-      hp: 300,
-      wp: 200,
+      hp: 160,
+      wp: 240,
       vocabulary: ['WORDSMITH', 'INCANTATION', 'ENCHANTMENT', 'LEXICON', 'OMNISCIENT', 'SOLILOQUY', 'SPELLCRAFT', 'ARTICULATE', 'DIVINATION', 'DICTIONARY', 'INTELLECT'],
-      weaknesses: ['tech','holy','intelligence'],
+      weaknesses: ['tech','holy','intelligence','poison'],
       resistances: ['chaos','dark','negotiate']
     }
   ]

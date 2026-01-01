@@ -333,15 +333,17 @@ function App() {
         }, 500);
     }
 
-    // If both HP and WP are below 25%, enemy surrenders
-    if (gameState === 'BATTLE' && currentEnemy && (currentEnemy.hp <= currentEnemy.maxHp * 0.25 && currentEnemy.wp <= currentEnemy.maxWp * 0.25)) {
-        if (isProcessingDeath.current) return;
-        isProcessingDeath.current = true;
+    // If both HP and WP are below 1/3, enemy surrenders
+    if (gameState === 'BATTLE' && currentEnemy && 
+        (currentEnemy.hp <= currentEnemy.maxHp / 3 && 
+          currentEnemy.wp <= currentEnemy.maxWp / 3)) {
+            if (isProcessingDeath.current) return;
+              isProcessingDeath.current = true;
         
-        setTimeout(() => {
-             addLog(`The #${currentEnemy.name}# surrenders!`);
-             setTimeout(() => setGameState('REWARD'), 1000);
-        }, 500);
+          setTimeout(() => {
+              addLog(`The #${currentEnemy.name}# surrenders!`);
+              setTimeout(() => setGameState('REWARD'), 1000);
+          }, 500);
     }
   }, [currentEnemy, gameState]);
 
@@ -1074,10 +1076,10 @@ function App() {
     const enemiesText = runHistory.map((r, idx) => {
       const isLastEnemy = idx === runHistory.length - 1;
       const statusEmoji = (isLastEnemy && !isVictory) ? '❌' : '✅';
-      return `${r.emoji} ${statusEmoji}`;
+      return `${r.affixEmoji || '🍦'}${r.emoji} ${statusEmoji}`;
     }).join('\n');
-    const header = dailyMode ? `📅 LEXIMANCER\n${dailySeed}` : 'LEXIMANCER';
-    const maxHitLine = maxSpellHit ? `${maxSpellHit.word} 🪄 ${maxSpellHit.damage}💥` : null;
+    const header = dailyMode ? `Leximancer\n${dailySeed}` : 'Leximancer';
+    const maxHitLine = maxSpellHit ? `"${maxSpellHit.word}!" 🪄  ${maxSpellHit.damage} 💥` : null;
     const body = [
       header,
       `${playerEmoji} ${outcomeEmoji}`,
