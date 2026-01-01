@@ -58,6 +58,11 @@ export default function BattleScreen({
     })
   );
 
+  const clearActiveDrag = () => {
+    setActiveId(null);
+    setActiveTile(null);
+  };
+
   // Make the hand droppable respond to pointer position across its whole area
   const collisionDetection = (args) => {
     const pointerCollisions = pointerWithin(args);
@@ -72,8 +77,7 @@ export default function BattleScreen({
 
   const handleDragEnd = (event) => {
     const { active, over } = event;
-    setActiveId(null);
-    setActiveTile(null);
+    clearActiveDrag();
 
     if (!over) return;
 
@@ -109,6 +113,10 @@ export default function BattleScreen({
       }
     }
     };
+
+  const handleDragCancel = () => {
+    clearActiveDrag();
+  };
 
   const enemyHpPct = Math.max(0, (enemy.hp / enemy.maxHp) * 100);
   const enemyWpPct = Math.max(0, (enemy.wp / enemy.maxWp) * 100);
@@ -444,6 +452,7 @@ export default function BattleScreen({
         collisionDetection={collisionDetection}
         onDragStart={handleDragStart} 
         onDragEnd={handleDragEnd}
+        onDragCancel={handleDragCancel}
       >
         <SortableContext 
             id="spell-zone"
