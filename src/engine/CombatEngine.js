@@ -210,6 +210,12 @@ export function resolveSpell(word, caster, target, isPlayerCasting = true, playS
       result.damage += 3;
       result.logs.push(`> (Knower) Weakness Bonus +3`);
     }
+    
+    // For vampire, heal half of the damage dealt. Only for physical damage.
+    if (caster && caster.id === 'vampire' && inferredTarget === 'hp')
+    {
+        result.heal = Math.floor(result.damage / 2);
+    }
   }
 
   // 7. DOT EFFECTS (bleed / poison): create a small lingering effect unless target is immune

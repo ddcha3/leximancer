@@ -27,6 +27,13 @@ export const CHARACTERS = [
     desc: 'Summons familiars to aid in battle.',
     starting_items: []
   },
+  {
+    id: 'vampire',
+    name: 'Vampire',
+    avatar: '🧞',
+    desc: 'Sucks blood on physical damage',
+    starting_items: []
+  },
  {
     id: 'elementalist',
     name: 'Elementalist',
