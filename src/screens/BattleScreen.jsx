@@ -498,10 +498,10 @@ export default function BattleScreen({
             position: 'absolute',
             top: '10px',
             left: '10px',
-            fontSize: '1.2rem',
+            fontSize: '0.8em',
             cursor: 'pointer',
             zIndex: 1000,
-            padding: '5px'
+            padding: '4px'
           }}>
           <PixelEmoji icon="❓" size="1.2rem"/>
         </button>

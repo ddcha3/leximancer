@@ -16,10 +16,10 @@ export default function SoundToggle() {
         position: 'absolute',
         top: '10px',
         right: '10px',
-        fontSize: '1.2rem',
+        fontSize: '0.8rem',
         cursor: 'pointer',
         zIndex: 1000,
-        padding: '5px'
+        padding: '4px'
       }}
       title={isMuted ? "Unmute" : "Mute"}
     >
