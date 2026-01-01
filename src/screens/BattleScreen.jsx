@@ -367,7 +367,7 @@ export default function BattleScreen({
                 borderRadius: '4px'
               }}>
                 <PixelEmoji icon={STATUS_PROPERTIES[resolvedSpell.statusEffect.tag]?.emoji || '✨'} size="1rem"/>
-                <span style={{fontSize: '0.8rem'}}>{resolvedSpell.statusEffect.tag} {resolvedSpell.statusEffect.block}</span>
+                <span style={{fontSize: '0.8rem', color:'white'}}>{resolvedSpell.statusEffect.tag} {resolvedSpell.statusEffect.block}</span>
               </div>
             )}
             {resolvedSpell.dot && (
@@ -381,7 +381,7 @@ export default function BattleScreen({
                 borderRadius: '4px'
               }}>
                 <PixelEmoji icon={STATUS_PROPERTIES[resolvedSpell.dot.tag]?.emoji || '🩸'} size="1rem"/>
-                <span style={{fontSize: '0.8rem'}}>{resolvedSpell.dot.damagePerTick}×{resolvedSpell.dot.ticks}</span>
+                <span style={{fontSize: '0.8rem', color:'white'}}>{resolvedSpell.dot.damagePerTick}×{resolvedSpell.dot.ticks}</span>
               </div>
             )}
             {resolvedSpell.status && (
@@ -395,7 +395,7 @@ export default function BattleScreen({
                 borderRadius: '4px'
               }}>
                 <PixelEmoji icon={STATUS_PROPERTIES[resolvedSpell.status]?.emoji || '😵‍💫'} size="1rem"/>
-                <span style={{fontSize: '0.8rem'}}>{resolvedSpell.status}</span>
+                <span style={{fontSize: '0.8rem', color:'white'}}>{resolvedSpell.status}</span>
               </div>
             )}
             {resolvedSpell.cleanse && (
@@ -409,7 +409,7 @@ export default function BattleScreen({
                 borderRadius: '4px'
               }}>
                 <PixelEmoji icon="✨" size="1rem"/>
-                <span style={{fontSize: '0.8rem'}}>cleanse</span>
+                <span style={{fontSize: '0.8rem', color:'white'}}>cleanse</span>
               </div>
             )}
             {/* {resolvedSpell.instantKill && (
