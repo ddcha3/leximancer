@@ -15,7 +15,7 @@ export default function HelpModal({ isOpen, onClose }) {
         <h4>COMBAT</h4>
         <ul>
           <li><strong>Spellcasting:</strong> Click tiles to form words. Words must be at least 3 letters long. Longer words generally deal more damage.</li>
-          <li><strong>Enemies</strong> have both health (<PixelEmoji icon="❤️" size="0.8rem"/>) and willpower (<PixelEmoji icon="🧠" size="0.8rem"/>). Concrete words damage HP, and abstract words damage WP. Reduce either to zero, or both to 25%, to win.</li>
+          <li><strong>Enemies</strong> have both health (<PixelEmoji icon="❤️" size="0.8rem"/>) and willpower (<PixelEmoji icon="🧠" size="0.8rem"/>). Concrete words damage HP, and abstract words damage WP. Reduce either to zero, or both to one third, to win.</li>
           <li><strong>Tags:</strong> Words like <em>FIRE</em>, <em>ICE</em>, or <em>POISON</em> have elemental affinities or special effects.</li>
           <li><strong>Utility:</strong> Words like <em>HEAL</em> or <em>FOOD</em> restore your health. Words like <em>STUN</em> prevent enemies from attacking.</li>
         </ul>
