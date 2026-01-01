@@ -15,7 +15,7 @@ export default function SoundToggle() {
       style={{
         position: 'absolute',
         top: '10px',
-        left: '10px',
+        right: '10px',
         fontSize: '1.2rem',
         cursor: 'pointer',
         zIndex: 1000,
