@@ -376,7 +376,7 @@ h1 {
 .player-buff-preview {
   position: absolute;
   bottom: 10%;
-  left: 50%;
+  left: 190px;
 
   display: flex;
   flex-direction: column;
