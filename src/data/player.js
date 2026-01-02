@@ -29,10 +29,9 @@ export const CHARACTERS = [
   },
   {
     id: 'bloodmage',
-    name: 'BloodMage',
-    // Need a new emoji for Vampire class.
+    name: 'Bloodmage',
     avatar: '👹',
-    desc: 'Sucks blood on physical damage',
+    desc: 'Leeches life through spells',
     starting_items: []
   },
  {
