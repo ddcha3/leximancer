@@ -7,7 +7,7 @@ export const FAMILIARS = [
   { 
     name: "Gorilla",
     emoji: "🦍",
-    vocabulary: ["ROAR"] 
+    vocabulary: ["THWACK"] 
   },
   { 
     name: "Ape",
@@ -17,42 +17,42 @@ export const FAMILIARS = [
   { 
     name: "Orangutan",
     emoji: "🦧",
-    vocabulary: ["GRUNT"] 
+    vocabulary: ["PONTIFICATE"] 
   },
   { 
     name: "Dog",
     emoji: "🐕",
-    vocabulary: ["RRR"] 
+    vocabulary: ["BITE"] 
   },
   { 
     name: "Poodle",
     emoji: "🐩",
-    vocabulary: ["YIP"] 
+    vocabulary: ["BARK"] 
   },
   { 
     name: "Wolf",
     emoji: "🐺",
-    vocabulary: ["AOO"] 
+    vocabulary: ["HOWL"] 
   },
   { 
     name: "Fox",
     emoji: "🦊",
-    vocabulary: ["YIP"] 
+    vocabulary: ["NIBBLE"] 
   },
   {
     name: "Bear",
     emoji: "🐻",
-    vocabulary: ["ROAR"]
+    vocabulary: ["SWIPE"]
   },
   { 
     name: "Raccoon",
     emoji: "🦝",
-    vocabulary: ["OOF"] 
+    vocabulary: ["STEAL"] 
   },
   { 
     name: "Cat",
     emoji: "🐈",
-    vocabulary: ["MEW"] 
+    vocabulary: ["MEOW"] 
   },
   { 
     name: "Tiger",

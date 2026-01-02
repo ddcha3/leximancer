@@ -197,7 +197,7 @@ function App() {
 
   useEffect(() => {
     if (gameState === 'BATTLE') {
-      const battleTracks = ['music/battle1', 'music/battle2', 'music/battle3'];
+      const battleTracks = ['music/battle1', 'music/battle2', 'music/battle3', 'music/battle4', 'music/battle5', 'music/battle6', 'music/battle7'];
       const track = battleTracks[enemyIndex % battleTracks.length];
       playMusic(track, { volume: 0.1 });
     } else {
@@ -337,7 +337,7 @@ function App() {
         isProcessingDeath.current = true;
         
         setTimeout(() => {
-             addLog(`The #${currentEnemy.name}# is defeated!`);
+             addLog(`The #${currentEnemy.name}# is dispelled!`);
              setTimeout(() => setGameState('REWARD'), 1000);
         }, 500);
     }
@@ -641,10 +641,10 @@ function App() {
               // Player instant kill on self? Unlikely but possible with confusion
               setPlayerHp(0);
               setGameState('GAMEOVER');
-              addLog(`You accidentally defeated yourself instantly!`);
+              addLog(`You accidentally dispelled yourself instantly!`);
           } else {
               nextEnemyState.wp = 0;
-              addLog(`#${nextEnemyState.name}# was instantly defeated!`);
+              addLog(`#${nextEnemyState.name}# was instantly dispelled!`);
           }
       } else if (result.damage > 0) {
           if (isSelfHit) {
@@ -1138,8 +1138,8 @@ function App() {
   if (gameState === 'GAMEOVER') {
     return (
         <div className="reward-screen">
-            <h1>DEFEAT</h1>
-            <p>Your journey ends here.</p>
+            <h1>SILENCED</h1>
+            <p>The archives remain sealed.</p>
         {dailyMode && (
           <button 
             className="cast-btn" 
@@ -1169,7 +1169,7 @@ function App() {
   if (gameState === 'VICTORY') {
     return (
       <div className="reward-screen">
-        <h1>LEGENDARY!</h1>
+        <h1>WELL SPELLED!</h1>
         <p>You have cleared the archives.</p>
         {dailyMode && (
           <button 

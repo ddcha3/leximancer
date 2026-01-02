@@ -7,15 +7,16 @@ export default function HelpModal({ isOpen, onClose }) {
     <Modal 
       isOpen={isOpen} 
       onClose={onClose} 
-      title="Grimoire of Rules"
+      title="Mage's Manual"
     >
       <div className="modal-body">
-        <p>You are a Leximancer, a mage who weaves reality through language.</p>
+        <p>You are a Leximancer, a mage who weaves reality through language. Letters are your mana, and words are your spells.</p>
         
         <h4>COMBAT</h4>
         <ul>
           <li><strong>Spellcasting:</strong> Click tiles to form words. Words must be at least three letters long. Longer words generally deal more damage.</li>
           <li><strong>Enemies</strong> have both health (<PixelEmoji icon="❤️" size="0.8rem"/>) and willpower (<PixelEmoji icon="🧠" size="0.8rem"/>). Concrete words damage HP, and abstract words damage WP. Reduce either to zero, or both to one third, to win.</li>
+          <li><strong>Enemies</strong> have their own vocabularies. Pay attention to the spells they cast!</li>
           <li><strong>Tags:</strong> Words like <em>FIRE</em>, <em>ICE</em>, and <em>POISON</em> have elemental affinities or special effects.</li>
           <li><strong>Utility:</strong> Words like <em>HEAL</em> and <em>FOOD</em> restore your health. Words like <em>STUN</em> prevent enemies from attacking.</li>
         </ul>

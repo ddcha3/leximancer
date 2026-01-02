@@ -67,7 +67,7 @@ const BASES = {
       level: 2,
       hp: 22,
       wp: 15,
-      vocabulary: ['CHIRP', 'PECK', 'FLY', 'NEST', 'WING'],
+      vocabulary: ['HUM', 'PECK', 'FLY', 'NEST', 'SING', 'NYUM'],
       weaknesses: ['loud', 'electric'],
       resistances: ['air']
     },
@@ -78,7 +78,7 @@ const BASES = {
       level: 2,
       hp: 16,
       wp: 24,
-      vocabulary: ['BITE', 'HISS', 'SNEK', 'COIL', 'STRIKE'],
+      vocabulary: ['BITE', 'HISS', 'SNEK', 'COIL', 'SLIDE', 'WAIT'],
       weaknesses: [],
       resistances: ['poison']
     },
@@ -89,7 +89,7 @@ const BASES = {
       level: 2,
       hp: 20,
       wp: 20,
-      vocabulary: ['MEOW', 'SCRATCH', 'PURR', 'LEAP', 'CLAW', 'STALK'],
+      vocabulary: ['NYAN', 'SIT', 'PURR', 'LEAP', 'HISS', 'STALK'],
       weaknesses: ['loud', 'heavy'],
       resistances: []
     },
@@ -100,7 +100,7 @@ const BASES = {
       level: 2,
       hp: 25,
       wp: 15,
-      vocabulary: ['BARK', 'GROWL', 'FETCH', 'SNARL', 'HOWL', 'CHASE'],
+      vocabulary: ['ARF', 'RUN', 'SNIFF', 'TAIL', 'HOWL', 'LICK', 'SIT'],
       weaknesses: ['taunt', 'charm'],
       resistances: []
     },
@@ -136,7 +136,7 @@ const BASES = {
       level: 3,
       hp: 35,
       wp: 25,
-      vocabulary: ['RUN', 'SHIELD', 'GUARD', 'STAB', 'STEAL', 'SHOUT', 'BACKSTAB', 'SNEAK', 'MURDEROUS'],
+      vocabulary: ['RUN', 'SHIELD', 'GUARD', 'STAB', 'STEAL', 'SHOUT', 'BACKSTAB', 'SNEAK', 'MURDER'],
       weaknesses: ['negotiate', 'taunt', 'charm'],
       resistances: ['dark']
     },
@@ -172,7 +172,7 @@ const BASES = {
       level: 4,
       hp: 50,
       wp: 40,
-      vocabulary: ['LAUGH', 'DANCE', 'HEY', 'SUP', 'JEST', 'GUFFAW', 'LAUGHING', 'PANDEMONIUM'],
+      vocabulary: ['LAUGH', 'DANCE', 'HEY', 'SUP', 'JEST', 'GUFFAW', 'HEE', 'TEEHEE', 'GRIN', 'LEER', 'PANDEMONIUM'],
       weaknesses: ['taunt', 'blunt', 'sharp', 'creature'],
       resistances: ['negotiate']
     },
@@ -183,7 +183,7 @@ const BASES = {
       level: 4,
       hp: 40,
       wp: 55,
-      vocabulary: ['NYUM', 'ZAP', 'PROBE', 'HUM', 'FLOAT', 'EXTRATERRESTRIAL'],
+      vocabulary: ['NYUM', 'ZAP', 'PROBE', 'HUM', 'FLOAT', 'SCAN', 'WAIT', 'STARE', 'EXTRATERRESTRIAL'],
       weaknesses: ['intelligence', 'poison', 'charm', 'negotiate'],
       resistances: ['chaos', 'tech']
     },
@@ -192,11 +192,11 @@ const BASES = {
       name: 'zombie',
       emoji: '🧟',
       level: 4,
-      hp: 55,
+      hp: 65,
       wp: 40,
-      vocabulary: ['CHEW', 'BITE', 'MUNCH', 'SHAMBLE', 'MOAN', 'LURCH', 'UNDEAD'],
+      vocabulary: ['CHEW', 'BITE', 'MUNCH', 'SHAMBLE', 'MOAN', 'LURCH', 'UNDEAD', 'DRAG', 'DECAY'],
       weaknesses: ['fire', 'holy', 'sharp', 'blunt'],
-      resistances: ['dark']
+      resistances: ['dark', 'poison']
     },
     {
       id: 'looker',
@@ -205,7 +205,7 @@ const BASES = {
       level: 4,
       hp: 50,
       wp: 50,
-      vocabulary: ['GLANCE', 'PEEK', 'STARE', 'GAZE', 'OBSERVE', 'PETRIFY', 'OBSERVANT'],
+      vocabulary: ['GLANCE', 'PEEK', 'STARE', 'GAZE', 'OBSERVE', 'PETRIFY', 'OBSERVANT', 'OMNISCIENT'],
       weaknesses: ['projectile', 'art', 'sorrow', 'electric'],
       resistances: ['dark', 'chaos']
     }
@@ -218,8 +218,8 @@ const BASES = {
       emoji: '🧌',
       level: 5,
       hp: 140,
-      wp: 40,
-      vocabulary: ['SMASH', 'THUMP', 'ROAR', 'CRUSH', 'TROLLING', 'GRUMBLE'],
+      wp: 50,
+      vocabulary: ['SMASH', 'THUMP', 'ROAR', 'CRUSH', 'TROLLING', 'GRUMBLE', 'BELLOW'],
       weaknesses: ['taunt','intelligence','charm', 'projectile', 'sharp'],
       resistances: ['blunt','earth']
     },
@@ -230,7 +230,7 @@ const BASES = {
       level: 5,
       hp: 70,
       wp: 90,
-      vocabulary: ['MASTICATE', 'TRUDGING', 'REGURGITATE', 'MIRAGE', 'HUMP', 'CARAVAN'],
+      vocabulary: ['MASTICATE', 'TRUDGING', 'REGURGITATE', 'MIRAGE', 'HUMP', 'CARAVAN', 'DRINK', 'OASIS'],
       weaknesses: ['ice', 'sharp', 'negotiate', 'poison'],
       resistances: ['earth']
     },
@@ -241,7 +241,7 @@ const BASES = {
       level: 5,
       hp: 100,
       wp: 60,
-      vocabulary: ['SNAP', 'BITE', 'AMBUSH', 'SCALE', 'SUBMERGE', 'REPTILE'],
+      vocabulary: ['SNAP', 'BITE', 'AMBUSH', 'SCALE', 'TAIL', 'SLICE', 'DICE', 'SUBMERGE', 'DOMINUS', 'BUTCHER', 'RUTHLESS', 'PREDATOR'],
       weaknesses: ['fire','ice','tech', 'sorrow'],
       resistances: ['sharp']
     },
@@ -252,7 +252,7 @@ const BASES = {
       level: 5,
       hp: 85,
       wp: 85,
-      vocabulary: ['SUCK', 'TASTE', 'TASTE', 'LICK', 'SPEAK', 'YAWN', 'NIBBLE'],
+      vocabulary: ['SUCK', 'TASTE', 'TASTE', 'LICK', 'SPEAK', 'YAWN', 'NIBBLE', 'TONGUE', 'SLURP'],
       weaknesses: ['sharp', 'fire', 'ice', 'poison'],
       resistances: ['charm', 'loud', 'intelligence']
     }
@@ -266,7 +266,7 @@ const BASES = {
       level: 6,
       hp: 200,
       wp: 100,
-      vocabulary: ['FLAME', 'SOAR', 'ROAR', 'SCALE', 'INFERNO', 'DRACONIC', 'DIVINITY', 'ANCIENT'],
+      vocabulary: ['FLAME', 'SOAR', 'ROAR', 'SCALE', 'INFERNO', 'DRACONIC', 'DIVINITY', 'ANCIENT', 'TREASURE', 'YOLO', 'VIBES', 'CERTIFIED'],
       weaknesses: ['ice','holy','electric', 'negotiate'],
       resistances: ['earth']
     },
@@ -277,8 +277,8 @@ const BASES = {
       level: 6,
       hp: 100,
       wp: 200,
-      vocabulary: ['BLOOD', 'NIGHT', 'SIP', 'TRANSFORM', 'HYPNOTIZE', 'UNDEAD', 'ETERNAL'],
-      weaknesses: ['sharp','holy','negotiate', 'art'],
+      vocabulary: ['BLOOD', 'NIGHT', 'SIP', 'TRANSFORM', 'SIPHON', 'DRAIN', 'THIRST', 'ETERNAL', 'TWILIGHT', 'SPARKLE', 'SURVIVORS', 'SANGUINE'],
+      weaknesses: ['sharp','holy','negotiate', 'art', 'plant'],
       resistances: ['dark','charm']
     },
     {
@@ -288,7 +288,7 @@ const BASES = {
       level: 6,
       hp: 150,
       wp: 150,
-      vocabulary: ['REBIRTH', 'FLAME', 'SOAR', 'BURST', 'IMMORTAL', 'INFERNO', 'MYTHICAL'],
+      vocabulary: ['REBIRTH', 'FLAME', 'SOAR', 'BURST', 'IMMORTAL', 'INFERNO', 'MYTHICAL', 'REVITALIZE', 'MAJESTIC', 'ETHEREAL', 'TIMELESS', 'ETERNAL'],
       weaknesses: ['water','electric','dark', 'sorrow'],
       resistances: ['air']
     }
@@ -316,12 +316,12 @@ const AFFIXES = [
     name: 'hot',
     emoji: '🔥',
     vocabByLevel: {
-      1: ['BURN', 'ASH'],
-      2: ['BURN', 'EMBER', 'FIRE'],
-      3: ['BLAZE', 'EMBER', 'INFERNO', 'SCORCH'],
-      4: ['INCENDIARY', 'CONFLARE', 'FLAMING'],
-      5: ['CONFLAGRATE', 'INCINERATE', 'FIRESTORM'],
-      6: ['IMMOLATION', 'PYROCLASM', 'FLAMETHROWER'],
+      1: ['BURN', 'ASH', 'HEAT'],
+      2: ['BURN', 'EMBER', 'FIRE', 'BURN', 'HEAT'],
+      3: ['BLAZE', 'EMBER', 'INFERNO', 'SCORCH', 'FIRE', 'FLAMES'],
+      4: ['INCENDIARY', 'CONFLARE', 'FLAMING', 'BLAZING', 'FLAMES'],
+      5: ['CONFLAGRATE', 'INCINERATE', 'FIRESTORM', 'FLAMING', 'BLAZING'],
+      6: ['IMMOLATION', 'PYROCLASM', 'FLAMETHROWER', 'COMBUSTION', 'INCENDIARY'],
       7: []
     },
     weaknesses: ['water'],
@@ -350,15 +350,15 @@ const AFFIXES = [
     name: 'gusty',
     emoji: '💨',
     vocabByLevel: {
-      1: ['AIR', "GALE"],
-      2: ['GUST', 'BLOW', ],
-      3: ['WHIRL', 'TORNADO'],
-      4: ['CYCLONE', 'TEMPEST'],
-      5: ['HURRICANE', 'STORMCALL'],
-      6: ['WHIRLWIND', 'ZEPHYRS', 'AERODYNAMIC'],
+      1: ['AIR', "GALE", 'WIND'],
+      2: ['GUST', 'BLOW', 'WINDY', 'GALE'],
+      3: ['WHIRL', 'TORNADO', 'BREEZE', 'WINDY'],
+      4: ['CYCLONE', 'TEMPEST', 'STORMY', 'WINDY', 'BREEZY'],
+      5: ['HURRICANE', 'WINDSTORM', 'TYPHOON', 'TEMPEST'],
+      6: ['WHIRLWIND', 'ZEPHYRS', 'AERODYNAMIC', 'HURRICANE', 'VENTILATE'],
       7: []
     },
-    weaknesses: ['earth'],
+    weaknesses: ['earth', 'heavy'],
     resistances: ['air']
   },
   {
@@ -366,15 +366,15 @@ const AFFIXES = [
     name: 'cursed',
     emoji: '♠️',
     vocabByLevel: {
-      1: ['DUSK'],
-      2: ['HEX', 'VOID', 'DARK'],
-      3: ['CURSE', 'NOCTURNAL', 'SHADOW'],
-      4: ['DARKNESS', 'GLOOMY', 'TERRIBLE'],
-      5: ['OBLIVION', 'HORRIFIC', 'GHASTLY'],
-      6: ['NIGHTMARE', 'MALEVOLENCE', 'TENEBROUS'],
+      1: ['DUSK', 'SUS'],
+      2: ['HEX', 'VOID', 'DARK', 'SUSSY'],
+      3: ['CURSE', 'NOCTURNAL', 'SHADOW', 'HEXED'],
+      4: ['DARKNESS', 'GLOOMY', 'TERRIBLE', 'FORSAKEN'],
+      5: ['OBLIVION', 'HORRIFIC', 'GHASTLY', 'TORMENT'],
+      6: ['NIGHTMARE', 'MALEVOLENCE', 'TENEBROUS', 'GOTHIC'],
       7: []
     },
-    weaknesses: ['holy'],
+    weaknesses: ['holy', 'time'],
     resistances: ['dark'],
     immunities: []
   },
@@ -384,14 +384,14 @@ const AFFIXES = [
     emoji: '⚡',
     vocabByLevel: {
       1: ['ARC', 'BOLT'],
-      2: ['SPARK', 'ZAP', 'CHARGE'],
-      3: ['SHOCK', 'ELECTRIC', 'CONDUIT'],
-      4: ['THUNDER', 'VOLTAGE', 'JOLT'],
-      5: ['THUNDERCLAP', 'ELECTROCUTE', 'LIGHTNING'],
-      6: ['ELECTRIFYING', 'ZAPPER', 'IONIZATION'],
+      2: ['SPARK', 'ZAP', 'CHARGE', 'BOLT'],
+      3: ['SHOCK', 'ELECTRIC', 'CONDUIT', 'CURRENT'],
+      4: ['THUNDER', 'VOLTAGE', 'JOLT', 'SHOCKING'],
+      5: ['THUNDERCLAP', 'ELECTROCUTE', 'LIGHTNING', 'VOLTAGE'],
+      6: ['ELECTRIFYING', 'ZAPPER', 'IONIZATION', 'LIGHTNING'],
       7: []
     },
-    weaknesses: ['earth'],
+    weaknesses: ['earth', 'tech'],
     resistances: ['electric'],
     immunities: []
   },
@@ -401,14 +401,14 @@ const AFFIXES = [
     emoji: '🍃',
     vocabByLevel: {
       1: ['SAP', 'SEED', 'ROOT'],
-      2: ['SPROUT', 'BLOOM', 'LEAF'],
-      3: ['ENTANGLE', 'VINE', 'BLOSSOM'],
-      4: ['BAMBOO', 'GARDEN', 'THICKET'],
-      5: ['AZALEA', 'FLOWERING', 'ORCHARD'],
-      6: ['VERDANT', 'JACKFRUIT', 'PHOTOSYNTHESIS'],
+      2: ['SPROUT', 'BLOOM', 'LEAF', 'GRASS'],
+      3: ['ENTANGLE', 'VINE', 'BLOSSOM', 'GROWTH'],
+      4: ['BAMBOO', 'GARDEN', 'THICKET', 'BLOSSOM', 'FOREST'],
+      5: ['AZALEA', 'FLOWERING', 'ORCHARD', 'FOLIAGE', 'MEADOW'],
+      6: ['VERDANT', 'JACKFRUIT', 'PHOTOSYNTHESIS', 'EVERGREEN', 'BOTANICAL'],
       7: []
     },
-    weaknesses: ['fire'],
+    weaknesses: ['fire', 'creature'],
     resistances: ['plant']
   },
   {
@@ -417,14 +417,14 @@ const AFFIXES = [
     emoji: '🪨',
     vocabByLevel: {
       1: ['SAND', 'DUST'],
-      2: ['ROCKY', 'GRAVEL', 'SLATE'],
-      3: ['BOULDER', 'PEBBLE', 'GRANITE'],
+      2: ['ROCKY', 'CRAG', 'SLATE', 'DUST'],
+      3: ['BOULDER', 'PEBBLE', 'GRANITE', 'GRAVEL'],
       4: ['LANDSLIDE', 'LIMESTONE', 'QUARRY', 'BEDROCK'],
-      5: ['CATACLYSM', 'QUARTZ', 'MARBLE', 'ONYX'],
-      6: ['EARTHQUAKE', 'FELDSPAR', 'OBSIDIAN', 'XENOLITH'],
+      5: ['CATACLYSM', 'QUARTZ', 'MARBLE', 'ONYX', 'QUARRY'],
+      6: ['EARTHQUAKE', 'FELDSPAR', 'OBSIDIAN', 'XENOLITH', 'TECTONIC'],
       7: []
     },
-    weaknesses: ['ice'],
+    weaknesses: ['ice', 'plant'],
     resistances: ['earth'],
     immunities: []
   },
@@ -434,14 +434,14 @@ const AFFIXES = [
     emoji: '🏹',
     vocabByLevel: {
       1: ['AIM', 'SHOT'],
-      2: ['ARROW', 'BOW', 'TARGET'],
-      3: ['BOLT', 'SNIPER', 'AIMING'],
-      4: ['QUIVER', 'MARKSMAN', 'LONGSHOT'],
-      5: ['CROSSBOW', 'LONGBOW', 'RECURVE'],
+      2: ['ARROW', 'BOW', 'TARGET', 'SHOOT'],
+      3: ['BOLT', 'SNIPER', 'AIMING', 'RELEASE'],
+      4: ['QUIVER', 'MARKSMAN', 'LONGSHOT', 'CRACKED'],
+      5: ['CROSSBOW', 'LONGBOW', 'RECURVE', 'OPERATOR'],
       6: ['LACERATION', 'PRECISION', 'HEADSHOT', 'BULLSEYE'],
       7: []
     },
-    weaknesses: ['blunt'],
+    weaknesses: ['blunt', 'motion'],
     resistances: ['air']
   },
   {
@@ -451,13 +451,13 @@ const AFFIXES = [
     vocabByLevel: {
       1: ['ROT','ILL'],
       2: ['FUMES', 'SICK', 'AILED'],
-      3: ['TOXIC', 'POISON', 'VIRUS'],
-      4: ['VENOMOUS', 'BLIGHTED', 'POLLUTED'],
-      5: ['NECROSIS', 'INFECTION', 'CONTAMINATE'],
-      6: ['BIOHAZARD', 'PATHOGEN', 'VIRULENT', 'TOXICOLOGY'],
+      3: ['TOXIC', 'POISON', 'VIRUS', 'ROTTING'],
+      4: ['VENOMOUS', 'BLIGHTED', 'POLLUTED', 'INFESTED'],
+      5: ['NECROSIS', 'INFECTION', 'CONTAMINATE', 'POISONOUS'],
+      6: ['BIOHAZARD', 'PATHOGEN', 'VIRULENT', 'TOXICOLOGY', 'INFESTATION'],
       7: []
     },
-    weaknesses: ['earth'],
+    weaknesses: ['earth', 'holy'],
     resistances: [],
     immunities: ['poison']
   },
@@ -466,15 +466,15 @@ const AFFIXES = [
     name: 'cute',
     emoji: '💕',
     vocabByLevel: {
-      1: ['COO', 'BUN'],
-      2: ['CUDDLE', 'KISS', 'HAPPY'],
-      3: ['CHUBBY', 'CHARM', 'SNUGGLE'],
-      4: ['ADORABLE', 'FUZZY', 'BUBBLY', 'BUTTON'],
-      5: ['ENDEARING', 'WHIMSICAL', 'LOVEABLE', 'PRECIOUS'],
-      6: ['IRRESISTIBLE', 'HEARTTHROB', 'SWEETHEART', 'DARLING'],
+      1: ['COO', 'BUN', 'UWU'],
+      2: ['CUDDLE', 'KISS', 'HAPPY', 'UWU', 'UGUU'],
+      3: ['CHUBBY', 'CHARM', 'SNUGGLE', 'UWU', 'UGUU'],
+      4: ['ADORABLE', 'FUZZY', 'BUBBLY', 'BUTTON', 'UWU', 'UGUU', 'KAWAII'],
+      5: ['ENDEARING', 'WHIMSICAL', 'LOVEABLE', 'PRECIOUS', 'UWU', 'UGUU', 'KAWAII'],
+      6: ['IRRESISTIBLE', 'HEARTTHROB', 'SWEETHEART', 'DARLING', 'KAWAII'],
       7: []
     },
-    weaknesses: ['sorrow'],
+    weaknesses: ['sorrow', 'loud'],
     resistances: ['charm']
   },
   {
@@ -482,11 +482,11 @@ const AFFIXES = [
     name: 'frosty',
     emoji: '❄️',
     vocabByLevel: {
-      1: ['ICE'],
-      2: ['ICE', 'COLD', 'COOL'],
-      3: ['FROST', 'CHILL', 'SNOWY'],
+      1: ['ICE', 'SLEET'],
+      2: ['ICE', 'COLD', 'COOL', 'HAIL'],
+      3: ['FROST', 'CHILL', 'SNOWY', 'NIPPY'],
       4: ['GLACIER', 'ICICLE', 'FLURRY', 'FREEZE'],
-      5: ['HAILSTORM', 'FROSTBITE', 'PERMAFROST'], 
+      5: ['HAILSTORM', 'FROSTBITE', 'PERMAFROST', 'SNOWSTORM'], 
       6: ['BLIZZARD', 'HYPOTHERMIA', 'CRYOGENIC', 'SUBLIMATION'],
       7: []
     },
