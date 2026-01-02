@@ -61,8 +61,8 @@ const BASES = {
 
   2: [
     {
-      id: 'warbler',
-      name: 'warbler',
+      id: 'birb',
+      name: 'birb',
       emoji: '🐦',
       level: 2,
       hp: 22,
@@ -90,7 +90,7 @@ const BASES = {
       hp: 20,
       wp: 20,
       vocabulary: ['MEOW', 'SCRATCH', 'PURR', 'LEAP', 'CLAW', 'STALK'],
-      weaknesses: ['loud'],
+      weaknesses: ['loud', 'heavy'],
       resistances: []
     },
     {
@@ -103,6 +103,17 @@ const BASES = {
       vocabulary: ['BARK', 'GROWL', 'FETCH', 'SNARL', 'HOWL', 'CHASE'],
       weaknesses: ['taunt', 'charm'],
       resistances: []
+    },
+    {
+      id: 'tortoise',
+      name: 'tortoise',
+      emoji: '🐢',
+      level: 2,
+      hp: 30,
+      wp: 20,
+      vocabulary: ['SHELL', 'SHIELD', 'DEFEND', 'HIDE'],
+      weaknesses: ['fire', 'charm', 'negotiate'],
+      resistances: ['blunt', 'earth', 'heavy']
     }
   ],
 
@@ -135,10 +146,10 @@ const BASES = {
       emoji: '🦍',
       level: 3,
       hp: 40,
-      wp: 20,
+      wp: 22,
       vocabulary: ['HIT', 'BITE', 'THUMP', 'SMASH', 'BEAT', 'ROAR', 'POUND', 'PRIMATE'],
       weaknesses: ['sharp', 'taunt', 'tech'],
-      resistances: ['blunt']
+      resistances: ['blunt', 'earth', 'creature']
     },
     {
       id: 'owl',
@@ -162,7 +173,7 @@ const BASES = {
       hp: 50,
       wp: 40,
       vocabulary: ['LAUGH', 'DANCE', 'HEY', 'SUP', 'JEST', 'GUFFAW', 'LAUGHING', 'PANDEMONIUM'],
-      weaknesses: ['taunt', 'blunt', 'sharp'],
+      weaknesses: ['taunt', 'blunt', 'sharp', 'creature'],
       resistances: ['negotiate']
     },
     {
@@ -182,10 +193,21 @@ const BASES = {
       emoji: '🧟',
       level: 4,
       hp: 55,
-      wp: 35,
+      wp: 40,
       vocabulary: ['CHEW', 'BITE', 'MUNCH', 'SHAMBLE', 'MOAN', 'LURCH', 'UNDEAD'],
       weaknesses: ['fire', 'holy', 'sharp', 'blunt'],
       resistances: ['dark']
+    },
+    {
+      id: 'looker',
+      name: 'looker',
+      emoji: '👁️‍🗨️',
+      level: 4,
+      hp: 50,
+      wp: 50,
+      vocabulary: ['GLANCE', 'PEEK', 'STARE', 'GAZE', 'OBSERVE', 'PETRIFY', 'OBSERVANT'],
+      weaknesses: ['projectile', 'art', 'sorrow', 'electric'],
+      resistances: ['dark', 'chaos']
     }
   ],
 
@@ -198,7 +220,7 @@ const BASES = {
       hp: 140,
       wp: 40,
       vocabulary: ['SMASH', 'THUMP', 'ROAR', 'CRUSH', 'TROLLING', 'GRUMBLE'],
-      weaknesses: ['taunt','intelligence','charm'],
+      weaknesses: ['taunt','intelligence','charm', 'projectile', 'sharp'],
       resistances: ['blunt','earth']
     },
     {
@@ -209,7 +231,7 @@ const BASES = {
       hp: 70,
       wp: 90,
       vocabulary: ['MASTICATE', 'TRUDGING', 'REGURGITATE', 'MIRAGE', 'HUMP', 'CARAVAN'],
-      weaknesses: ['ice', 'sharp'],
+      weaknesses: ['ice', 'sharp', 'negotiate', 'poison'],
       resistances: ['earth']
     },
     {
@@ -220,8 +242,19 @@ const BASES = {
       hp: 100,
       wp: 60,
       vocabulary: ['SNAP', 'BITE', 'AMBUSH', 'SCALE', 'SUBMERGE', 'REPTILE'],
-      weaknesses: ['fire','ice','tech'],
+      weaknesses: ['fire','ice','tech', 'sorrow'],
       resistances: ['sharp']
+    },
+    {
+      id: 'maw',
+      name: 'maw',
+      emoji: '👄',
+      level: 5,
+      hp: 85,
+      wp: 85,
+      vocabulary: ['SUCK', 'TASTE', 'TASTE', 'LICK', 'SPEAK', 'YAWN', 'NIBBLE'],
+      weaknesses: ['sharp', 'fire', 'ice', 'poison'],
+      resistances: ['charm', 'loud', 'intelligence']
     }
   ],
 
@@ -234,7 +267,7 @@ const BASES = {
       hp: 200,
       wp: 100,
       vocabulary: ['FLAME', 'SOAR', 'ROAR', 'SCALE', 'INFERNO', 'DRACONIC', 'DIVINITY', 'ANCIENT'],
-      weaknesses: ['ice','holy','electric'],
+      weaknesses: ['ice','holy','electric', 'negotiate'],
       resistances: ['earth']
     },
     {
@@ -245,7 +278,7 @@ const BASES = {
       hp: 100,
       wp: 200,
       vocabulary: ['BLOOD', 'NIGHT', 'SIP', 'TRANSFORM', 'HYPNOTIZE', 'UNDEAD', 'ETERNAL'],
-      weaknesses: ['sharp','holy','negotiate'],
+      weaknesses: ['sharp','holy','negotiate', 'art'],
       resistances: ['dark','charm']
     },
     {
@@ -256,7 +289,7 @@ const BASES = {
       hp: 150,
       wp: 150,
       vocabulary: ['REBIRTH', 'FLAME', 'SOAR', 'BURST', 'IMMORTAL', 'INFERNO', 'MYTHICAL'],
-      weaknesses: ['water','electric','dark'],
+      weaknesses: ['water','electric','dark', 'sorrow'],
       resistances: ['air']
     }
   ],
@@ -270,7 +303,7 @@ const BASES = {
       hp: 160,
       wp: 240,
       vocabulary: ['WORDSMITH', 'INCANTATION', 'ENCHANTMENT', 'LEXICON', 'OMNISCIENT', 'SOLILOQUY', 'SPELLCRAFT', 'ARTICULATE', 'DIVINATION', 'DICTIONARY', 'INTELLECT'],
-      weaknesses: ['tech','holy','intelligence','poison'],
+      weaknesses: ['tech','holy','intelligence','poison', 'art'],
       resistances: ['chaos','dark','negotiate']
     }
   ]
