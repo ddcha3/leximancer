@@ -45,6 +45,17 @@ const BASES = {
       vocabulary: ['CLAW', 'SAND', 'SHELL', 'SIDE', 'TAP'],
       weaknesses: [],
       resistances: ['water']
+    },
+    {
+      id: 'hamster',
+      name: 'hamster',
+      emoji: '🐹',
+      level: 1,
+      hp: 8,
+      wp: 20,
+      vocabulary: ['NYUM', 'BRO', 'SUP', 'HUH', 'HELP'],
+      weaknesses: ['intelligence', 'charm', 'sorrow'],
+      resistances: ['poison']
     }
   ],
 
@@ -268,8 +279,8 @@ const BASES = {
 // Affixes add vocabulary and can add weaknesses/resistances
 const AFFIXES = [
   {
-    id: 'ember',
-    name: 'ember',
+    id: 'hot',
+    name: 'hot',
     emoji: '🔥',
     vocabByLevel: {
       1: ['BURN', 'ASH'],
@@ -285,8 +296,8 @@ const AFFIXES = [
     immunities: []
   },
   {
-    id: 'water',
-    name: 'water',
+    id: 'wet',
+    name: 'wet',
     emoji: '💧',
     vocabByLevel: {
       1: ['WET', 'DRIP'],
@@ -302,8 +313,8 @@ const AFFIXES = [
     immunities: []
   },
   {
-    id: 'wind',
-    name: 'wind',
+    id: 'gusty',
+    name: 'gusty',
     emoji: '💨',
     vocabByLevel: {
       1: ['AIR', "GALE"],
@@ -314,12 +325,12 @@ const AFFIXES = [
       6: ['WHIRLWIND', 'ZEPHYRS', 'AERODYNAMIC'],
       7: []
     },
-    weaknesses: [],
+    weaknesses: ['earth'],
     resistances: ['air']
   },
   {
-    id: 'dark',
-    name: 'dark',
+    id: 'cursed',
+    name: 'cursed',
     emoji: '♠️',
     vocabByLevel: {
       1: ['DUSK'],
@@ -335,8 +346,8 @@ const AFFIXES = [
     immunities: []
   },
   {
-    id: 'lightning',
-    name: 'lightning',
+    id: 'amped',
+    name: 'amped',
     emoji: '⚡',
     vocabByLevel: {
       1: ['ARC', 'BOLT'],
@@ -352,8 +363,8 @@ const AFFIXES = [
     immunities: []
   },
   {
-    id: 'verdant',
-    name: 'verdant',
+    id: 'lush',
+    name: 'lush',
     emoji: '🍃',
     vocabByLevel: {
       1: ['SAP', 'SEED', 'ROOT'],
@@ -368,8 +379,8 @@ const AFFIXES = [
     resistances: ['plant']
   },
   {
-    id: 'stone',
-    name: 'stone',
+    id: 'rocky',
+    name: 'rocky',
     emoji: '🪨',
     vocabByLevel: {
       1: ['SAND', 'DUST'],
@@ -385,8 +396,8 @@ const AFFIXES = [
     immunities: []
   },
   {
-    id: 'archer',
-    name: 'archer',
+    id: 'aimer',
+    name: 'aimer',
     emoji: '🏹',
     vocabByLevel: {
       1: ['AIM', 'SHOT'],
@@ -398,7 +409,7 @@ const AFFIXES = [
       7: []
     },
     weaknesses: ['blunt'],
-    resistances: []
+    resistances: ['air']
   },
   {
     id: 'toxic',
@@ -434,8 +445,8 @@ const AFFIXES = [
     resistances: ['charm']
   },
   {
-    id: 'cold',
-    name: 'cold',
+    id: 'frosty',
+    name: 'frosty',
     emoji: '❄️',
     vocabByLevel: {
       1: ['ICE'],

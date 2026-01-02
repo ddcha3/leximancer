@@ -88,7 +88,7 @@ export function resolveSpell(word, caster, target, isPlayerCasting = true, playS
   }
 
   if (tags.includes("motion")) {
-    result.logs.push(`> Increased speed!`);
+    // result.logs.push(`> Increased speed!`);
     // result.emoji = "🏃";
   }
 
@@ -174,7 +174,7 @@ export function resolveSpell(word, caster, target, isPlayerCasting = true, playS
     const duration = 1; // next hit
     // Default: shield applies to the caster (self-buff)
     result.statusEffect = { tag: STATUS_EFFECTS.SHIELD, ticks: duration, block: blockAmount, applyTo: 'caster' };
-    result.logs.push(`> Blocks ${blockAmount} damage from the next attack.`);
+    // result.logs.push(`> Blocks ${blockAmount} damage from the next attack.`);
     result.emoji = result.emoji || '🛡️';
   }
 
@@ -230,19 +230,19 @@ export function resolveSpell(word, caster, target, isPlayerCasting = true, playS
       let mult = 1.0;
       if (target.weaknesses.includes(dotTag)) {
         mult *= WEAKNESS_MULT;
-        result.logs.push(`> Weak to ${dotTag}! (x${WEAKNESS_MULT})`);
+        // result.logs.push(`> Weak to ${dotTag}! (x${WEAKNESS_MULT})`);
       } else if (target.resistances.includes(dotTag)) {
         mult *= RESISTANCE_MULT;
-        result.logs.push(`> Resistant to ${dotTag}! (x${RESISTANCE_MULT})`);
+        // result.logs.push(`> Resistant to ${dotTag}! (x${RESISTANCE_MULT})`);
       }
 
       // Apply multiplier to per-tick (use absolute so negative multipliers become negative ticks which can heal)
       perTick = Math.floor(perTick * Math.abs(mult));
       if (perTick > 0) {
         result.dot = { tag: effectTag, ticks: duration, damagePerTick: perTick, mult };
-        result.logs.push(`> ${effectTag.charAt(0).toUpperCase() + effectTag.slice(1)} will deal *${perTick}* for ${duration} turns.`);
+        // result.logs.push(`> ${effectTag.charAt(0).toUpperCase() + effectTag.slice(1)} will deal *${perTick}* for ${duration} turns.`);
       } else {
-        result.logs.push(`> No lasting ${dotTag} effect.`);
+        // result.logs.push(`> No lasting ${dotTag} effect.`);
       }
     }
   });
@@ -252,21 +252,21 @@ export function resolveSpell(word, caster, target, isPlayerCasting = true, playS
     const duration = 3;
     // reduceMult is the multiplier to multiply outgoing damage by (0.5 = half damage)
     result.statusEffect = { tag: STATUS_EFFECTS.CHARM, ticks: duration, reduceMult: 0.5 };
-    result.logs.push(`> The target is charmed and will deal reduced damage for ${duration} turns.`);
+    // result.logs.push(`> The target is charmed and will deal reduced damage for ${duration} turns.`);
   }
 
   // POWER: increase damage for hp-targeting spells for the next 2 turns
   if (tags.includes('power')) {
     const duration = 3;
     result.statusEffect = { tag: STATUS_EFFECTS.POWER_BUFF, ticks: duration, damageMult: 1.5, targetType: 'hp', applyTo: 'caster' };
-    result.logs.push(`> Physical might increased!`);
+    // result.logs.push(`> Physical might increased!`);
   }
 
   // INTELLIGENCE: increase damage for wp-targeting spells for the next 2 turns
   if (tags.includes('intelligence')) {
     const duration = 3;
     result.statusEffect = { tag: STATUS_EFFECTS.INTELLIGENCE_BUFF, ticks: duration, damageMult: 1.5, targetType: 'wp', applyTo: 'caster' };
-    result.logs.push(`> Mental prowess increased!`);
+    // result.logs.push(`> Mental prowess increased!`);
   }
   // Prefer an elemental tag emoji when multiple tags are present (elemental > physical)
   const elementalPriority = ['fire','water','ice','electric','air','earth','plant','poison'];
