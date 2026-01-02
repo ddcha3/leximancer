@@ -93,13 +93,13 @@ export function resolveSpell(word, caster, target, isPlayerCasting = true, playS
   if (tags.includes("heal")) {
     result.heal = basePower * 2;
     isAttack = false;
-    result.logs.push(`> Restoration magic!`);
+    result.logs.push(`Restoration magic!`);
   }
 
   if (tags.includes("food")) {
     isAttack = false;
     result.heal = Math.round(basePower * 1.5);
-    result.logs.push(`> A delicious snack!`);
+    result.logs.push(`A delicious snack!`);
   }
 
   // CC
@@ -114,7 +114,7 @@ export function resolveSpell(word, caster, target, isPlayerCasting = true, playS
         // result.logs.push(`> Freezing effect!`);
       }
     } else {
-      result.logs.push(`> Immune to ice.`);
+      result.logs.push(`Immune to ice.`);
     }
   }
 
@@ -123,7 +123,7 @@ export function resolveSpell(word, caster, target, isPlayerCasting = true, playS
       result.status = STATUS_EFFECTS.STUN;
       // result.logs.push(`> Stunned!`);
     } else {
-      result.logs.push(`> Immune to stun.`);
+      result.logs.push(`Immune to stun.`);
     }
     // result.emoji = "😵‍💫";
   }
@@ -133,7 +133,7 @@ export function resolveSpell(word, caster, target, isPlayerCasting = true, playS
       result.status = STATUS_EFFECTS.SILENCE;
       // result.logs.push(`> Magical silence!`);
     } else {
-      result.logs.push(`> Immune to silence.`);
+      result.logs.push(`Immune to silence.`);
     }
     // result.emoji = "🔇";
   }
@@ -143,7 +143,7 @@ export function resolveSpell(word, caster, target, isPlayerCasting = true, playS
       result.status = STATUS_EFFECTS.CONFUSION;
       // result.logs.push(`> Confusion!`);
     } else {
-      result.logs.push(`> Immune to confusion.`);
+      result.logs.push(`Immune to confusion.`);
     }
   }
 
@@ -156,14 +156,14 @@ export function resolveSpell(word, caster, target, isPlayerCasting = true, playS
   if (tags.includes('luck')) {
     if (Math.random() < 0.05) {
       result.instantKill = true;
-      result.logs.push(`> 🎲 JACKPOT! Instant defeat!`);
+      result.logs.push(`🎲 JACKPOT! Instant defeat!`);
       result.emoji = '🎰';
     }
   }
 
   if (tags.includes('holy')) {
     result.cleanse = true;
-    result.logs.push(`> Divine purification!`);
+    result.logs.push(`Divine purification!`);
   }
 
   if (tags.includes('shield')) {
@@ -192,12 +192,12 @@ export function resolveSpell(word, caster, target, isPlayerCasting = true, playS
 
       if (Array.isArray(target.weaknesses) && target.weaknesses.includes(tag)) {
         finalMult *= WEAKNESS_MULT;
-        result.logs.push(`> Weak to ${tag}! (x${WEAKNESS_MULT})`);
+        result.logs.push(`Weak to ${tag}! (x${WEAKNESS_MULT})`);
         // Knower bonus: +3 flat damage if the caster is the Knower and a weakness matched
         if (caster && caster.id === 'knower') knowerTriggered = true;
       } else if (Array.isArray(target.resistances) && target.resistances.includes(tag)) {
         finalMult *= RESISTANCE_MULT;
-        result.logs.push(`> Resistant to ${tag}! (x${RESISTANCE_MULT})`);
+        result.logs.push(`Resistant to ${tag}! (x${RESISTANCE_MULT})`);
       }
     });
 
@@ -206,7 +206,7 @@ export function resolveSpell(word, caster, target, isPlayerCasting = true, playS
 
     if (knowerTriggered) {
       result.damage += 3;
-      result.logs.push(`> (Knower) Weakness Bonus +3`);
+      result.logs.push(`(Knower) Weakness Bonus +3`);
     }
     
     // For Bloodmage, heal quarter of the damage dealt. Only for HP damage
