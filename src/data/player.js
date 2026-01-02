@@ -28,10 +28,10 @@ export const CHARACTERS = [
     starting_items: []
   },
   {
-    id: 'vampire',
-    name: 'Vampire',
+    id: 'bloodmage',
+    name: 'BloodMage',
     // Need a new emoji for Vampire class.
-    avatar: '🧞',
+    avatar: '👹',
     desc: 'Sucks blood on physical damage',
     starting_items: []
   },
