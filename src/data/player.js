@@ -53,7 +53,7 @@ export const CHARACTERS = [
     id: 'scholar',
     name: 'Scholar',
     avatar: '👨‍💼',
-    desc: 'Draws an extra rune. Long spells deal bonus damage',
+    desc: 'Draws an extra rune. Long spells deal bonus damage.',
     onCast: (stats, tags, word) => {
       if (word.length >= 7) {
         stats.flatBonus += 3;
