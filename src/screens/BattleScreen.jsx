@@ -62,6 +62,50 @@ export default function BattleScreen({
     }
   }, []);
 
+  // Keyboard shortcuts: type tiles, backspace to undo last tile, enter to cast
+  useEffect(() => {
+    const handler = (event) => {
+      if (showMulliganConfirm || showHelp) return;
+      if (event.metaKey || event.ctrlKey || event.altKey) return;
+
+      const activeTag = document.activeElement?.tagName;
+      const isTypingField = activeTag === 'INPUT' || activeTag === 'TEXTAREA' || (document.activeElement?.isContentEditable);
+      if (isTypingField) return;
+
+      // Backspace: remove rightmost staged tile
+      if (event.key === 'Backspace') {
+        const lastTile = spellSlots[spellSlots.length - 1];
+        if (lastTile) {
+          event.preventDefault();
+          onReturnTile(lastTile);
+        }
+        return;
+      }
+
+      // Enter: cast if any tiles are staged
+      if (event.key === 'Enter') {
+        if (spellSlots.length > 0) {
+          event.preventDefault();
+          onCast();
+        }
+        return;
+      }
+
+      // Letter keys: play matching tile from hand
+      if (/^[a-zA-Z]$/.test(event.key)) {
+        const letter = event.key.toUpperCase();
+        const match = hand.find(t => t && t.char.toUpperCase() === letter);
+        if (match) {
+          event.preventDefault();
+          onMoveTile(match);
+        }
+      }
+    };
+
+    window.addEventListener('keydown', handler);
+    return () => window.removeEventListener('keydown', handler);
+  }, [hand, spellSlots, onMoveTile, onReturnTile, onCast, showMulliganConfirm, showHelp]);
+
   const sensors = useSensors(
     useSensor(PointerSensor, {
       activationConstraint: {
