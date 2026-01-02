@@ -660,8 +660,8 @@ h1 {
   padding: 15px 10px;
 }
 
-/* --- TILES (Wooden Blocks / Ivory) --- */
-.tile {
+/* --- RUNES (Wooden Blocks / Ivory) --- */
+.rune {
   width: 40px;
   height: 40px;
   background: #fdf5e6; /* Ivory */
@@ -685,7 +685,7 @@ h1 {
   transition: box-shadow 0.12s ease;
 }
 
-.tile:hover {
+.rune:hover {
   z-index: 10;
   box-shadow:
     1px 1px 0px 0px #8d6e63,
@@ -693,7 +693,7 @@ h1 {
     0px 10px 15px 0px rgba(0, 0, 0, 0.3);
 }
 
-.tile:active {
+.rune:active {
   z-index: 10;
   box-shadow:
     0px 0px 0px 0px rgba(141, 110, 99, 0),
@@ -701,7 +701,7 @@ h1 {
     1px 1px 0px 0px #8d6e63;
 }
 
-.tile-score {
+.rune-score {
   position: absolute;
   bottom: 2px;
   right: 4px;
@@ -711,7 +711,7 @@ h1 {
   opacity: 0.9;
 }
 
-.tile.empty {
+.rune.empty {
   background: transparent;
   border: 2px dashed var(--ink-secondary);
   box-shadow: none;
@@ -720,18 +720,18 @@ h1 {
   transition: transform 0.12s ease, box-shadow 0.12s ease;
 }
 
-.tile.empty:hover {
+.rune.empty:hover {
   transform: translateY(-2px) scale(1.03);
   background: rgba(0, 0, 0, 0.04);
   box-shadow: inset 0 0 0 1px rgba(141, 110, 99, 0.6);
 }
 
-.tile.empty:active {
+.rune.empty:active {
   transform: scale(0.97);
   box-shadow: inset 0 0 0 1px rgba(141, 110, 99, 0.8);
 }
 
-.tile-placeholder {
+.rune-placeholder {
   background: transparent;
   border: 2px dashed var(--ink-secondary);
   box-shadow: none !important;
@@ -866,7 +866,7 @@ button:active {
   100% { transform: translate(-50%, -50%) scale(2); opacity: 0; }
 }
 
-@keyframes tile-pop {
+@keyframes rune-pop {
   0% { transform: scale(0.9); }
   50% { transform: scale(1.05); }
   100% { transform: scale(1); }

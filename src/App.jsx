@@ -473,10 +473,10 @@ function App() {
         addLog("Deck empty. Reshuffling...");
         deckCopy = shuffle(STARTING_DECK, rngRef.current);
       }
-      const tile = { id: rngRef.current(), char: deckCopy.pop() };
+      const rune = { id: rngRef.current(), char: deckCopy.pop() };
       const nullIndex = newHand.findIndex(s => !s);
-      if (nullIndex >= 0) newHand[nullIndex] = tile;
-      else newHand.push(tile);
+      if (nullIndex >= 0) newHand[nullIndex] = rune;
+      else newHand.push(rune);
     }
     setDeck(deckCopy);
     setHand(newHand);
@@ -856,8 +856,8 @@ function App() {
             }
 
             // Refill hand anyway so player can play
-            const tilesNeeded = getHandSize(playerChar) - hand.filter(Boolean).length;
-            if (tilesNeeded > 0) drawHand(tilesNeeded, deck, hand);
+            const runesNeeded = getHandSize(playerChar) - hand.filter(Boolean).length;
+            if (runesNeeded > 0) drawHand(runesNeeded, deck, hand);
             return;
         }
     }
@@ -1025,32 +1025,32 @@ function App() {
         }
 
         // 4. REFILL HAND
-        const tilesNeeded = getHandSize(playerChar) - hand.filter(Boolean).length;
-        if (tilesNeeded > 0) drawHand(tilesNeeded, deck, hand);
+        const runesNeeded = getHandSize(playerChar) - hand.filter(Boolean).length;
+        if (runesNeeded > 0) drawHand(runesNeeded, deck, hand);
 
     }, 500);
   };
 
-  const handleMoveTile = (tile, insertIndex = undefined) => {
-    setHand(prev => prev.map(h => (h && h.id === tile.id) ? null : h));
+  const handleMoveRune = (rune, insertIndex = undefined) => {
+    setHand(prev => prev.map(h => (h && h.id === rune.id) ? null : h));
     setSpellSlots(prev => {
         if (insertIndex !== undefined && insertIndex >= 0) {
             const newSlots = [...prev];
             const clampedIndex = Math.min(insertIndex, newSlots.length);
-            newSlots.splice(clampedIndex, 0, tile);
+            newSlots.splice(clampedIndex, 0, rune);
             return newSlots;
         }
-        return [...prev, tile];
+        return [...prev, rune];
     });
     playSound('interface/click');
   };
-  const handleReturnTile = (tile) => {
-    setSpellSlots(prev => prev.filter(t => t.id !== tile.id));
+  const handleReturnRune = (rune) => {
+    setSpellSlots(prev => prev.filter(t => t.id !== rune.id));
     setHand(prev => {
       const res = [...prev];
       const idx = res.findIndex(s => !s);
-      if (idx >= 0) res[idx] = tile;
-      else res.push(tile);
+      if (idx >= 0) res[idx] = rune;
+      else res.push(rune);
       return res;
     });
     playSound('interface/paper');
@@ -1058,10 +1058,10 @@ function App() {
   const handleClear = () => {
     setHand(prev => {
       const res = [...prev];
-      spellSlots.forEach(tile => {
+      spellSlots.forEach(rune => {
         const idx = res.findIndex(s => !s);
-        if (idx >= 0) res[idx] = tile;
-        else res.push(tile);
+        if (idx >= 0) res[idx] = rune;
+        else res.push(rune);
       });
       return res;
     });
@@ -1071,8 +1071,8 @@ function App() {
   const handleShuffle = () => {
     setHand(prev => {
       const slots = [...prev];
-      const tiles = slots.filter(Boolean);
-      const shuffled = shuffle(tiles, rngRef.current);
+      const runes = slots.filter(Boolean);
+      const shuffled = shuffle(runes, rngRef.current);
       return slots.map(s => s ? shuffled.shift() : null);
     });
     setHand(prev => shuffle([...prev], rngRef.current));
@@ -1085,8 +1085,8 @@ function App() {
   const handleSort = () => {
     setHand(prev => {
       const slots = [...prev];
-      const tiles = slots.filter(Boolean).sort((a, b) => a.char.localeCompare(b.char));
-      return slots.map(s => s ? tiles.shift() : null);
+      const runes = slots.filter(Boolean).sort((a, b) => a.char.localeCompare(b.char));
+      return slots.map(s => s ? runes.shift() : null);
     });
     playSound('interface/paper', { volume: 0.8 });
   };
@@ -1206,8 +1206,8 @@ function App() {
       animState={animState}
       spellEffect={spellEffect}
       actions={{
-        onMoveTile: handleMoveTile,
-        onReturnTile: handleReturnTile,
+        onMoveRune: handleMoveRune,
+        onReturnRune: handleReturnRune,
         onCast: handleCast,
         onClear: handleClear,
         onDiscard: handleDiscard,

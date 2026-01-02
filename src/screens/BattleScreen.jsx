@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { DndContext, useDroppable, DragOverlay, useSensor, useSensors, PointerSensor, closestCenter, pointerWithin } from '@dnd-kit/core';
 import { SortableContext, horizontalListSortingStrategy, arrayMove } from '@dnd-kit/sortable';
-import Tile from "../components/Tile";
+import Rune from "../components/Rune";
 import CombatLog from "../components/CombatLog";
 import { TAG_EMOJIS } from "../data/tags"; 
 import { STATUS_PROPERTIES, STATUS_EFFECTS } from "../data/statusEffects"; 
@@ -46,10 +46,10 @@ export default function BattleScreen({
   animState, 
   spellEffect 
 }) {
-  const { onMoveTile, onReturnTile, onCast, onClear, onDiscard, onShuffle, onSort, setSpellSlots } = actions;
+  const { onMoveRune, onReturnRune, onCast, onClear, onDiscard, onShuffle, onSort, setSpellSlots } = actions;
   const [showHelp, setShowHelp] = useState(false);
   const [activeId, setActiveId] = useState(null);
-  const [activeTile, setActiveTile] = useState(null);
+  const [activeRune, setActiveRune] = useState(null);
   const [showMulliganConfirm, setShowMulliganConfirm] = useState(false);
   const [skipMulliganWarning, setSkipMulliganWarning] = useState(false);
   const [persistSkip, setPersistSkip] = useState(false);
@@ -62,7 +62,7 @@ export default function BattleScreen({
     }
   }, []);
 
-  // Keyboard shortcuts: type tiles, backspace to undo last tile, enter to cast
+  // Keyboard shortcuts: type runes, backspace to undo last rune, enter to cast
   useEffect(() => {
     const handler = (event) => {
       if (showMulliganConfirm || showHelp) return;
@@ -72,17 +72,17 @@ export default function BattleScreen({
       const isTypingField = activeTag === 'INPUT' || activeTag === 'TEXTAREA' || (document.activeElement?.isContentEditable);
       if (isTypingField) return;
 
-      // Backspace: remove rightmost staged tile
+      // Backspace: remove rightmost staged rune
       if (event.key === 'Backspace') {
-        const lastTile = spellSlots[spellSlots.length - 1];
-        if (lastTile) {
+        const lastRune = spellSlots[spellSlots.length - 1];
+        if (lastRune) {
           event.preventDefault();
-          onReturnTile(lastTile);
+          onReturnRune(lastRune);
         }
         return;
       }
 
-      // Enter: cast if any tiles are staged
+      // Enter: cast if any runes are staged
       if (event.key === 'Enter') {
         if (spellSlots.length > 0) {
           event.preventDefault();
@@ -91,20 +91,20 @@ export default function BattleScreen({
         return;
       }
 
-      // Letter keys: play matching tile from hand
+      // Letter keys: play matching rune from hand
       if (/^[a-zA-Z]$/.test(event.key)) {
         const letter = event.key.toUpperCase();
         const match = hand.find(t => t && t.char.toUpperCase() === letter);
         if (match) {
           event.preventDefault();
-          onMoveTile(match);
+          onMoveRune(match);
         }
       }
     };
 
     window.addEventListener('keydown', handler);
     return () => window.removeEventListener('keydown', handler);
-  }, [hand, spellSlots, onMoveTile, onReturnTile, onCast, showMulliganConfirm, showHelp]);
+  }, [hand, spellSlots, onMoveRune, onReturnRune, onCast, showMulliganConfirm, showHelp]);
 
   const sensors = useSensors(
     useSensor(PointerSensor, {
@@ -116,7 +116,7 @@ export default function BattleScreen({
 
   const clearActiveDrag = () => {
     setActiveId(null);
-    setActiveTile(null);
+    setActiveRune(null);
   };
 
   // Make the hand droppable respond to pointer position across its whole area
@@ -128,7 +128,7 @@ export default function BattleScreen({
 
   const handleDragStart = (event) => {
     setActiveId(event.active.id);
-    setActiveTile(event.active.data.current?.tile);
+    setActiveRune(event.active.data.current?.rune);
   };
 
   const handleDragEnd = (event) => {
@@ -137,8 +137,8 @@ export default function BattleScreen({
 
     if (!over) return;
 
-    const tile = active.data.current?.tile;
-    if (!tile) return;
+    const rune = active.data.current?.rune;
+    if (!rune) return;
 
     // 1. Reordering within Spell Zone
     if (active.data.current?.sortable?.containerId === 'spell-zone' && over.id !== 'hand-zone') {
@@ -160,18 +160,18 @@ export default function BattleScreen({
 
     // 2. Dragging from Hand to Spell Zone
     if (over.data.current?.sortable?.containerId === 'spell-zone' || over.id === 'spell-zone') {
-      const isInHand = hand.find(t => t && t.id === tile.id);
+      const isInHand = hand.find(t => t && t.id === rune.id);
       if (isInHand) {
         const pointerPosition = getPointerPosition(event);
         const insertIndex = computeInsertIndex(over, pointerPosition, spellSlots);
-        onMoveTile(tile, insertIndex);
+        onMoveRune(rune, insertIndex);
       }
     } 
     // 3. Dragging from Spell Zone to Hand
     else if (over.id === 'hand-zone') {
-      const isInSpellSlots = spellSlots.find(t => t.id === tile.id);
+      const isInSpellSlots = spellSlots.find(t => t.id === rune.id);
       if (isInSpellSlots) {
-        onReturnTile(tile);
+        onReturnRune(rune);
       }
     }
     };
@@ -510,7 +510,7 @@ export default function BattleScreen({
             <button onClick={handleMulliganClick} title="Discard hand and skip turn">
               <PixelEmoji icon="♻" size="1.2rem"/>
             </button>
-            <button onClick={onShuffle} title="Shuffle tile order in hand">
+            <button onClick={onShuffle} title="Shuffle rune order in hand">
               <PixelEmoji icon="🔀" size="1.2rem"/>
             </button>
             <button onClick={onSort} title="Sort hand alphabetically">
@@ -518,7 +518,7 @@ export default function BattleScreen({
             </button>
           </div>
           <div className="controls-row controls-primary">
-            <button className="clear-btn"onClick={onClear} title="Clear staged tiles">
+            <button className="clear-btn"onClick={onClear} title="Clear staged runes">
               <PixelEmoji icon="🗑️" size="1.2rem"/>
             </button>
             <button 
@@ -553,10 +553,10 @@ export default function BattleScreen({
             >
             {spellSlots.length === 0 && <span style={{color: 'rgba(139, 115, 91, 0.5)', fontSize: '2rem'}}>?</span>}
             {spellSlots.map(t => (
-                <Tile 
+                <Rune 
                   key={t.id} 
-                  tile={t} 
-                  onClick={onReturnTile} 
+                  rune={t} 
+                  onClick={onReturnRune} 
                   sortable 
                   isActive={activeId === t.id} 
                 />
@@ -567,21 +567,21 @@ export default function BattleScreen({
         <Droppable id="hand-zone" className="hand">
           {hand.map((t, i) => (
             t ? (
-              <Tile 
+              <Rune 
                 key={t.id} 
-                tile={t} 
-                onClick={onMoveTile} 
+                rune={t} 
+                onClick={onMoveRune} 
                 isActive={activeId === t.id} 
                 showGhostPlaceholder 
               />
             ) : (
-              <div key={`empty-${i}`} className="tile empty" />
+              <div key={`empty-${i}`} className="rune empty" />
             )
           ))}
         </Droppable>
 
         <DragOverlay>
-          {activeTile ? <Tile tile={activeTile} isOverlay /> : null}
+          {activeRune ? <Rune rune={activeRune} isOverlay /> : null}
         </DragOverlay>
       </DndContext>
 

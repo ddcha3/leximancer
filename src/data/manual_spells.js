@@ -6,5 +6,9 @@ const register = (words, tags) => {
 };
 
 // --- OVERRIDES ---
+register(
+  ['NYUM', 'BRO', 'SUP', 'HUH', 'UWU', 'UGUU', 'KAWAII'],
+  ['charm']
+);
 
 export const CUSTOM_SPELLS = manualSpells;

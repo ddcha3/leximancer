@@ -24,26 +24,26 @@ export const CHARACTERS = [
     id: 'summoner',
     name: 'Summoner',
     avatar: '🧞',
-    desc: 'Summons familiars to aid in battle.',
+    desc: 'Conjures allied pets.',
     starting_items: []
   },
   {
     id: 'bloodmage',
     name: 'Bloodmage',
     avatar: '👹',
-    desc: 'Leeches life through spells.',
+    desc: 'Leeches life through concrete spells.',
     starting_items: []
   },
   {
     id: 'elementalist',
     name: 'Elementalist',
     avatar: '🧝‍♂️',
-    desc: 'Deals double damage with elemental spells.',
+    desc: 'Doubles damage of elemental spells.',
     onCast: (stats, tags, word) => {
       const isElemental = tags.some(t => ELEMENTAL_TAGS.includes(t));
       if (isElemental) {
         stats.multiplier *= 2;
-        stats.logs.push("> Elemental Mastery x2");
+        stats.logs.push("Elemental Mastery x2");
       }
       return stats;
     },
@@ -53,11 +53,11 @@ export const CHARACTERS = [
     id: 'scholar',
     name: 'Scholar',
     avatar: '👨‍💼',
-    desc: 'Draws an extra tile and deals bonus damage for longer words.',
+    desc: 'Draws an extra rune. Long spells deal bonus damage',
     onCast: (stats, tags, word) => {
       if (word.length >= 7) {
         stats.flatBonus += 3;
-        stats.logs.push("> Scholarly Insight: +3 Damage");
+        stats.logs.push("Scholarly Insight: +3 Damage");
       }
       return stats;
     },
