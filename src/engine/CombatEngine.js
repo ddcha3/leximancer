@@ -78,10 +78,8 @@ export function resolveSpell(word, caster, target, isPlayerCasting = true, playS
 
   let isAttack = true;
   if (caster.id === 'summoner') {
-    // If summoner is summoning a familiar, don't attack
     const familiarData = FAMILIARS.find(f => f.name.toUpperCase() === word);
     if (familiarData) {
-      isAttack = false;
       result.emoji = familiarData.emoji;
       result.isSummon = true;
     }

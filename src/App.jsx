@@ -229,6 +229,7 @@ function App() {
   
   const isProcessingDeath = useRef(false);
   const rngRef = useRef(() => Math.random());
+  const currentEnemyRef = useRef(null);
 
   let effectiveMaxHp = MAX_PLAYER_HP;
 
@@ -275,6 +276,10 @@ function App() {
       console.warn('Failed to restore saved run', err);
     }
   }, [gameState]);
+
+  useEffect(() => {
+    currentEnemyRef.current = currentEnemy;
+  }, [currentEnemy]);
 
   useEffect(() => {
       const loadDictionary = async () => {
@@ -707,24 +712,113 @@ function App() {
           else addLog(`#${currentEnemy.name}# is stunned!`);
       }
 
+      // Commit player spell effects before familiars act
       setCurrentEnemy(nextEnemyState);
-      setSpellSlots([]);
+      currentEnemyRef.current = nextEnemyState;
 
-      // 5. CHECK DEATH
-      if (nextEnemyState.hp <= 0 || nextEnemyState.wp <= 0) {
-          // Handled by useEffect
-          return;
+      // 3. FAMILIAR ATTACKS (if any summoned)
+      const activeFamiliars = updatedFamiliars || familiars;
+      if (activeFamiliars.length > 0) {
+          activeFamiliars.forEach((familiar, index) => {
+              setTimeout(() => {
+                  setAnimState(prev => {
+                      const newFamiliars = Object.assign({}, prev.familiars);
+                      newFamiliars[familiar.id] = 'anim-action';
+                      return { ...prev, familiars: newFamiliars };
+                  });
+                  setTimeout(() => {
+                      setAnimState(prev => {
+                          const newFamiliars = Object.assign({}, prev.familiars);
+                          newFamiliars[familiar.id] = '';
+                          return { ...prev, familiars: newFamiliars };
+                      });
+                  }, 400);
+                  
+                  addLog(`#${familiar.name}# casts ^${familiar.spell}^!`);
+                  const familiarResult = resolveSpell(familiar.spell, playerChar, currentEnemyRef.current || nextEnemyState, true, playSound);
+                  
+                  // Apply familiar damage
+                  if (familiarResult.damage > 0) {
+                    let damageLogged = 0;
+                    let loggedOnce = false;
+                    setCurrentEnemy(prev => {
+                      const { remainingDamage, newStatusEffects } = applyStatusDamageMultipliers(
+                        prev.statusEffects,
+                        familiarResult.damage,
+                        (msg) => addLog(`#${prev.name}#: ${msg}`)
+                      );
+
+                      const updated = { ...prev, statusEffects: newStatusEffects };
+
+                      if (remainingDamage > 0) {
+                        if (familiarResult.targetStat === 'hp') {
+                          updated.hp = Math.max(0, updated.hp - remainingDamage);
+                        } else {
+                          updated.wp = Math.max(0, updated.wp - remainingDamage);
+                        }
+                        if (!loggedOnce) {
+                          damageLogged = remainingDamage;
+                          loggedOnce = true;
+                        }
+                      }
+
+                      currentEnemyRef.current = updated;
+                      return updated;
+                    });
+
+                    if (damageLogged > 0) {
+                      addLog(`Familiar dealt *${damageLogged}* ${familiarResult.targetStat.toUpperCase()} damage!`);
+                    }
+                  }
+              }, 1000 + (index * 500));
+          });
+          
+          // Decrement all familiar turns after all attacks
+          setTimeout(() => {
+              let vanished = [];
+              let loggedVanish = false;
+              setFamiliars(prev => {
+                  const updated = prev.map(f => ({
+                      ...f,
+                      turnsLeft: f.turnsLeft - 1
+                  })).filter(f => {
+                      if (f.turnsLeft <= 0) {
+                          if (!loggedVanish) {
+                            vanished.push(f.name);
+                            loggedVanish = true;
+                          }
+                          return false;
+                      }
+                      return true;
+                  });
+                  return updated;
+              });
+
+              if (vanished.length > 0) {
+                  vanished.forEach(name => addLog(`${name} vanishes...`));
+              }
+          }, 1000 + (activeFamiliars.length * 500));
+      }
+      setSpellSlots([]);
+      
+      // 5. CHECK DEATH (latest state)
+      const latestEnemyAfterPlayer = currentEnemyRef.current || nextEnemyState;
+      if (latestEnemyAfterPlayer && (latestEnemyAfterPlayer.hp <= 0 || latestEnemyAfterPlayer.wp <= 0)) {
+        return; // death handled by effect
       }
 
-      // 6. ENEMY TURN
+      // 6. ENEMY TURN after familiars finish (if any)
+      const familiarPhaseDuration = activeFamiliars.length > 0 ? 1200 + (activeFamiliars.length * 500) : 1500;
       setTimeout(() => {
-          handleEnemyAttack(nextEnemyState, updatedFamiliars);
-      }, 1500);
+        const latest = currentEnemyRef.current;
+        if (!latest || latest.hp <= 0 || latest.wp <= 0) return;
+        handleEnemyAttack(latest);
+      }, familiarPhaseDuration);
 
     }, 500);
   };
 
-  const handleEnemyAttack = (enemyEntity, currentFamiliars) => {
+  const handleEnemyAttack = (enemyEntity) => {
     // Process ongoing statusEffects on enemy at start of its turn
     const { totalDamage, newStatusEffects, skipTurnEffect } = processTurnStart(
         enemyEntity.statusEffects, 
@@ -922,69 +1016,6 @@ function App() {
         if (result.dot) {
           setPlayerStatusEffects(prev => addStatusEffect(prev, result.dot));
           addLog(`You are afflicted with ${result.dot.tag}!`);
-        }
-
-        // 3. FAMILIAR ATTACKS (if any summoned)
-        const activeFamiliars = currentFamiliars || familiars;
-        if (activeFamiliars.length > 0) {
-            activeFamiliars.forEach((familiar, index) => {
-                setTimeout(() => {
-                    setAnimState(prev => {
-                        const newFamiliars = Object.assign({}, prev.familiars);
-                        newFamiliars[familiar.id] = 'anim-action';
-                        return { ...prev, familiars: newFamiliars };
-                    });
-                    setTimeout(() => {
-                        setAnimState(prev => {
-                            const newFamiliars = Object.assign({}, prev.familiars);
-                            newFamiliars[familiar.id] = '';
-                            return { ...prev, familiars: newFamiliars };
-                        });
-                    }, 400);
-                    
-                    addLog(`#${familiar.name}# casts ^${familiar.spell}^!`);
-                    const familiarResult = resolveSpell(familiar.spell, playerChar, currentEnemy, true, playSound);
-                    
-                    // Apply familiar damage
-                    if (familiarResult.damage > 0) {
-                        const { remainingDamage, newStatusEffects } = applyStatusDamageMultipliers(
-                            currentEnemy.statusEffects,
-                            familiarResult.damage,
-                            (msg) => addLog(`#${currentEnemy.name}#: ${msg}`)
-                        );
-                        
-                        if (remainingDamage > 0) {
-                            setCurrentEnemy(prev => {
-                                const newEnemy = { ...prev, statusEffects: newStatusEffects };
-                                if (familiarResult.targetStat === 'hp') {
-                                    newEnemy.hp = Math.max(0, newEnemy.hp - remainingDamage);
-                                } else {
-                                    newEnemy.wp = Math.max(0, newEnemy.wp - remainingDamage);
-                                }
-                                return newEnemy;
-                            });
-                            addLog(`Familiar dealt *${remainingDamage}* ${familiarResult.targetStat.toUpperCase()} damage!`);
-                        }
-                    }
-                }, 1000 + (index * 500));
-            });
-            
-            // Decrement all familiar turns after all attacks
-            setTimeout(() => {
-                setFamiliars(prev => {
-                    const updated = prev.map(f => ({
-                        ...f,
-                        turnsLeft: f.turnsLeft - 1
-                    })).filter(f => {
-                        if (f.turnsLeft <= 0) {
-                            addLog(`${f.name} vanishes...`);
-                            return false;
-                        }
-                        return true;
-                    });
-                    return updated;
-                });
-            }, 1000 + (activeFamiliars.length * 500));
         }
 
         // 4. REFILL HAND
