@@ -109,9 +109,9 @@ export default function StartScreen({ onStart, onStartDaily, isLoading }) {
           setShowCredits(true);
         }}
         style={{
-          position: 'absolute',
-          top: '10px',
-          left: '10px',
+          position: 'fixed',
+          bottom: '4px',
+          left: '4px',
           fontSize: '0.5rem',
           padding: '4px',
           backgroundColor: '#8b735b',
