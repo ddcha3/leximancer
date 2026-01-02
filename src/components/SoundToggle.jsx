@@ -13,9 +13,9 @@ export default function SoundToggle() {
         setIsMuted(!isMuted);
       }}
       style={{
-        position: 'absolute',
-        top: '10px',
-        right: '10px',
+        position: 'fixed',
+        top: '5px',
+        right: '5px',
         fontSize: '0.8rem',
         cursor: 'pointer',
         zIndex: 1000,

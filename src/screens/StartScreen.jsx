@@ -110,8 +110,8 @@ export default function StartScreen({ onStart, onStartDaily, isLoading }) {
         }}
         style={{
           position: 'fixed',
-          bottom: '4px',
-          left: '4px',
+          bottom: '5px',
+          left: '5px',
           fontSize: '0.5rem',
           padding: '4px',
           backgroundColor: '#8b735b',
