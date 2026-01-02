@@ -214,7 +214,7 @@ export function resolveSpell(word, caster, target, isPlayerCasting = true, playS
     // For Blood Mage, heal half of the damage dealt. Only for physical damage.
     if (caster && caster.id === 'bloodmage' && inferredTarget === 'hp')
     {
-        result.heal = Math.floor(result.damage / 2);
+        result.heal = Math.floor(result.damage / 4);
     }
   }
 
