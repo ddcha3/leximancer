@@ -31,10 +31,10 @@ export const CHARACTERS = [
     id: 'bloodmage',
     name: 'Bloodmage',
     avatar: '👹',
-    desc: 'Leeches life through spells',
+    desc: 'Leeches life through spells.',
     starting_items: []
   },
- {
+  {
     id: 'elementalist',
     name: 'Elementalist',
     avatar: '🧝‍♂️',
@@ -44,6 +44,20 @@ export const CHARACTERS = [
       if (isElemental) {
         stats.multiplier *= 2;
         stats.logs.push("> Elemental Mastery x2");
+      }
+      return stats;
+    },
+    starting_items: []
+  },
+  {
+    id: 'scholar',
+    name: 'Scholar',
+    avatar: '👨‍💼',
+    desc: 'Draws an extra tile and deals bonus damage for longer words.',
+    onCast: (stats, tags, word) => {
+      if (word.length >= 7) {
+        stats.flatBonus += 3;
+        stats.logs.push("> Scholarly Insight: +3 Damage");
       }
       return stats;
     },

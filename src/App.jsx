@@ -24,9 +24,13 @@ const POS_TAG_MAP = {
     adverb: 'adverb',
 };
 
-const HAND_SIZE = 18;
+const BASE_HAND_SIZE = 18;
 const MAX_PLAYER_HP = 100;
 const SAVE_KEY = 'leximancer-progress-v1';
+
+const getHandSize = (character) => {
+  return BASE_HAND_SIZE + (character?.id === 'scholar' ? 1 : 0);
+};
 
 const mulberry32 = (a) => {
   return function() {
@@ -267,7 +271,7 @@ function App() {
       setLogs([`Resuming at stage ${Math.min((saved.enemyIndex || 0) + 1, MAX_STAGE)}.`]);
 
       const clampedIndex = Math.min(Math.max(saved.enemyIndex || 0, 0), MAX_STAGE - 1);
-      startEncounter(clampedIndex, shuffle(STARTING_DECK, rngRef.current), savedEnemy || null);
+      startEncounter(clampedIndex, shuffle(STARTING_DECK, rngRef.current), savedEnemy || null, savedChar);
 
       setPlayerHp(restoredPlayerHp);
       setPlayerStatusEffects(saved.playerStatusEffects || []);
@@ -419,18 +423,20 @@ function App() {
     setPlayerHp(effectiveMaxHp);
     setPlayerStatusEffects([]);
     setFamiliars([]);
-    startEncounter(0, initialDeck);
+    startEncounter(0, initialDeck, null, character);
   };
 
   const startDailyGame = (character) => startGame(character, { isDaily: true, seed: getEasternDateString() });
 
-  const startEncounter = (index, startingDeck = null, existingEnemy = null) => {
+  const startEncounter = (index, startingDeck = null, existingEnemy = null, characterContext = playerChar) => {
     isProcessingDeath.current = false;
     setEnemyIndex(index);
     if (index >= MAX_STAGE) {
       setGameState('VICTORY');
       return;
     }
+
+    const handSize = getHandSize(characterContext);
 
     const baseEnemy = existingEnemy || createEnemy(index, rngRef.current);
     const enemyData = {
@@ -450,7 +456,7 @@ function App() {
     setCurrentEnemy(enemyData);
     setGameState('BATTLE');
     const deckSource = startingDeck || shuffle(STARTING_DECK, rngRef.current);
-    drawHand(HAND_SIZE, deckSource, []);
+    drawHand(handSize, deckSource, []);
     setSpellSlots([]);
     setFamiliars([]);
     setPlayerStatusEffects([]);
@@ -850,7 +856,7 @@ function App() {
             }
 
             // Refill hand anyway so player can play
-            const tilesNeeded = HAND_SIZE - hand.filter(Boolean).length;
+            const tilesNeeded = getHandSize(playerChar) - hand.filter(Boolean).length;
             if (tilesNeeded > 0) drawHand(tilesNeeded, deck, hand);
             return;
         }
@@ -1019,7 +1025,7 @@ function App() {
         }
 
         // 4. REFILL HAND
-        const tilesNeeded = HAND_SIZE - hand.filter(Boolean).length;
+        const tilesNeeded = getHandSize(playerChar) - hand.filter(Boolean).length;
         if (tilesNeeded > 0) drawHand(tilesNeeded, deck, hand);
 
     }, 500);
@@ -1086,7 +1092,7 @@ function App() {
   };
   const handleDiscard = () => {
     setSpellSlots([]);
-    drawHand(HAND_SIZE, deck, []);
+    drawHand(getHandSize(playerChar), deck, []);
     addLog("Mulligan! You waste a turn.");
     handleEnemyAttack(currentEnemy);
 
