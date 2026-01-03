@@ -256,6 +256,9 @@ function App() {
         .filter(Boolean);
 
       const savedEnemy = saved.currentEnemy;
+      const savedDeck = saved.deck || shuffle(STARTING_DECK, rngRef.current);
+      const savedHand = saved.hand || null;
+      const savedSpellSlots = saved.spellSlots || [];
 
       rngRef.current = () => Math.random();
       setDailyMode(false);
@@ -271,7 +274,7 @@ function App() {
       setLogs([`Resuming at stage ${Math.min((saved.enemyIndex || 0) + 1, MAX_STAGE)}.`]);
 
       const clampedIndex = Math.min(Math.max(saved.enemyIndex || 0, 0), MAX_STAGE - 1);
-      startEncounter(clampedIndex, shuffle(STARTING_DECK, rngRef.current), savedEnemy || null, savedChar);
+      startEncounter(clampedIndex, savedDeck, savedEnemy || null, savedChar, savedHand, savedSpellSlots);
 
       setPlayerHp(restoredPlayerHp);
       setPlayerStatusEffects(saved.playerStatusEffects || []);
@@ -319,7 +322,10 @@ function App() {
         playerHp,
         playerStatusEffects,
         familiars,
-        currentEnemy
+        currentEnemy,
+        deck,
+        hand,
+        spellSlots
       };
 
       try {
@@ -327,7 +333,7 @@ function App() {
       } catch (err) {
         console.warn('Failed to save progress', err);
       }
-    }, [playerChar, inventory, enemyIndex, gameState, playerHp, playerStatusEffects, familiars, currentEnemy]);
+    }, [playerChar, inventory, enemyIndex, gameState, playerHp, playerStatusEffects, familiars, currentEnemy, deck, hand, spellSlots]);
 
   // Check for enemy death (from any source: player, familiar, DOTs)
   useEffect(() => {
@@ -428,7 +434,7 @@ function App() {
 
   const startDailyGame = (character) => startGame(character, { isDaily: true, seed: getEasternDateString() });
 
-  const startEncounter = (index, startingDeck = null, existingEnemy = null, characterContext = playerChar) => {
+  const startEncounter = (index, startingDeck = null, existingEnemy = null, characterContext = playerChar, savedHand = null, savedSpellSlots = null) => {
     isProcessingDeath.current = false;
     setEnemyIndex(index);
     if (index >= MAX_STAGE) {
@@ -455,9 +461,14 @@ function App() {
 
     setCurrentEnemy(enemyData);
     setGameState('BATTLE');
-    const deckSource = startingDeck || shuffle(STARTING_DECK, rngRef.current);
-    drawHand(handSize, deckSource, []);
-    setSpellSlots([]);
+    const deckSource = startingDeck ? [...startingDeck] : shuffle(STARTING_DECK, rngRef.current);
+    setDeck(deckSource);
+    if (savedHand !== null && savedHand !== undefined) {
+      setHand(savedHand);
+    } else {
+      drawHand(handSize, deckSource, []);
+    }
+    setSpellSlots(savedSpellSlots !== null && savedSpellSlots !== undefined ? savedSpellSlots : []);
     setFamiliars([]);
     setPlayerStatusEffects([]);
     setAnimState({ player: '', enemy: '', familiars: {} });
