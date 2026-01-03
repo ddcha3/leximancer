@@ -44,7 +44,7 @@ const BASES = {
       wp: 5,
       vocabulary: ['CLAW', 'SAND', 'SHELL', 'SIDE', 'TAP'],
       weaknesses: [],
-      resistances: ['water']
+      resistances: []
     },
     {
       id: 'hamster',
@@ -55,7 +55,7 @@ const BASES = {
       wp: 20,
       vocabulary: ['NYUM', 'BRO', 'SUP', 'HUH', 'HELP'],
       weaknesses: ['intelligence', 'charm', 'sorrow'],
-      resistances: ['poison']
+      resistances: []
     }
   ],
 
@@ -69,7 +69,7 @@ const BASES = {
       wp: 15,
       vocabulary: ['HUM', 'PECK', 'FLY', 'NEST', 'SING', 'NYUM', 'CHIRP'],
       weaknesses: ['loud', 'electric'],
-      resistances: ['air']
+      resistances: []
     },
     {
       id: 'snek',
@@ -80,7 +80,7 @@ const BASES = {
       wp: 24,
       vocabulary: ['BITE', 'HISS', 'SNEK', 'COIL', 'SLIDE', 'WAIT'],
       weaknesses: [],
-      resistances: ['poison']
+      resistances: []
     },
     {
       id: 'kitty',
@@ -113,7 +113,7 @@ const BASES = {
       wp: 20,
       vocabulary: ['SHELL', 'SHIELD', 'DEFEND', 'HIDE'],
       weaknesses: ['fire', 'charm', 'negotiate'],
-      resistances: ['blunt', 'earth', 'heavy']
+      resistances: []
     }
   ],
 
@@ -127,7 +127,7 @@ const BASES = {
       wp: 45,
       vocabulary: ['ROLL', 'ROLLING', 'SMASH', 'ORANGE', 'LANTERN', 'VEGETATIVE'],
       weaknesses: ['sharp', 'fire'],
-      resistances: ['dark']
+      resistances: []
     },
     {
       id: 'goblin',
@@ -138,7 +138,7 @@ const BASES = {
       wp: 25,
       vocabulary: ['RUN', 'SHIELD', 'GUARD', 'STAB', 'STEAL', 'SHOUT', 'BACKSTAB', 'SNEAK', 'MURDER'],
       weaknesses: ['negotiate', 'taunt', 'charm'],
-      resistances: ['dark']
+      resistances: []
     },
     {
       id: 'ape',
@@ -149,7 +149,7 @@ const BASES = {
       wp: 22,
       vocabulary: ['HIT', 'BITE', 'THUMP', 'SMASH', 'BEAT', 'ROAR', 'POUND', 'PRIMATE'],
       weaknesses: ['sharp', 'taunt', 'tech'],
-      resistances: ['blunt', 'earth', 'creature']
+      resistances: []
     },
     {
       id: 'owl',
@@ -160,7 +160,7 @@ const BASES = {
       wp: 45,
       vocabulary: ['HOOT', 'FLY', 'STARE', 'NIGHT', 'WISE', 'SILENT'],
       weaknesses: ['loud', 'electric', 'intelligence'],
-      resistances: ['dark', 'air']
+      resistances: []
     }
   ],
 
@@ -174,7 +174,7 @@ const BASES = {
       wp: 40,
       vocabulary: ['LAUGH', 'DANCE', 'HEY', 'SUP', 'JEST', 'GUFFAW', 'HEE', 'TEEHEE', 'GRIN', 'LEER', 'PANDEMONIUM'],
       weaknesses: ['taunt', 'blunt', 'sharp', 'creature'],
-      resistances: ['negotiate']
+      resistances: []
     },
     {
       id: 'alien',
@@ -185,7 +185,7 @@ const BASES = {
       wp: 55,
       vocabulary: ['NYUM', 'ZAP', 'PROBE', 'HUM', 'FLOAT', 'SCAN', 'WAIT', 'STARE', 'EXTRATERRESTRIAL'],
       weaknesses: ['intelligence', 'poison', 'charm', 'negotiate'],
-      resistances: ['chaos', 'tech']
+      resistances: []
     },
     {
       id: 'zombie',
@@ -196,7 +196,7 @@ const BASES = {
       wp: 40,
       vocabulary: ['CHEW', 'BITE', 'MUNCH', 'SHAMBLE', 'MOAN', 'LURCH', 'UNDEAD', 'DRAG', 'DECAY'],
       weaknesses: ['fire', 'holy', 'sharp', 'blunt'],
-      resistances: ['dark', 'poison']
+      resistances: []
     },
     {
       id: 'looker',
@@ -207,7 +207,7 @@ const BASES = {
       wp: 50,
       vocabulary: ['GLANCE', 'PEEK', 'STARE', 'GAZE', 'OBSERVE', 'PETRIFY', 'OBSERVANT', 'OMNISCIENT'],
       weaknesses: ['projectile', 'art', 'sorrow', 'electric'],
-      resistances: ['dark', 'chaos']
+      resistances: []
     }
   ],
 
@@ -221,7 +221,7 @@ const BASES = {
       wp: 50,
       vocabulary: ['SMASH', 'THUMP', 'ROAR', 'CRUSH', 'TROLLING', 'GRUMBLE', 'BELLOW'],
       weaknesses: ['taunt','intelligence','charm', 'projectile', 'sharp'],
-      resistances: ['blunt','earth']
+      resistances: []
     },
     {
       id: 'camel',
@@ -232,7 +232,7 @@ const BASES = {
       wp: 90,
       vocabulary: ['MASTICATE', 'TRUDGING', 'REGURGITATE', 'MIRAGE', 'HUMP', 'CARAVAN', 'DRINK', 'OASIS'],
       weaknesses: ['ice', 'sharp', 'negotiate', 'poison'],
-      resistances: ['earth']
+      resistances: []
     },
     {
       id: 'croc',
@@ -243,7 +243,7 @@ const BASES = {
       wp: 60,
       vocabulary: ['SNAP', 'BITE', 'AMBUSH', 'SCALE', 'TAIL', 'SLICE', 'DICE', 'SUBMERGE', 'DOMINUS', 'BUTCHER', 'RUTHLESS', 'PREDATOR'],
       weaknesses: ['fire','ice','tech', 'sorrow'],
-      resistances: ['sharp']
+      resistances: []
     },
     {
       id: 'maw',
@@ -254,7 +254,7 @@ const BASES = {
       wp: 85,
       vocabulary: ['SUCK', 'TASTE', 'TASTE', 'LICK', 'SPEAK', 'YAWN', 'NIBBLE', 'TONGUE', 'SLURP'],
       weaknesses: ['sharp', 'fire', 'ice', 'poison'],
-      resistances: ['charm', 'loud', 'intelligence']
+      resistances: []
     }
   ],
 
@@ -268,7 +268,7 @@ const BASES = {
       wp: 100,
       vocabulary: ['FLAME', 'SOAR', 'ROAR', 'SCALE', 'INFERNO', 'DRACONIC', 'DIVINITY', 'ANCIENT', 'TREASURE', 'YOLO', 'VIBES', 'CERTIFIED'],
       weaknesses: ['ice','holy','electric', 'negotiate'],
-      resistances: ['earth']
+      resistances: []
     },
     {
       id: 'vampire',
@@ -279,7 +279,7 @@ const BASES = {
       wp: 200,
       vocabulary: ['BLOOD', 'NIGHT', 'SIP', 'TRANSFORM', 'SIPHON', 'DRAIN', 'THIRST', 'ETERNAL', 'TWILIGHT', 'SPARKLE', 'SURVIVORS', 'SANGUINE'],
       weaknesses: ['sharp','holy','negotiate', 'art', 'plant'],
-      resistances: ['dark','charm']
+      resistances: []
     },
     {
       id: 'phoenix',
@@ -290,7 +290,7 @@ const BASES = {
       wp: 150,
       vocabulary: ['REBIRTH', 'FLAME', 'SOAR', 'BURST', 'IMMORTAL', 'INFERNO', 'MYTHICAL', 'REVITALIZE', 'MAJESTIC', 'ETHEREAL', 'TIMELESS', 'ETERNAL'],
       weaknesses: ['water','electric','dark', 'sorrow'],
-      resistances: ['air']
+      resistances: []
     }
   ],
 
@@ -304,7 +304,7 @@ const BASES = {
       wp: 240,
       vocabulary: ['WORDSMITH', 'INCANTATION', 'ENCHANTMENT', 'LEXICON', 'OMNISCIENT', 'SOLILOQUY', 'SPELLCRAFT', 'ARTICULATE', 'DIVINATION', 'DICTIONARY', 'INTELLECT'],
       weaknesses: ['tech','holy','intelligence','poison', 'art'],
-      resistances: ['chaos','dark','negotiate']
+      resistances: []
     }
   ]
 };
@@ -322,10 +322,10 @@ const AFFIXES = [
       4: ['INCENDIARY', 'CONFLARE', 'FLAMING', 'BLAZING', 'FLAMES'],
       5: ['CONFLAGRATE', 'INCINERATE', 'FIRESTORM', 'FLAMING', 'BLAZING'],
       6: ['IMMOLATION', 'PYROCLASM', 'FLAMETHROWER', 'COMBUSTION', 'INCENDIARY'],
-      7: []
+      7: ['IMMOLATION', 'PYROCLASM', 'FLAMETHROWER', 'COMBUSTION', 'INCENDIARY']
     },
     weaknesses: ['water'],
-    resistances: ['fire'],
+    resistances: [],
     immunities: []
   },
   {
@@ -339,10 +339,10 @@ const AFFIXES = [
       4: ['TSUNAMI', 'CASCADING', 'DROWNING'],
       5: ['DELUGE', 'MONSOON', 'DRENCHED', 'FLOODING'],
       6: ['AQUATIC', 'SUBMERGED', 'UNDERWATER', 'WATERLOGGED'],
-      7: []
+      7: ['AQUATIC', 'SUBMERGED', 'UNDERWATER', 'WATERLOGGED']
     },
     weaknesses: ['electric'],
-    resistances: ['water'],
+    resistances: [],
     immunities: []
   },
   {
@@ -356,10 +356,10 @@ const AFFIXES = [
       4: ['CYCLONE', 'TEMPEST', 'STORMY', 'WINDY', 'BREEZY'],
       5: ['HURRICANE', 'WINDSTORM', 'TYPHOON', 'TEMPEST'],
       6: ['WHIRLWIND', 'ZEPHYRS', 'AERODYNAMIC', 'HURRICANE', 'VENTILATE'],
-      7: []
+      7: ['WHIRLWIND', 'ZEPHYRS', 'AERODYNAMIC', 'HURRICANE', 'VENTILATE']
     },
     weaknesses: ['earth', 'heavy'],
-    resistances: ['air']
+    resistances: []
   },
   {
     id: 'cursed',
@@ -375,7 +375,7 @@ const AFFIXES = [
       7: []
     },
     weaknesses: ['holy', 'time'],
-    resistances: ['dark'],
+    resistances: [],
     immunities: []
   },
   {
@@ -392,7 +392,7 @@ const AFFIXES = [
       7: []
     },
     weaknesses: ['earth', 'tech'],
-    resistances: ['electric'],
+    resistances: [],
     immunities: []
   },
   {
@@ -409,7 +409,7 @@ const AFFIXES = [
       7: []
     },
     weaknesses: ['fire', 'creature'],
-    resistances: ['plant']
+    resistances: []
   },
   {
     id: 'rocky',
@@ -425,7 +425,7 @@ const AFFIXES = [
       7: []
     },
     weaknesses: ['ice', 'plant'],
-    resistances: ['earth'],
+    resistances: [],
     immunities: []
   },
   {
@@ -442,7 +442,7 @@ const AFFIXES = [
       7: []
     },
     weaknesses: ['blunt', 'motion'],
-    resistances: ['air']
+    resistances: []
   },
   {
     id: 'toxic',
@@ -459,7 +459,7 @@ const AFFIXES = [
     },
     weaknesses: ['earth', 'holy'],
     resistances: [],
-    immunities: ['poison']
+    immunities: []
   },
   {
     id: 'cute',
@@ -475,7 +475,7 @@ const AFFIXES = [
       7: []
     },
     weaknesses: ['sorrow', 'loud'],
-    resistances: ['charm']
+    resistances: []
   },
   {
     id: 'frosty',
@@ -491,8 +491,24 @@ const AFFIXES = [
       7: []
     },
     weaknesses: ['fire'],
-    resistances: ['ice'],
+    resistances: [],
     immunities: []
+  },
+  {
+    id: 'educated',
+    name: 'educated',
+    emoji: '📚',
+    vocabByLevel: {
+      1: ['READ', 'DATA'],
+      2: ['STUDY', 'LEARN', 'TOME', 'TEXT'],
+      3: ['PEDANTIC', 'BRAIN', 'WOKE', 'SMART', 'PROOF', 'AXIOM', 'THESIS'],
+      4: ['GALAXY', 'PRETENTIOUS', 'MANUSCRIPT', 'DOCTORATE', 'COLLEGE'],
+      5: ['ENCYCLOPEDIA', 'ANNOTATION', 'VERBOSE', 'PRETENTIOUS', 'UNIVERSITY'],
+      6: ['COMPENDIUM', 'BIBLIOGRAPHY', 'EXPOSITION', 'SCHOLARLY', 'PARADIGM'],
+      7: ['COMPENDIUM', 'BIBLIOGRAPHY', 'EXPOSITION', 'SCHOLARLY', 'PARADIGM']
+    },
+    weaknesses: ['blunt', 'creature', 'heavy'],
+    resistances: []
   }
 ];
 

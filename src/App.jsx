@@ -38,7 +38,7 @@ const clearSavedProgress = () => {
 };
 
 const getHandSize = (character) => {
-  return BASE_HAND_SIZE + (character?.id === 'scholar' ? 1 : 0);
+  return BASE_HAND_SIZE + (character?.id === 'scholar' ? 2 : 0);
 };
 
 const mulberry32 = (a) => {

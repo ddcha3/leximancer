@@ -11,14 +11,19 @@ const WEAKNESS_MULT = 2.0;
 const RESISTANCE_MULT = 0.5;
 const IMMUNITY_MULT = 0.0;
 
-const defaultCalculatePower = (word) => {
+const defaultCalculatePower = (word, enableLengthBonus = true) => {
   const upper = word.toUpperCase();
   let score = 0;
   for (let char of upper) {
     score += LETTER_SCORES[char] || 1;
   }
-  // Remove length bonuses for now
-  // if (upper.length > 4) score += (upper.length - 4) * 2;
+  // Length bonus: +2 each for 6-7 letters, +4 each for 8+
+  if (enableLengthBonus && upper.length > 5) {
+    const extra = upper.length - 5;
+    const tierOne = Math.min(extra, 2); // letters 6-7
+    const tierTwo = Math.max(extra - 2, 0); // 8+
+    score += tierOne * 2 + tierTwo * 4;
+  }
   return score;
 };
 
@@ -50,12 +55,13 @@ export function resolveSpell(word, caster, target, isPlayerCasting = true, playS
   // CALCULATE BASE POWER
   let basePower = 0;
   
-  // CHECK FOR CHARACTER OVERRIDES (e.g., custom calculateBasePower)
-  if (caster.calculateBasePower) {
+    // CHECK FOR CHARACTER OVERRIDES (e.g., custom calculateBasePower)
+    if (caster.calculateBasePower) {
       basePower = caster.calculateBasePower(upperWord);
-  } else {
-      basePower = defaultCalculatePower(upperWord);
-  }
+    } else {
+      const allowLengthBonus = isPlayerCasting || (caster && caster.id === 'leximancer');
+      basePower = defaultCalculatePower(upperWord, allowLengthBonus);
+    }
 
   // APPLY CHARACTER HOOKS 
   let stats = {
@@ -73,7 +79,8 @@ export function resolveSpell(word, caster, target, isPlayerCasting = true, playS
   const result = {
     damage: 0, targetStat: inferredTarget, heal: 0, status: null,
     logs: [...stats.logs], // Add class-specific logs
-    tags: tags, emoji: "✨"
+    tags: tags, emoji: "✨",
+    affinityMult: 1.0 // enemy weakness/resistance multiplier for previews
   };
 
   let isAttack = true;
@@ -179,6 +186,7 @@ export function resolveSpell(word, caster, target, isPlayerCasting = true, playS
   // 6. FINAL DAMAGE CALCULATION
   if (isAttack) {
     let finalMult = stats.multiplier; // Start with Class Multiplier
+    let affinityMult = 1.0; // Tracks only enemy weakness/resistance/immune effects
     let knowerTriggered = false;
 
     // Target Weakness/Resistance (using standardized multipliers and immunities)
@@ -186,33 +194,37 @@ export function resolveSpell(word, caster, target, isPlayerCasting = true, playS
       // Immunity overrides everything
       if (Array.isArray(target.immunities) && target.immunities.includes(tag)) {
         finalMult *= IMMUNITY_MULT;
+        affinityMult *= IMMUNITY_MULT;
         result.logs.push(`> Immune to ${tag}! (no effect)`);
         return;
       }
 
       if (Array.isArray(target.weaknesses) && target.weaknesses.includes(tag)) {
         finalMult *= WEAKNESS_MULT;
+        affinityMult *= WEAKNESS_MULT;
         result.logs.push(`Weak to ${tag}! (x${WEAKNESS_MULT})`);
         // Knower bonus: +3 flat damage if the caster is the Knower and a weakness matched
         if (caster && caster.id === 'knower') knowerTriggered = true;
       } else if (Array.isArray(target.resistances) && target.resistances.includes(tag)) {
         finalMult *= RESISTANCE_MULT;
+        affinityMult *= RESISTANCE_MULT;
         result.logs.push(`Resistant to ${tag}! (x${RESISTANCE_MULT})`);
       }
     });
 
     // Formula: (Base + FlatBonus) * Multiplier
     result.damage = Math.floor((basePower + stats.flatBonus) * finalMult);
+    result.affinityMult = affinityMult;
 
     if (knowerTriggered) {
       result.damage += 3;
       result.logs.push(`(Knower) Weakness Bonus +3`);
     }
     
-    // For Bloodmage, heal quarter of the damage dealt. Only for HP damage
+    // For Bloodmage, heal a quarter of the damage dealt (only for HP damage)
     if (caster && caster.id === 'bloodmage' && inferredTarget === 'hp')
     {
-        result.heal = Math.floor(result.damage / 4);
+        result.heal = Math.ceil(result.damage / 4);
     }
   }
 

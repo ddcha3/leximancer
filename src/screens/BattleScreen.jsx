@@ -10,6 +10,12 @@ import HelpModal from '../components/HelpModal';
 import SoundToggle from '../components/SoundToggle';
 import Modal from '../components/Modal';
 
+const formatMultiplier = (mult) => {
+  if (mult === undefined || mult === null) return null;
+  const rounded = Math.round(mult * 100) / 100;
+  return `x${Number.isInteger(rounded) ? rounded.toFixed(0) : rounded}`;
+};
+
 function Droppable({ id, children, className, style }) {
   const { isOver, setNodeRef } = useDroppable({ id });
   const droppableStyle = {
@@ -315,6 +321,9 @@ export default function BattleScreen({
                   {resolvedSpell.tags.filter(t => TAG_EMOJIS[t]).slice(0, 3).map((tag, i) => (
                     !tagsToIgnoreInPreview.includes(tag) && (<PixelEmoji key={i} icon={TAG_EMOJIS[tag]} title={tag}/>)
                   ))}
+                  {resolvedSpell.affinityMult !== undefined && (
+                    <span style={{fontWeight: 'bold', color: '#f3c969'}}> ({formatMultiplier(resolvedSpell.affinityMult)})</span>
+                  )}
                 </div>
               )}
               {resolvedSpell.damage > 0 && (
