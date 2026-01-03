@@ -57,6 +57,14 @@ export const CHARACTERS = [
     avatar: '👨‍💼',
     desc: 'Draws two extra runes each turn.',
     starting_items: []
+  },
+  {
+    id: 'avenger',
+    name: 'Avenger',
+    // Need new avatar for Avenger.
+    avatar: '🧝‍♂️',
+    desc: 'Deals more damage while being low hp.',
+    starting_items: []
   }
 ];
 

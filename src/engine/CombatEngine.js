@@ -31,7 +31,7 @@ const defaultCalculatePower = (word, enableLengthBonus = true) => {
   return { score, lengthBonus };
 };
 
-export function resolveSpell(word, caster, target, isPlayerCasting = true, playSound = null) {
+export function resolveSpell(word, caster, target, isPlayerCasting = true, playSound = null, playerHp = null) {
   const upperWord = word.toUpperCase();
   let tags = SPELLBOOK[upperWord] ? SPELLBOOK[upperWord] : ['concrete'];
   console.log(`Spell data for "${word}":`, tags);
@@ -233,6 +233,20 @@ export function resolveSpell(word, caster, target, isPlayerCasting = true, playS
     if (caster && caster.id === 'bloodmage' && inferredTarget === 'hp')
     {
         result.heal = Math.ceil(result.damage / 4);
+    }
+      
+    // For Avenger, deal more damage based on the current hp
+    if (caster && caster.id === 'avenger' && playerHp)
+    {
+        // Refactor this if we have max hp increasing item.
+        if (playerHp <= 33)
+        {
+            result.damage *= 2;
+        }
+        else if (playerHp <= 66)
+        {
+            result.damage *= 1.5;
+        }
     }
   }
 

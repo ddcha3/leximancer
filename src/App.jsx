@@ -432,7 +432,7 @@ function App() {
     const isConfused = playerStatusEffects.some(e => e.tag === STATUS_EFFECTS.CONFUSION);
 
     // Resolve the spell (don't play sound during preview)
-    let result = resolveSpell(word, playerChar, spellTarget, true, null);
+    let result = resolveSpell(word, playerChar, spellTarget, true, null, playerHp);
 
     // Apply fairy wings bonus if applicable
     const fairy = inventory.find(a => a.id === 'fairy_wings');
