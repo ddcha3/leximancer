@@ -17,14 +17,18 @@ const defaultCalculatePower = (word, enableLengthBonus = true) => {
   for (let char of upper) {
     score += LETTER_SCORES[char] || 1;
   }
+
+  let lengthBonus = 0;
   // Length bonus: +2 each for 6-7 letters, +4 each for 8+
   if (enableLengthBonus && upper.length > 5) {
     const extra = upper.length - 5;
     const tierOne = Math.min(extra, 2); // letters 6-7
     const tierTwo = Math.max(extra - 2, 0); // 8+
-    score += tierOne * 2 + tierTwo * 4;
+    lengthBonus = tierOne * 2 + tierTwo * 4;
+    score += lengthBonus;
   }
-  return score;
+
+  return { score, lengthBonus };
 };
 
 export function resolveSpell(word, caster, target, isPlayerCasting = true, playSound = null) {
@@ -54,13 +58,16 @@ export function resolveSpell(word, caster, target, isPlayerCasting = true, playS
   
   // CALCULATE BASE POWER
   let basePower = 0;
+  let lengthBonus = 0;
   
     // CHECK FOR CHARACTER OVERRIDES (e.g., custom calculateBasePower)
     if (caster.calculateBasePower) {
       basePower = caster.calculateBasePower(upperWord);
     } else {
       const allowLengthBonus = isPlayerCasting || (caster && caster.id === 'leximancer');
-      basePower = defaultCalculatePower(upperWord, allowLengthBonus);
+      const calc = defaultCalculatePower(upperWord, allowLengthBonus);
+      basePower = calc.score;
+      lengthBonus = calc.lengthBonus;
     }
 
   // APPLY CHARACTER HOOKS 
@@ -80,7 +87,8 @@ export function resolveSpell(word, caster, target, isPlayerCasting = true, playS
     damage: 0, targetStat: inferredTarget, heal: 0, status: null,
     logs: [...stats.logs], // Add class-specific logs
     tags: tags, emoji: "✨",
-    affinityMult: 1.0 // enemy weakness/resistance multiplier for previews
+    affinityMult: 1.0, // enemy weakness/resistance multiplier for previews
+    lengthBonus // track long-word contribution for previews
   };
 
   let isAttack = true;

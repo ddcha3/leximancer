@@ -16,6 +16,13 @@ const formatMultiplier = (mult) => {
   return `x${Number.isInteger(rounded) ? rounded.toFixed(0) : rounded}`;
 };
 
+const damageFontSize = (damage) => {
+  const dmg = Math.max(0, damage || 0);
+  const scaled = 0.5 + Math.log10(dmg + 1) * 0.75;
+  const clamped = Math.min(2.2, Math.max(0.9, scaled));
+  return `${clamped}rem`;
+};
+
 function Droppable({ id, children, className, style }) {
   const { isOver, setNodeRef } = useDroppable({ id });
   const droppableStyle = {
@@ -326,13 +333,18 @@ export default function BattleScreen({
                   )}
                 </div>
               )}
+              {resolvedSpell.damage > 0 && resolvedSpell.lengthBonus > 0 && (
+                <div style={{fontWeight: 'bold', color: '#ffffffff'}} title={`Long word bonus +${resolvedSpell.lengthBonus}`}>
+                  <PixelEmoji icon='🔤'/> +{resolvedSpell.lengthBonus}
+                </div>
+              )}
               {resolvedSpell.damage > 0 && (
                 <div 
                   title={`Deals ${resolvedSpell.damage} ${resolvedSpell.targetStat === 'hp' ? 'HP' : 'WP'} damage`}
                   style={{ display: 'flex', alignItems: 'center', gap: '4px', padding: '2px 2px',}}
                 >
                   <PixelEmoji icon={resolvedSpell.targetStat === 'hp' ? '❤️' : '🧠'}/>
-                  <span style={{fontWeight: 'bold', color: resolvedSpell.targetStat === 'hp' ? '#ff6b6b' : '#4949f3ff'}}>-{resolvedSpell.damage}</span>
+                  <span style={{fontWeight: 'bold', fontSize: damageFontSize(resolvedSpell.damage), color: resolvedSpell.targetStat === 'hp' ? '#ff6b6b' : '#4949f3ff'}}>-{resolvedSpell.damage}</span>
                 </div>
               )}
               {resolvedSpell.status && unfriendlyStatusEffects.includes(resolvedSpell.status) && (
