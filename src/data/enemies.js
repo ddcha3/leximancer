@@ -67,7 +67,7 @@ const BASES = {
       level: 2,
       hp: 22,
       wp: 15,
-      vocabulary: ['HUM', 'PECK', 'FLY', 'NEST', 'SING', 'NYUM'],
+      vocabulary: ['HUM', 'PECK', 'FLY', 'NEST', 'SING', 'NYUM', 'CHIRP'],
       weaknesses: ['loud', 'electric'],
       resistances: ['air']
     },

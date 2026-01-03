@@ -44,7 +44,9 @@ export default function BattleScreen({
   isValidWord,
   shakeError,
   animState, 
-  spellEffect 
+  spellEffect,
+  awaitingGameOver,
+  onProceedToGameOver
 }) {
   const { onMoveRune, onReturnRune, onCast, onClear, onDiscard, onShuffle, onSort, setSpellSlots } = actions;
   const [showHelp, setShowHelp] = useState(false);
@@ -65,6 +67,7 @@ export default function BattleScreen({
   // Keyboard shortcuts: type runes, backspace to undo last rune, enter to cast
   useEffect(() => {
     const handler = (event) => {
+      if (awaitingGameOver) return;
       if (showMulliganConfirm || showHelp) return;
       if (event.metaKey || event.ctrlKey || event.altKey) return;
 
@@ -104,7 +107,13 @@ export default function BattleScreen({
 
     window.addEventListener('keydown', handler);
     return () => window.removeEventListener('keydown', handler);
-  }, [hand, spellSlots, onMoveRune, onReturnRune, onCast, showMulliganConfirm, showHelp]);
+  }, [hand, spellSlots, onMoveRune, onReturnRune, onCast, showMulliganConfirm, showHelp, awaitingGameOver]);
+
+  useEffect(() => {
+    if (awaitingGameOver) {
+      setShowMulliganConfirm(false);
+    }
+  }, [awaitingGameOver]);
 
   const sensors = useSensors(
     useSensor(PointerSensor, {
@@ -396,6 +405,13 @@ export default function BattleScreen({
             })}
           </div>
         )}
+      
+        {/* --- GAME OVER TEXT --- */}
+        {awaitingGameOver && (
+          <div className="game-over-text">
+            REST IN PROSE.
+          </div>
+        )}
 
         {/* --- PLAYER SECTION --- */}
         <div className="player-position">
@@ -448,7 +464,7 @@ export default function BattleScreen({
               </div>
           )}
           <div className="player-row">
-            <div className={`player-avatar ${animState.player}`}>
+            <div className={`player-avatar ${animState.player}`} style={{ visibility: awaitingGameOver ? 'hidden' : 'visible' }}>
               <PixelEmoji icon={playerAvatar} size="4.5rem"/>
             </div>
             
@@ -489,7 +505,6 @@ export default function BattleScreen({
           </div>
         </div>
 
-
         {revealWeaknesses && enemy && enemy.weaknesses && (
           <div className="enemy-weaknesses">
             <div className="weakness-crystal" title="Crystal Ball reveals weaknesses"> <PixelEmoji icon={"🔮"} size="0.8rem"/></div>
@@ -506,30 +521,42 @@ export default function BattleScreen({
       <div className="log-controls-row">
         <CombatLog logs={logs} />
         <div className="controls-stack">
-          <div className="controls-row controls-small">
-            <button onClick={handleMulliganClick} title="Discard hand and skip turn">
-              <PixelEmoji icon="♻" size="1.2rem"/>
-            </button>
-            <button onClick={onShuffle} title="Shuffle rune order in hand">
-              <PixelEmoji icon="🔀" size="1.2rem"/>
-            </button>
-            <button onClick={onSort} title="Sort hand alphabetically">
-              <PixelEmoji icon="🔡" size="1.2rem"/>
-            </button>
-          </div>
-          <div className="controls-row controls-primary">
-            <button className="clear-btn"onClick={onClear} title="Clear staged runes">
-              <PixelEmoji icon="🗑️" size="1.2rem"/>
-            </button>
-            <button 
-              className="cast-btn" 
-              disabled={spellSlots.length === 0} 
-              onClick={onCast}
-              title="Cast Spell"
-            >
-              <PixelEmoji icon="🪄" size="1.2rem"/>
-            </button>
-          </div>
+          {awaitingGameOver ? (
+            <>
+              <div className="controls-block controls-game-over">
+                <button className="game-over-btn" onClick={onProceedToGameOver} title="Proceed to summary">
+                  VIEW STATS
+                </button>
+              </div>
+            </>
+          ) : (
+            <>
+              <div className="controls-row controls-small">
+                <button onClick={handleMulliganClick} title="Discard hand and skip turn">
+                  <PixelEmoji icon="♻" size="1.2rem"/>
+                </button>
+                <button onClick={onShuffle} title="Shuffle rune order in hand">
+                  <PixelEmoji icon="🔀" size="1.2rem"/>
+                </button>
+                <button onClick={onSort} title="Sort hand alphabetically">
+                  <PixelEmoji icon="🔡" size="1.2rem"/>
+                </button>
+              </div>
+              <div className="controls-row controls-primary">
+                <button className="clear-btn" onClick={onClear} title="Clear staged runes">
+                  <PixelEmoji icon="🗑️" size="1.2rem"/>
+                </button>
+                <button 
+                  className="cast-btn" 
+                  disabled={spellSlots.length === 0} 
+                  onClick={onCast}
+                  title="Cast Spell"
+                >
+                  <PixelEmoji icon="🪄" size="1.2rem"/>
+                </button>
+              </div>
+            </>
+          )}
         </div>
       </div>
 

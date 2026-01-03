@@ -28,6 +28,15 @@ const BASE_HAND_SIZE = 18;
 const MAX_PLAYER_HP = 100;
 const SAVE_KEY = 'leximancer-progress-v1';
 
+const clearSavedProgress = () => {
+  if (typeof window === 'undefined') return;
+  try {
+    localStorage.removeItem(SAVE_KEY);
+  } catch (err) {
+    console.warn('Failed to clear save', err);
+  }
+};
+
 const getHandSize = (character) => {
   return BASE_HAND_SIZE + (character?.id === 'scholar' ? 1 : 0);
 };
@@ -216,6 +225,7 @@ function App() {
   const [hand, setHand] = useState([]);
   const [spellSlots, setSpellSlots] = useState([]);
   const [resolvedSpell, setResolvedSpell] = useState(null);
+  const [awaitingGameOver, setAwaitingGameOver] = useState(false);
   const [dailyMode, setDailyMode] = useState(false);
   const [dailySeed, setDailySeed] = useState(null);
   const [runHistory, setRunHistory] = useState([]); // { stage, name }
@@ -259,6 +269,8 @@ function App() {
       const savedDeck = saved.deck || shuffle(STARTING_DECK, rngRef.current);
       const savedHand = saved.hand || null;
       const savedSpellSlots = saved.spellSlots || [];
+      const savedAwaitingGameOver = saved.awaitingGameOver || false;
+      const savedGameState = saved.gameState || 'BATTLE';
 
       rngRef.current = () => Math.random();
       setDailyMode(false);
@@ -271,9 +283,19 @@ function App() {
       setPlayerHp(restoredPlayerHp);
       setPlayerStatusEffects(saved.playerStatusEffects || []);
       setFamiliars(saved.familiars || []);
-      setLogs([`Resuming at stage ${Math.min((saved.enemyIndex || 0) + 1, MAX_STAGE)}.`]);
+      setAwaitingGameOver(savedAwaitingGameOver);
 
       const clampedIndex = Math.min(Math.max(saved.enemyIndex || 0, 0), MAX_STAGE - 1);
+      const resumeLog = `Resuming at stage ${Math.min((saved.enemyIndex || 0) + 1, MAX_STAGE)}.`;
+      setEnemyIndex(clampedIndex);
+      setCurrentEnemy(savedEnemy || null);
+      setLogs(saved.logs || [resumeLog]);
+
+      if (savedGameState === 'GAMEOVER' || savedAwaitingGameOver) {
+        setGameState('GAMEOVER');
+        return;
+      }
+
       startEncounter(clampedIndex, savedDeck, savedEnemy || null, savedChar, savedHand, savedSpellSlots);
 
       setPlayerHp(restoredPlayerHp);
@@ -308,8 +330,8 @@ function App() {
       if (typeof window === 'undefined') return;
       if (!playerChar) return;
 
-      if (gameState === 'VICTORY' || gameState === 'GAMEOVER') {
-        localStorage.removeItem(SAVE_KEY);
+      if (gameState === 'VICTORY') {
+        clearSavedProgress();
         return;
       }
 
@@ -325,7 +347,9 @@ function App() {
         currentEnemy,
         deck,
         hand,
-        spellSlots
+        spellSlots,
+        awaitingGameOver,
+        gameState
       };
 
       try {
@@ -333,7 +357,7 @@ function App() {
       } catch (err) {
         console.warn('Failed to save progress', err);
       }
-    }, [playerChar, inventory, enemyIndex, gameState, playerHp, playerStatusEffects, familiars, currentEnemy, deck, hand, spellSlots]);
+    }, [playerChar, inventory, enemyIndex, gameState, playerHp, playerStatusEffects, familiars, currentEnemy, deck, hand, spellSlots, awaitingGameOver]);
 
   // Check for enemy death (from any source: player, familiar, DOTs)
   useEffect(() => {
@@ -412,6 +436,7 @@ function App() {
   }, [spellSlots, currentEnemy, playerChar, playerStatusEffects, inventory, currentWordStr, isValidWord]);
 
   const startGame = (character, { isDaily = false, seed = null } = {}) => {
+    clearSavedProgress();
     const chosenSeed = seed || getEasternDateString();
     rngRef.current = isDaily ? makeSeededRng(chosenSeed) : () => Math.random();
 
@@ -419,6 +444,7 @@ function App() {
     setDailySeed(isDaily ? chosenSeed : null);
     setRunHistory([]);
     setMaxSpellHit(null);
+    setAwaitingGameOver(false);
 
     setPlayerChar(character);
     const initialDeck = shuffle(STARTING_DECK, rngRef.current);
@@ -436,6 +462,7 @@ function App() {
 
   const startEncounter = (index, startingDeck = null, existingEnemy = null, characterContext = playerChar, savedHand = null, savedSpellSlots = null) => {
     isProcessingDeath.current = false;
+    setAwaitingGameOver(false);
     setEnemyIndex(index);
     if (index >= MAX_STAGE) {
       setGameState('VICTORY');
@@ -494,6 +521,7 @@ function App() {
   };
 
   const handleCast = () => {
+    if (awaitingGameOver) return;
     const spellWord = currentWordStr;
     // Apply ongoing effects on player at start of player's turn
     const { totalDamage, newStatusEffects } = processTurnStart(playerStatusEffects, (msg) => addLog(`You: ${msg}`));
@@ -502,9 +530,9 @@ function App() {
         setPlayerStatusEffects(newStatusEffects);
         if (totalDamage > 0) {
             setPlayerHp(prev => {
-                const newHp = Math.max(0, prev - totalDamage);
-                if (newHp === 0) setGameState('GAMEOVER');
-                return newHp;
+              const newHp = Math.max(0, prev - totalDamage);
+              if (newHp === 0) setAwaitingGameOver(true);
+              return newHp;
             });
             addLog(`You take *${totalDamage}* damage from ongoing effects.`);
         }
@@ -650,8 +678,8 @@ function App() {
       if (result.instantKill) {
           if (isSelfHit) {
               // Player instant kill on self? Unlikely but possible with confusion
-              setPlayerHp(0);
-              setGameState('GAMEOVER');
+                  setPlayerHp(0);
+                  setAwaitingGameOver(true);
               addLog(`You accidentally dispelled yourself instantly!`);
           } else {
               nextEnemyState.wp = 0;
@@ -673,8 +701,8 @@ function App() {
 
               if (damageToApply > 0) {
                   setPlayerHp(prev => {
-                      const newHp = Math.max(0, prev - damageToApply);
-                      if (newHp === 0) setGameState('GAMEOVER');
+                        const newHp = Math.max(0, prev - damageToApply);
+                        if (newHp === 0) setAwaitingGameOver(true);
                       return newHp;
                   });
                   addLog(`You take *${damageToApply}* damage in confusion!`);
@@ -836,6 +864,7 @@ function App() {
   };
 
   const handleEnemyAttack = (enemyEntity) => {
+    if (awaitingGameOver) return;
     // Process ongoing statusEffects on enemy at start of its turn
     const { totalDamage, newStatusEffects, skipTurnEffect } = processTurnStart(
         enemyEntity.statusEffects, 
@@ -994,8 +1023,8 @@ function App() {
                     setTimeout(() => setAnimState(prev => ({ ...prev, player: '' })), 400);
 
                     setPlayerHp(prev => {
-                        const newHp = Math.max(0, prev - damageToApply);
-                        if (newHp === 0) setGameState('GAMEOVER');
+                          const newHp = Math.max(0, prev - damageToApply);
+                          if (newHp === 0) setAwaitingGameOver(true);
                         return newHp;
                     });
                     addLog(`You take *${damageToApply}* damage!`);
@@ -1043,6 +1072,7 @@ function App() {
   };
 
   const handleMoveRune = (rune, insertIndex = undefined) => {
+    if (awaitingGameOver) return;
     setHand(prev => prev.map(h => (h && h.id === rune.id) ? null : h));
     setSpellSlots(prev => {
         if (insertIndex !== undefined && insertIndex >= 0) {
@@ -1056,6 +1086,7 @@ function App() {
     playSound('interface/click');
   };
   const handleReturnRune = (rune) => {
+    if (awaitingGameOver) return;
     setSpellSlots(prev => prev.filter(t => t.id !== rune.id));
     setHand(prev => {
       const res = [...prev];
@@ -1067,6 +1098,7 @@ function App() {
     playSound('interface/paper');
   };
   const handleClear = () => {
+    if (awaitingGameOver) return;
     setHand(prev => {
       const res = [...prev];
       spellSlots.forEach(rune => {
@@ -1080,6 +1112,7 @@ function App() {
     playSound('interface/paper');
   };
   const handleShuffle = () => {
+    if (awaitingGameOver) return;
     setHand(prev => {
       const slots = [...prev];
       const runes = slots.filter(Boolean);
@@ -1094,6 +1127,7 @@ function App() {
     setTimeout(() => playSound('interface/paper', { volume: 0.8 }), 200);
   };
   const handleSort = () => {
+    if (awaitingGameOver) return;
     setHand(prev => {
       const slots = [...prev];
       const runes = slots.filter(Boolean).sort((a, b) => a.char.localeCompare(b.char));
@@ -1102,6 +1136,7 @@ function App() {
     playSound('interface/paper', { volume: 0.8 });
   };
   const handleDiscard = () => {
+    if (awaitingGameOver) return;
     setSpellSlots([]);
     drawHand(getHandSize(playerChar), deck, []);
     addLog("Mulligan! You waste a turn.");
@@ -1141,6 +1176,11 @@ function App() {
   };
   const addLog = (...messages) => setLogs(prev => [...prev, ...messages]);
 
+  const proceedToGameOver = () => {
+    setAwaitingGameOver(false);
+    setGameState('GAMEOVER');
+  };
+
   // ... render ...
   if (gameState === 'START') {
       return <StartScreen onStart={startGame} onStartDaily={startDailyGame} isLoading={isDictLoading} />;
@@ -1160,7 +1200,7 @@ function App() {
             <button 
                 className="cast-btn" 
                 style={{fontSize: '1.2rem', fontFamily: 'FFFFORWA', background: 'var(--accent-red)'}}
-                onClick={() => setGameState('START')}>TRY AGAIN</button>
+              onClick={() => { clearSavedProgress(); setGameState('START'); }}>TRY AGAIN</button>
         </div>
     );
   }
@@ -1216,6 +1256,8 @@ function App() {
       shakeError={shakeError} 
       animState={animState}
       spellEffect={spellEffect}
+      awaitingGameOver={awaitingGameOver}
+      onProceedToGameOver={proceedToGameOver}
       actions={{
         onMoveRune: handleMoveRune,
         onReturnRune: handleReturnRune,
