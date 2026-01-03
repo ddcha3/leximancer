@@ -777,7 +777,7 @@ h1 {
 }
 
 .surrender-btn {
-  width: 20%;
+  /* width: 20%; */
   max-width: 40%;
   background: #3b2a25;
   color: #fff;
@@ -785,6 +785,7 @@ h1 {
   font-size: 0.6rem;
   letter-spacing: 1px;
   padding: 8px 2px;
+  white-space: nowrap;
 }
 
 .surrender-btn:disabled {
