@@ -47,6 +47,9 @@ export const SoundProvider = ({ children }) => {
     try {
       const audio = new Audio(src);
       audio.volume = (options.volume !== undefined ? options.volume : 1) * volume;
+      if (options.playbackRate) {
+        audio.playbackRate = options.playbackRate;
+      }
       
       if (options.loop) {
         audio.loop = true;

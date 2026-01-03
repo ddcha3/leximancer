@@ -59,7 +59,9 @@ export default function BattleScreen({
   animState, 
   spellEffect,
   awaitingGameOver,
-  onProceedToGameOver
+  gameOverReason,
+  onProceedToGameOver,
+  onSurrender
 }) {
   const { onMoveRune, onReturnRune, onCast, onClear, onDiscard, onShuffle, onSort, setSpellSlots } = actions;
   const [showHelp, setShowHelp] = useState(false);
@@ -68,6 +70,7 @@ export default function BattleScreen({
   const [showMulliganConfirm, setShowMulliganConfirm] = useState(false);
   const [skipMulliganWarning, setSkipMulliganWarning] = useState(false);
   const [persistSkip, setPersistSkip] = useState(false);
+  const [showSurrenderConfirm, setShowSurrenderConfirm] = useState(false);
 
   useEffect(() => {
     const stored = typeof window !== 'undefined' ? window.localStorage.getItem('leximancer-skip-mulligan-warning') : null;
@@ -81,7 +84,7 @@ export default function BattleScreen({
   useEffect(() => {
     const handler = (event) => {
       if (awaitingGameOver) return;
-      if (showMulliganConfirm || showHelp) return;
+      if (showMulliganConfirm || showHelp || showSurrenderConfirm) return;
       if (event.metaKey || event.ctrlKey || event.altKey) return;
 
       const activeTag = document.activeElement?.tagName;
@@ -120,11 +123,12 @@ export default function BattleScreen({
 
     window.addEventListener('keydown', handler);
     return () => window.removeEventListener('keydown', handler);
-  }, [hand, spellSlots, onMoveRune, onReturnRune, onCast, showMulliganConfirm, showHelp, awaitingGameOver]);
+  }, [hand, spellSlots, onMoveRune, onReturnRune, onCast, showMulliganConfirm, showHelp, showSurrenderConfirm, awaitingGameOver]);
 
   useEffect(() => {
     if (awaitingGameOver) {
       setShowMulliganConfirm(false);
+      setShowSurrenderConfirm(false);
     }
   }, [awaitingGameOver]);
 
@@ -243,6 +247,8 @@ export default function BattleScreen({
   const tagsToIgnoreInPreview = ['concrete', 'abstract'];
   const unfriendlyStatusEffects = [STATUS_EFFECTS.POISON, STATUS_EFFECTS.BLEED, STATUS_EFFECTS.STUN, STATUS_EFFECTS.CHARM, STATUS_EFFECTS.FREEZE, STATUS_EFFECTS.SILENCE, STATUS_EFFECTS.CONFUSION, STATUS_EFFECTS.FEAR];
   const friendlyStatusEffects = [STATUS_EFFECTS.POWER_BUFF, STATUS_EFFECTS.INTELLIGENCE_BUFF, STATUS_EFFECTS.SHIELD];
+  const isSurrender = gameOverReason === 'surrender';
+  const gameOverText = isSurrender ? 'RUNES RETIRED.' : 'REST IN PROSE.';
   const tooltipFor = (effects, tag) => {
     const eff = effects && effects.find(s => s.tag === tag);
     if (!eff) return tag.toUpperCase();
@@ -296,6 +302,17 @@ export default function BattleScreen({
           <button onClick={confirmMulligan} style={{ color: '#fff', fontFamily: "ari-bold, monospace" }}>MULLIGAN</button>
         </div>
       </Modal>
+      <Modal
+        isOpen={showSurrenderConfirm}
+        onClose={() => setShowSurrenderConfirm(false)}
+        title="FF?"
+      >
+        <p style={{ marginTop: 0 }}>Surrendering ends this run immediately. Proceed?</p>
+        <div className="modal-actions">
+          <button onClick={() => setShowSurrenderConfirm(false)} style={{ backgroundColor: '#917976ff', color: '#fff', fontFamily: "ari-bold, monospace" }}>CANCEL</button>
+          <button onClick={() => { setShowSurrenderConfirm(false); onSurrender(); }} style={{ color: '#fff', fontFamily: "ari-bold, monospace" }}>SURRENDER</button>
+        </div>
+      </Modal>
       <div className="arena">
         
         {/* --- SPELL EFFECT OVERLAY --- */}
@@ -344,7 +361,7 @@ export default function BattleScreen({
                   style={{ display: 'flex', alignItems: 'center', gap: '4px', padding: '2px 2px',}}
                 >
                   <PixelEmoji icon={resolvedSpell.targetStat === 'hp' ? '❤️' : '🧠'}/>
-                  <span style={{fontWeight: 'bold', fontSize: damageFontSize(resolvedSpell.damage), color: resolvedSpell.targetStat === 'hp' ? '#ff6b6b' : '#4949f3ff'}}>-{resolvedSpell.damage}</span>
+                  <span style={{fontWeight: 'bold', fontSize: damageFontSize(resolvedSpell.damage), color: resolvedSpell.targetStat === 'hp' ? '#8a3324' : '#4949f3ff'}}>-{resolvedSpell.damage}</span>
                 </div>
               )}
               {resolvedSpell.status && unfriendlyStatusEffects.includes(resolvedSpell.status) && (
@@ -430,7 +447,7 @@ export default function BattleScreen({
         {/* --- GAME OVER TEXT --- */}
         {awaitingGameOver && (
           <div className="game-over-text">
-            REST IN PROSE.
+            {gameOverText}
           </div>
         )}
 
@@ -458,7 +475,7 @@ export default function BattleScreen({
                   {resolvedSpell.heal > 0 && (
                     <div title={`Heals ${resolvedSpell.heal} HP`}>
                       <PixelEmoji icon="❤️"/>
-                      <span style={{fontWeight: 'bold', color: '#82e9a8ff'}}> +{resolvedSpell.heal}</span>
+                      <span style={{fontWeight: 'bold', color: '#4e6d46'}}> +{resolvedSpell.heal}</span>
                     </div>
                   )}
                   {resolvedSpell.cleanse && (
@@ -485,7 +502,7 @@ export default function BattleScreen({
               </div>
           )}
           <div className="player-row">
-            <div className={`player-avatar ${animState.player}`} style={{ visibility: awaitingGameOver ? 'hidden' : 'visible' }}>
+            <div className={`player-avatar ${animState.player}`} style={{ visibility: awaitingGameOver && !isSurrender ? 'hidden' : 'visible' }}>
               <PixelEmoji icon={playerAvatar} size="4.5rem"/>
             </div>
             
@@ -565,7 +582,7 @@ export default function BattleScreen({
               </div>
               <div className="controls-row controls-primary">
                 <button className="clear-btn" onClick={onClear} title="Clear staged runes">
-                  <PixelEmoji icon="🗑️" size="1.2rem"/>
+                  <PixelEmoji icon="🗑️" size="1.6rem"/>
                 </button>
                 <button 
                   className="cast-btn" 
@@ -573,7 +590,7 @@ export default function BattleScreen({
                   onClick={onCast}
                   title="Cast Spell"
                 >
-                  <PixelEmoji icon="🪄" size="1.2rem"/>
+                  <PixelEmoji icon="🪄" size="1.6rem"/>
                 </button>
               </div>
             </>
@@ -632,6 +649,17 @@ export default function BattleScreen({
           {activeRune ? <Rune rune={activeRune} isOverlay /> : null}
         </DragOverlay>
       </DndContext>
+
+      <div className="surrender-row">
+        <button
+          className="surrender-btn"
+          onClick={() => setShowSurrenderConfirm(true)}
+          disabled={awaitingGameOver}
+          title="Give up this run"
+        >
+        GET ME OUT
+        </button>
+      </div>
 
       {/* HELP BUTTON */}
       <button  

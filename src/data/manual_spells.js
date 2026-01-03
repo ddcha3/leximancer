@@ -11,4 +11,9 @@ register(
   ['charm']
 );
 
+register(
+  ['DOMINUS'],
+  ['creature', 'power']
+);
+
 export const CUSTOM_SPELLS = manualSpells;

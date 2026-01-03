@@ -16,6 +16,7 @@ import { STATUS_EFFECTS, STATUS_PROPERTIES } from './data/statusEffects';
 import StartScreen from './screens/StartScreen'
 import BattleScreen from './screens/BattleScreen'
 import RewardScreen from './screens/RewardScreen'
+import { add } from '@dnd-kit/utilities';
 
 const POS_TAG_MAP = {
     noun: 'noun',
@@ -205,6 +206,11 @@ function App() {
   const [gameState, setGameState] = useState('START'); 
 
   useEffect(() => {
+    if (gameState === 'GAMEOVER') {
+      playMusic(null);
+      return;
+    }
+
     if (gameState === 'BATTLE') {
       const battleTracks = ['music/battle1', 'music/battle2', 'music/battle3', 'music/battle4', 'music/battle5', 'music/battle6', 'music/battle7'];
       const track = battleTracks[enemyIndex % battleTracks.length];
@@ -226,6 +232,7 @@ function App() {
   const [spellSlots, setSpellSlots] = useState([]);
   const [resolvedSpell, setResolvedSpell] = useState(null);
   const [awaitingGameOver, setAwaitingGameOver] = useState(false);
+  const [gameOverReason, setGameOverReason] = useState(null);
   const [dailyMode, setDailyMode] = useState(false);
   const [dailySeed, setDailySeed] = useState(null);
   const [runHistory, setRunHistory] = useState([]); // { stage, name }
@@ -246,6 +253,14 @@ function App() {
   const currentEnemyRef = useRef(null);
 
   let effectiveMaxHp = MAX_PLAYER_HP;
+
+  const flagGameOver = (reason = 'defeat') => {
+    if (awaitingGameOver) return;
+    playMusic(null);
+    playSound('interface/dong', { volume: 1, playbackRate: 0.4 });
+    setGameOverReason((prev) => prev || reason);
+    setAwaitingGameOver(true);
+  };
 
   // Restore any saved run on first load (class, artifacts, encounter, hp, statuses, familiars, enemy state)
   useEffect(() => {
@@ -270,6 +285,7 @@ function App() {
       const savedHand = saved.hand || null;
       const savedSpellSlots = saved.spellSlots || [];
       const savedAwaitingGameOver = saved.awaitingGameOver || false;
+      const savedGameOverReason = saved.gameOverReason || null;
       const savedGameState = saved.gameState || 'BATTLE';
 
       rngRef.current = () => Math.random();
@@ -284,6 +300,7 @@ function App() {
       setPlayerStatusEffects(saved.playerStatusEffects || []);
       setFamiliars(saved.familiars || []);
       setAwaitingGameOver(savedAwaitingGameOver);
+      setGameOverReason(savedGameOverReason);
 
       const clampedIndex = Math.min(Math.max(saved.enemyIndex || 0, 0), MAX_STAGE - 1);
       const resumeLog = `Resuming at stage ${Math.min((saved.enemyIndex || 0) + 1, MAX_STAGE)}.`;
@@ -349,6 +366,7 @@ function App() {
         hand,
         spellSlots,
         awaitingGameOver,
+        gameOverReason,
         gameState
       };
 
@@ -357,7 +375,7 @@ function App() {
       } catch (err) {
         console.warn('Failed to save progress', err);
       }
-    }, [playerChar, inventory, enemyIndex, gameState, playerHp, playerStatusEffects, familiars, currentEnemy, deck, hand, spellSlots, awaitingGameOver]);
+    }, [playerChar, inventory, enemyIndex, gameState, playerHp, playerStatusEffects, familiars, currentEnemy, deck, hand, spellSlots, awaitingGameOver, gameOverReason]);
 
   // Check for enemy death (from any source: player, familiar, DOTs)
   useEffect(() => {
@@ -445,6 +463,7 @@ function App() {
     setRunHistory([]);
     setMaxSpellHit(null);
     setAwaitingGameOver(false);
+    setGameOverReason(null);
 
     setPlayerChar(character);
     const initialDeck = shuffle(STARTING_DECK, rngRef.current);
@@ -463,6 +482,7 @@ function App() {
   const startEncounter = (index, startingDeck = null, existingEnemy = null, characterContext = playerChar, savedHand = null, savedSpellSlots = null) => {
     isProcessingDeath.current = false;
     setAwaitingGameOver(false);
+    setGameOverReason(null);
     setEnemyIndex(index);
     if (index >= MAX_STAGE) {
       setGameState('VICTORY');
@@ -531,7 +551,7 @@ function App() {
         if (totalDamage > 0) {
             setPlayerHp(prev => {
               const newHp = Math.max(0, prev - totalDamage);
-              if (newHp === 0) setAwaitingGameOver(true);
+              if (newHp === 0) flagGameOver();
               return newHp;
             });
             addLog(`You take *${totalDamage}* damage from ongoing effects.`);
@@ -678,8 +698,8 @@ function App() {
       if (result.instantKill) {
           if (isSelfHit) {
               // Player instant kill on self? Unlikely but possible with confusion
-                  setPlayerHp(0);
-                  setAwaitingGameOver(true);
+              setPlayerHp(0);
+              flagGameOver();
               addLog(`You accidentally dispelled yourself instantly!`);
           } else {
               nextEnemyState.wp = 0;
@@ -702,7 +722,7 @@ function App() {
               if (damageToApply > 0) {
                   setPlayerHp(prev => {
                         const newHp = Math.max(0, prev - damageToApply);
-                        if (newHp === 0) setAwaitingGameOver(true);
+                    if (newHp === 0) flagGameOver();
                       return newHp;
                   });
                   addLog(`You take *${damageToApply}* damage in confusion!`);
@@ -1024,7 +1044,7 @@ function App() {
 
                     setPlayerHp(prev => {
                           const newHp = Math.max(0, prev - damageToApply);
-                          if (newHp === 0) setAwaitingGameOver(true);
+                          if (newHp === 0) flagGameOver();
                         return newHp;
                     });
                     addLog(`You take *${damageToApply}* damage!`);
@@ -1152,6 +1172,12 @@ function App() {
     setTimeout(() => playSound('interface/paper', { volume: 0.8 }), 600);
     setTimeout(() => playSound('interface/paper', { volume: 0.8 }), 700);
   };
+
+  const handleSurrender = () => {
+    if (awaitingGameOver) return;
+    addLog('You lay down your runes.');
+    flagGameOver('surrender');
+  };
   const copyRunSummary = (outcomeLabel) => {
     const playerEmoji = playerChar?.avatar || '🧙‍♂️';
     const isVictory = outcomeLabel === 'Victory';
@@ -1257,7 +1283,9 @@ function App() {
       animState={animState}
       spellEffect={spellEffect}
       awaitingGameOver={awaitingGameOver}
+      gameOverReason={gameOverReason}
       onProceedToGameOver={proceedToGameOver}
+      onSurrender={handleSurrender}
       actions={{
         onMoveRune: handleMoveRune,
         onReturnRune: handleReturnRune,
