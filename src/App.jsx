@@ -243,6 +243,7 @@ function App() {
   const [playerStatusEffects, setPlayerStatusEffects] = useState([]);
   const [familiars, setFamiliars] = useState([]); // Array of { id, emoji, spell, turnsLeft, name }
   const [logs, setLogs] = useState([]);
+  const [isPlayerTurn, setIsPlayerTurn] = useState(true);
   
   const [shakeError, setShakeError] = useState(false);
   const [animState, setAnimState] = useState({ player: '', enemy: '', familiars: {} });
@@ -483,6 +484,7 @@ function App() {
     isProcessingDeath.current = false;
     setAwaitingGameOver(false);
     setGameOverReason(null);
+    setIsPlayerTurn(true);
     setEnemyIndex(index);
     if (index >= MAX_STAGE) {
       setGameState('VICTORY');
@@ -541,7 +543,7 @@ function App() {
   };
 
   const handleCast = () => {
-    if (awaitingGameOver) return;
+    if (awaitingGameOver || !isPlayerTurn) return;
     const spellWord = currentWordStr;
     // Apply ongoing effects on player at start of player's turn
     const { totalDamage, newStatusEffects } = processTurnStart(playerStatusEffects, (msg) => addLog(`You: ${msg}`));
@@ -565,6 +567,8 @@ function App() {
       setTimeout(() => setShakeError(false), 400);
       return;
     }
+
+    setIsPlayerTurn(false);
 
     playSound('misc/wave');
     setAnimState(prev => ({ ...prev, player: 'anim-action' }));
@@ -885,6 +889,7 @@ function App() {
 
   const handleEnemyAttack = (enemyEntity) => {
     if (awaitingGameOver) return;
+    setIsPlayerTurn(false);
     // Process ongoing statusEffects on enemy at start of its turn
     const { totalDamage, newStatusEffects, skipTurnEffect } = processTurnStart(
         enemyEntity.statusEffects, 
@@ -898,13 +903,14 @@ function App() {
          const newHp = enemyEntity.hp - totalDamage;
          setCurrentEnemy(prev => ({ ...prev, statusEffects: newStatusEffects, hp: newHp }));
          
-         if (totalDamage > 0) {
-             addLog(`#${enemyEntity.name}# takes *${totalDamage}* damage from ongoing effects.`);
-             if (newHp <= 0) {
-                // Handled by useEffect
-                return; // enemy died from DOT, skip its action
-             }
+       if (totalDamage > 0) {
+         addLog(`#${enemyEntity.name}# takes *${totalDamage}* damage from ongoing effects.`);
+         if (newHp <= 0) {
+          // Handled by useEffect
+          setIsPlayerTurn(true);
+          return; // enemy died from DOT, skip its action
          }
+       }
 
         if (skipTurnEffect) {
             if (skipTurnEffect === STATUS_EFFECTS.FREEZE) {
@@ -918,6 +924,7 @@ function App() {
             // Refill hand anyway so player can play
             const runesNeeded = getHandSize(playerChar) - hand.filter(Boolean).length;
             if (runesNeeded > 0) drawHand(runesNeeded, deck, hand);
+            setIsPlayerTurn(true);
             return;
         }
     }
@@ -1087,12 +1094,13 @@ function App() {
         // 4. REFILL HAND
         const runesNeeded = getHandSize(playerChar) - hand.filter(Boolean).length;
         if (runesNeeded > 0) drawHand(runesNeeded, deck, hand);
+        setIsPlayerTurn(true);
 
     }, 500);
   };
 
   const handleMoveRune = (rune, insertIndex = undefined) => {
-    if (awaitingGameOver) return;
+    if (awaitingGameOver || !isPlayerTurn) return;
     setHand(prev => prev.map(h => (h && h.id === rune.id) ? null : h));
     setSpellSlots(prev => {
         if (insertIndex !== undefined && insertIndex >= 0) {
@@ -1106,7 +1114,7 @@ function App() {
     playSound('interface/click');
   };
   const handleReturnRune = (rune) => {
-    if (awaitingGameOver) return;
+    if (awaitingGameOver || !isPlayerTurn) return;
     setSpellSlots(prev => prev.filter(t => t.id !== rune.id));
     setHand(prev => {
       const res = [...prev];
@@ -1118,7 +1126,7 @@ function App() {
     playSound('interface/paper');
   };
   const handleClear = () => {
-    if (awaitingGameOver) return;
+    if (awaitingGameOver || !isPlayerTurn) return;
     setHand(prev => {
       const res = [...prev];
       spellSlots.forEach(rune => {
@@ -1132,7 +1140,7 @@ function App() {
     playSound('interface/paper');
   };
   const handleShuffle = () => {
-    if (awaitingGameOver) return;
+    if (awaitingGameOver || !isPlayerTurn) return;
     setHand(prev => {
       const slots = [...prev];
       const runes = slots.filter(Boolean);
@@ -1147,7 +1155,7 @@ function App() {
     setTimeout(() => playSound('interface/paper', { volume: 0.8 }), 200);
   };
   const handleSort = () => {
-    if (awaitingGameOver) return;
+    if (awaitingGameOver || !isPlayerTurn) return;
     setHand(prev => {
       const slots = [...prev];
       const runes = slots.filter(Boolean).sort((a, b) => a.char.localeCompare(b.char));
@@ -1156,7 +1164,8 @@ function App() {
     playSound('interface/paper', { volume: 0.8 });
   };
   const handleDiscard = () => {
-    if (awaitingGameOver) return;
+    if (awaitingGameOver || !isPlayerTurn) return;
+    setIsPlayerTurn(false);
     setSpellSlots([]);
     drawHand(getHandSize(playerChar), deck, []);
     addLog("Mulligan! You waste a turn.");
@@ -1171,6 +1180,15 @@ function App() {
     setTimeout(() => playSound('interface/paper', { volume: 0.8 }), 500);
     setTimeout(() => playSound('interface/paper', { volume: 0.8 }), 600);
     setTimeout(() => playSound('interface/paper', { volume: 0.8 }), 700);
+  };
+
+  const guardedSetSpellSlots = (updater) => {
+    if (awaitingGameOver || !isPlayerTurn) return;
+    if (typeof updater === 'function') {
+      setSpellSlots(prev => updater(prev));
+    } else {
+      setSpellSlots(updater);
+    }
   };
 
   const handleSurrender = () => {
@@ -1215,7 +1233,7 @@ function App() {
   if (gameState === 'GAMEOVER') {
     return (
         <div className="reward-screen">
-            <h1>SILENCED</h1>
+            <h1>SILENCED.</h1>
             <p>The archives remain sealed.</p>
         {dailyMode && (
           <button 
@@ -1294,7 +1312,7 @@ function App() {
         onDiscard: handleDiscard,
         onShuffle: handleShuffle,
         onSort: handleSort,
-        setSpellSlots: setSpellSlots
+        setSpellSlots: guardedSetSpellSlots
       }}
     />
   );
