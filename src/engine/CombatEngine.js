@@ -106,14 +106,14 @@ export function resolveSpell(word, caster, target, isPlayerCasting = true, playS
   }
 
   if (tags.includes("heal")) {
-    result.heal = basePower * 2;
+    result.heal = Math.round(basePower * 2.5);
     isAttack = false;
     result.logs.push(`Restoration magic!`);
   }
 
   if (tags.includes("food")) {
     isAttack = false;
-    result.heal = Math.round(basePower * 1.5);
+    result.heal = Math.round(basePower * 2.5);
     result.logs.push(`A delicious snack!`);
   }
 
